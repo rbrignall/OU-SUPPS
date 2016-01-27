@@ -1,0 +1,155 @@
+\documentclass{ouexam} 
+% Available options:
+% specimen			For specimen exam papers
+% secondspecimen	For 2nd specimen exam
+% showsolutions		Produces solution booklet
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MODULE/DATE/TIME INFORMATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\modulecode{MU123}
+\conflation{C} % Can be omitted if "specimen" or "secondspecimen" options are on
+\moduletitle{Title of Module}
+\examcode{MU1231606X} % Generates barcode
+\copyrightyear{2016} %Optional: same as \examyear if omitted
+\examyear{2016}
+\exammonth{October}
+\examday{Tuesday 7}
+\examtime{10.00\,am -- 1.00\,pm}
+\timeallowed{3 hours}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INSTRUCTIONS ON FIRST PAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\examinstructions{%
+Insert module-specific examination instructions here
+}% ends \examinstructions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Begin writing document below here
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\question[optional space for title]
+The first question.\marks{12}
+
+\begin{solution}
+Solutions can be placed in-line, to generate solution files from the same source.\marks{3}
+
+Inside solutions, notes can be added to the marks.\solnmarksplus{4}{Like this}
+\end{solution}
+
+\question
+The second question.\marks{3}
+
+\begin{solution}
+Solutions can be placed in-line, to generate solution files from the same source.\marks{3}
+\end{solution}
+
+\question[(example of creating subquestions)]
+
+\begin{enumerate}
+\item Use the standard enumerate environment.\marks{3}
+\item \begin{enumerate}
+\item Sub-sub part.\marks{2}
+\item Sub-sub part.\marks{2}
+\begin{solution}
+Solutions can be created per sub-question, or per sub-sub-question, or after the entire question.\marks{2}
+\end{solution}
+\end{enumerate}
+\end{enumerate}
+The enumitem package allows numbering to be resumed later, to replace the OUTeX `intertext' command.
+\begin{enumerate}[resume]
+\item Numbering continues from before.\marks{4}
+\end{enumerate}
+
+
+
+\question
+\emph{This question is about nothing in particular.}
+\begin{enumerate}
+\item one\marks 4
+\item two, with a sufficiently long question that it runs over more than one line.\marks{4}
+\item 
+\begin{enumerate}
+\item Sub-sub\marks 2
+\item Sub-sub that is sufficiently long that it runs over more than one line.\marks 2
+\end{enumerate}
+\end{enumerate}
+
+\section{Section title}
+
+The class file is based on the standard article class file, so commands such as section, subsection etc. can all be used if desired.
+
+
+
+\question
+\emph{This question is about nothing in particular.}
+\begin{enumerate}
+\item one\marks 4
+\item two, with a sufficiently long question that it runs over more than one line.\marks{4}
+\item 
+\begin{enumerate}
+\item Sub-sub\marks 2
+\item Sub-sub that is sufficiently long that it runs over more than one line.\marks 2
+\end{enumerate}
+\end{enumerate}
+
+
+
+\question
+\emph{This question is about nothing in particular.}
+\begin{enumerate}
+\item one\marks 4
+\item two, with a sufficiently long question that it runs over more than one line.\marks{4}
+\item 
+\begin{enumerate}
+\item Sub-sub\marks 2
+\item Sub-sub that is sufficiently long that it runs over more than one line.\marks 2
+\end{enumerate}
+\end{enumerate}
+
+
+
+\question
+\emph{This question is about nothing in particular.}
+\begin{enumerate}
+\item one\marks 4
+\item two, with a sufficiently long question that it runs over more than one line.\marks{4}
+\item 
+\begin{enumerate}
+\item Sub-sub\marks 2
+\item Sub-sub that is sufficiently long that it runs over more than one line.\marks 2
+\end{enumerate}
+\end{enumerate}
+
+
+
+\question
+\emph{This question is about nothing in particular.}
+\begin{enumerate}
+\item one\marks 4
+\item two, with a sufficiently long question that it runs over more than one line.\marks{4}
+\item 
+\begin{enumerate}
+\item Sub-sub\marks 2
+\item Sub-sub that is sufficiently long that it runs over more than one line.\marks 2
+\end{enumerate}
+\end{enumerate}
+
+
+\solutions
+
+Another way to generate solutions is to use the solutions switch at the end of the file. These will appear irrespective of the showsolutions option.
+
+\question[optional space for title]
+The solution to the first question.\marks{12}
+
+\question
+The solution to the second question.\marks{3}
+
+
+\end{document}
+

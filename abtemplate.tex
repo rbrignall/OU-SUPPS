@@ -1,0 +1,163 @@
+\documentclass{ouab}
+%% Experimental version to check part marks add up: 
+%\documentclass[markcheck]{ouab} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MODULE/DATE/TIME INFORMATION
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\faculty{Faculty of STEM}
+\modulecode{MXXX}
+\moduletitle{Title of Module}
+\abyear{2015}
+\abtitle{Title of AB}
+\suppno{WEB 12345 6} %can be omitted for "DRAFT"
+\absubtitle{Optional subtitle} %optional subtitle
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% INSTRUCTIONS ON FIRST PAGE
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\abinstructions{%
+Module-specific instructions for the front page.
+}% ends \abinstructions
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\maketitle
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FORMAT TMA/CMA/generic HEADERS
+% \tma[cut off date]{number}[second line in contents]
+% \cma[cut off date]{number}[second line in contents]
+%
+% Items in square brackets are optional
+%
+% Generic command also available:
+% \assignment{NAME}[cut off date]{number}[second line in contents]
+%
+% where NAME is the type of assignment (TMA/CMA/EMA etc).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% FORMAT FOR QUESTIONS
+% \question[description]{marks}
+%
+% [description] is optional
+%
+% Use enumerate for subquestions. 
+% enumitem is loaded, so you can do
+% \begin{enumerate}[(i)] if you want to change the numbering system.
+% Default numbering systems are:
+% 1st level: (a), (b), (c), ...
+% 2nd level: (i), (ii), (iii), ...
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% MULTI-CHOICE OPTIONS
+% Two types available:
+% \begin{options}
+%   \item ...
+%   \item ...
+% \end{options}
+%
+% \begin{inlineoptions}{no_of_cols}
+%   \item ...
+%   \item ...
+% \end{inlineoptions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tma[12 November 2014]{02}[(Covering nothing in particular)]
+
+\question[(essay question)]{25}
+\emph{This question is about nothing in particular.}
+\begin{enumerate}
+\item hello\marks 4
+\item goodbye running a long time until it goes over to a second line perhaps
+\item 
+\begin{enumerate}
+\item Sub sub\marks 2
+\item Sub sub question that runs a long time until it goes over to a second line\marks 2
+\end{enumerate}
+\end{enumerate}
+
+\question{25}
+\emph{This question is about nothing in particular.}
+\begin{enumerate}
+\item hello\marks 4
+\item goodbye running a long time until it goes over to a second line perhaps
+\item 
+\begin{enumerate}
+\item Sub sub\marks 2
+\item Sub sub question that runs a long time until it goes over to a second line\marks 2
+\end{enumerate}
+\end{enumerate}
+Emulate the OUTeX intertext command using the (built-in) enumitem command.
+\begin{enumerate}[resume]
+\item Numbering continues
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cma{41}[(Covering more than we taught you)]
+
+\question[(inline multi-choice)]{25}
+Choose an inline option.
+
+\begin{inlineoptions}{5} %parameter specifies number of columns
+\item yes
+\item no
+\item maybe
+\item well...
+\item never!
+\item yes
+\item yes
+\item yes
+\item yes
+\item yes
+\end{inlineoptions}
+
+\question[(inline multi-choice)]{25}
+Choose an inline option from four columns.
+
+\begin{inlineoptions}{4} %parameter specifies number of columns
+\item yes
+\item no
+\item maybe
+\item well...
+\item never!
+\item yes
+\item yes
+\item yes
+\end{inlineoptions}
+
+\question[(inline multi-choice)]{25}
+Choose an inline option from three columns.
+
+\begin{inlineoptions}{3} %parameter specifies number of columns
+\item yes
+\item no
+\item maybe
+\item well...
+\item never!
+\item yes
+\end{inlineoptions}
+
+\question[(stupid question)]{25}
+Choose an option.
+\begin{options}
+\item There are no options
+\item There is one option
+\item This option is the wrong choice
+\end{options}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\assignment{QUIZ}[1 April 2015]{01}[Custom assessment type]
+
+\question[(changing subquestion labels)]{8}
+\begin{enumerate}[(i)]
+\item enumitem lets you change the labelling of subquestions\marks 4
+\item goodbye running a long time until it goes over to a second line perhaps
+\end{enumerate}
+
+\question[(changing subquestion labels 2)]{8}
+\begin{enumerate}[(A)]
+\item enumitem lets you change the labelling of subquestions\marks 4
+\item goodbye running a long time until it goes over to a second line perhaps
+\end{enumerate}
+
+
+\end{document}
+
