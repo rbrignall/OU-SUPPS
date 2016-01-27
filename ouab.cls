@@ -21,13 +21,16 @@
 \RequirePackage{amssymb}
 \RequirePackage{lastpage}
 \RequirePackage{ifthen}
-\RequirePackage[inline]{enumitem}
+\RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
 %%
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\@faculty{Mathematics, Computing and Technology}
+\newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
+%
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
 \newcommand\@modulecode{\@latex@error{No \noexpand\modulecode specified}\@ehc}
 %
@@ -41,7 +44,7 @@
 \newcommand\@abtitle{\@latex@error{No \noexpand\abtitle specified}\@ehc}
 %
 \def\@absubtitle{\relax}
-\newcommand\absubtitle[1]{\DeclareRobustCommafnd\@absubtitle{#1}}
+\newcommand\absubtitle[1]{\DeclareRobustCommand\@absubtitle{#1}}
 %
 \def\@abinstructions{No special instructions specified.}
 \newcommand\abinstructions[1]{\DeclareRobustCommand\@abinstructions{#1}}
@@ -57,22 +60,22 @@
 \renewcommand{\maketitle}{
   \thispagestyle{empty}
   \vspace{2cm}
-\begin{adjustwidth}{0cm}{-2cm}
-  \begin{tabular}{@{}p{4.5cm}@{}p{10.5cm}@{}}
+\begin{adjustwidth}{0cm}{-4cm}
+  \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
   \vspace{1.5cm}
-  \includegraphics[width=3.5cm]{ou_compact_cmyk_24mm}
+  \includegraphics[width=3.5cm]{ou_compact_grey_24mm}
 &
-\vspace{1.5cm}\textbf{Mathematics, Computing and Technology\newline
+\vspace{1.5cm}\textbf{\@faculty\newline
 \@modulecode\ \@moduletitle}
 
 \bigskip\bigskip\bigskip
 \textbf{\Huge \@modulecode}\newline
-\rule{10.5cm}{1pt}
+\rule{12.5cm}{1pt}
 
 \bigskip\bigskip\textbf{\Huge \@abtitle}
 \par\bigskip\textbf{\large \@absubtitle}
 
-\medskip\rule{10.5cm}{1pt}
+\medskip\rule{12.5cm}{1pt}
 
 \medskip\textbf{Contents\hfill Cut-off date}
 
@@ -81,7 +84,7 @@
 
 \nointerlineskip\vspace{12pt}
 \end{tabular}
-  \rule{15cm}{2pt}
+  \rule{17cm}{2pt}
 \end{adjustwidth}
 
 \begin{adjustwidth}{2.5cm}{-2cm}
@@ -89,8 +92,8 @@
   \@abinstructions
   \end{adjustwidth}
   \vfill
-\begin{adjustwidth}{0cm}{-2cm}
-  \rule{15cm}{2pt}
+\begin{adjustwidth}{0cm}{-4cm}
+  \rule{17cm}{2pt}
   \textbf{Copyright \copyright\ \@abyear\ The Open University\hfill \@suppno}
   \end{adjustwidth}
   \newpage
@@ -128,7 +131,7 @@
 \def\assignment#1{%
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	  \setcounter{question}{0}
-  	\iffirstassignment\firstassignmentfalse\else\rule{15cm}{2pt}\newpage\fi
+  	\iffirstassignment\firstassignmentfalse\else\rule{\textwidth}{2pt}\newpage\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 
@@ -275,7 +278,7 @@
 % Line at end of AB
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
-\par\bigskip \rule{15cm}{2pt}
+\par\bigskip \rule{\textwidth}{2pt}
 \@oldenddochook}
 
 %%
