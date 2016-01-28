@@ -17,12 +17,13 @@
 \RequirePackage{lastpage}
 \RequirePackage{ifthen}
 \RequirePackage{enumitem}
-%\RequirePackage{mdframed}
+\RequirePackage{mdframed}
 \RequirePackage{marginnote}
 %%
 
 %\def\contentsname{}
 %\renewcommand{\baselinestretch}{1.3}
+\topskip0pt
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
@@ -128,7 +129,6 @@ Personal identifier (PI): \\[20pt]
   \textbf{Copyright \copyright\ \@ouyear\ The Open University\hfill \@suppno}
 \end{adjustwidth}
 \newpage
-\topskip0pt
 \vspace*{\fill}
 \hfill \textbf{This page is intentionally left blank.}\hfill 
 \vspace*{\fill} 
