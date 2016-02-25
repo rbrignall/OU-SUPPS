@@ -187,8 +187,10 @@
   \dimen0 \linewidth
   \divide\dimen0 by #1\relax
   \def\item{\hfil\egroup\penalty50 \hfill
-  \refstepcounter{enumi}%
-  \leavevmode\hbox to \dimen0 \bgroup\protect\makebox[0.7cm][l]{\textbf{\Alph{enumi}}}\space}%
+    \refstepcounter{enumi}%
+    \leavevmode\hbox to \dimen0 \bgroup\protect\makebox[0.7cm][l]{\textbf{\Alph{enumi}}}\space}% 
+  \def\noitem{\hfil\egroup\penalty50 \hfill
+    \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
 }
 \def\endinlineoptions{\hfil\egroup}
