@@ -206,6 +206,28 @@
 \setlist[itemize]{align=left,leftmargin=8mm,labelsep*=0pt}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Options for multi-choice questions (as per CMAs in ouab.cls)
+% Inline ones (chops page into columns by using boxes of appropriate widths)
+\def\inlineoptions#1{%
+  \par\medskip\emph{Options}\par
+  \setcounter{enumi}{0}%
+  \dimen0 \linewidth
+  \divide\dimen0 by #1\relax
+  \def\item{\hfil\egroup\penalty50 \hfill
+    \refstepcounter{enumi}%
+    \leavevmode\hbox to \dimen0 \bgroup\protect\makebox[0.7cm][l]{\textbf{\Alph{enumi}}}\space}% 
+  % Hack to allow "blank" slots at end of final line (or wherever)
+  \def\noitem{\hfil\egroup\penalty50 \hfill
+    \leavevmode\hbox to \dimen0 \bgroup}%
+  \leavevmode\bgroup\hskip 0pt plus -1fill %
+}
+\def\endinlineoptions{\hfil\egroup}
+
+% Normal options: this is just using enumitem features with enumerate.
+\newenvironment{options}%
+	{\par\medskip\emph{Options}\begin{enumerate}[label=\textbf{\Alph*}]}%
+	{\end{enumerate}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
 \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}

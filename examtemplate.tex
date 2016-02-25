@@ -79,6 +79,33 @@ The enumitem package allows numbering to be resumed later, to replace the OUTeX 
 \end{enumerate}
 \end{enumerate}
 
+\section{Multiple choice questions}
+
+
+\question
+Choose an option.
+\begin{options}
+\item There are no options
+\item There is one option
+\item This option is the wrong choice
+\end{options}
+
+
+\question
+Choose an inline option.
+\begin{inlineoptions}{5} %parameter specifies number of columns
+\item yes
+\item no
+\item maybe
+\item well...
+\item never!
+\item yes
+\item yes
+\item yes
+\noitem %HACK. adds "blank" space so that the items line up as expected
+\noitem
+\end{inlineoptions}
+
 \section{Section title}
 
 The class file is based on the standard article class file, so commands such as section, subsection etc. can all be used if desired.
