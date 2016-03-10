@@ -228,25 +228,37 @@
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for multi-choice questions (as per CMAs in ouab.cls)
+
+% Options text
+\def\@optiontext{Options}
+\newcommand\optiontext[1]{%
+  \def\@optiontext{
+    \ifthenelse{\equal{#1}{}}{}{\emph{#1}\par}
+  }
+}
+
 % Inline ones (chops page into columns by using boxes of appropriate widths)
-\def\inlineoptions#1{%
-  \par\medskip\emph{Options}\par
-  \setcounter{enumi}{0}%
-  \dimen0 \linewidth
-  \divide\dimen0 by #1\relax
-  \def\item{\hfil\egroup\penalty50 \hfill
+\newenvironment{inlineoptions}[2][1]{%
+% #1 is the optional line spacing stretch. Default is 1
+% #2 is the number of columns
+  \par\medskip\@optiontext
+    \setcounter{enumi}{0}%
+  \dimen0 \linewidth%
+  \divide\dimen0 by #2\relax%
+  \def\item{\hfil\egroup\penalty50 \hfill%
     \refstepcounter{enumi}%
-    \leavevmode\hbox to \dimen0 \bgroup\protect\makebox[0.7cm][l]{\textbf{\Alph{enumi}}}\space}% 
+    % TWL stretch lines if option set
+    %\setstretch{#1}%
+    \leavevmode\hbox to \dimen0 \bgroup\protect\makebox[0.7cm][l]{\textbf{\Alph{enumi}}}\space }%
   % Hack to allow "blank" slots at end of final line (or wherever)
-  \def\noitem{\hfil\egroup\penalty50 \hfill
+  \def\noitem{\hfil\egroup\penalty50 \hfill%
     \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
-}
-\def\endinlineoptions{\hfil\egroup}
+}{\hfil\egroup\par}  
 
 % Normal options: this is just using enumitem features with enumerate.
 \newenvironment{options}%
-	{\par\medskip\emph{Options}\begin{enumerate}[label=\textbf{\Alph*}]}%
+	{\par\medskip\@optiontext\begin{enumerate}[label=\textbf{\Alph*}]}%
 	{\end{enumerate}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
