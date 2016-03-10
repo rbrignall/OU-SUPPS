@@ -217,7 +217,8 @@
 %% Question headers
 \newcounter{question}
 \def\questiontext{Question}
-\newcommand{\question}[1][]{\stepcounter{question}\par\bigskip{\bfseries \questiontext~\thequestion}\ #1\nopagebreak\par\nobreak\@afterheading}
+\newcommand{\@question}[1][]{\stepcounter{question}\par\bigskip{\bfseries \questiontext~\thequestion}\ #1\nopagebreak\par\nobreak\@afterheading}
+\newcommand{\question}[1]{\@question #1}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
