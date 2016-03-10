@@ -101,23 +101,33 @@
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 
 
-\newif\if@barcode
-\@barcodefalse
-\def\@examcode{\relax} % default blank
-\newcommand\examcode[1]{\@barcodetrue\DeclareRobustCommand\@examcode{#1}}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BARCODE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\font\barcodefont=wlc39 scaled 1200    % Size OK?
+\font\barcodefont=wlc39 scaled 1300    % Size OK?
+\newlength\barcodewidth
+%
+\newif\if@barcode
+\@barcodefalse
+%
+\def\@examcode{\relax} % default blank
+\newcommand\examcode[1]{%
+  \@barcodetrue
+  \DeclareRobustCommand\@examcode{#1}
+  \def\bar@examcode{\barcodefont @#1@}
+  \settowidth{\barcodewidth}{\bar@examcode}
+}
+%
+% Makes parbox of correct width and inserts barcode
  \def\setbarcode
 {%
   \if@barcode
   \relax
-  \parbox[t]{6cm}{
-    \barcodefont
-    @\@examcode @%
-    \par
+  \parbox[t]{\barcodewidth}{
+    \bar@examcode%
+\par
     \textsf{\@examcode}%
   }%
   \fi
@@ -125,21 +135,34 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Footers for title page (copyright, etc)
+\fancypagestyle{frontpage}{%
+  \fancyhf{} % clear all header and footer fields
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{0pt}%
+    \fancyfoot[L]{\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
+\textbf{\@versionno} }%
+}
+\newlength\titletablewidth
+\setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
 \renewcommand{\maketitle}{
-  \thispagestyle{empty}
-  \vspace{2cm}
-\begin{adjustwidth}{0cm}{-3cm}
-  \begin{tabular}{@{}p{4.5cm}@{}p{10.5cm}@{}}
+  \thispagestyle{frontpage}
+  \vspace*{1cm}
+\begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
+  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
   \vspace{1.5cm}
-  \includegraphics[width=3.5cm]{ou_compact_grey_24mm}
+  \includegraphics[width=3.9cm]{ou_compact_grey_24mm}
 &
-\vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@conflation}} \hfill\setbarcode}\\ 
+\vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@conflation}} \hfill\ \setbarcode}\\ 
 &
 \raggedright\bfseries Module Examination \@examyear \newline
+
+\vspace*{-10pt}
 \@moduletitle\newline
 
 \@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
-\rule{10.5cm}{1pt}
+\rule{\titletablewidth}{1pt}
 
 \nointerlineskip\vspace{12pt}
 {\if@showsolutions
@@ -149,19 +172,14 @@
 \fi}
 
 \nointerlineskip\vspace{12pt}
-\rule{10.5cm}{1pt}
+\rule{\titletablewidth}{1pt}
 \end{tabular}
 \end{adjustwidth}
 \vspace{30pt}
 
-  \begin{adjustwidth}{1.5cm}{-2cm}
-  \textbf{Instructions}
+  \begin{adjustwidth}{2cm}{-2cm}
   \raggedright
-  
   \@examinstructions
-  \vfill
-  \textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
-\textbf{\@versionno}
   \end{adjustwidth}
   \newpage
 }
@@ -177,10 +195,11 @@
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
+  \fancyfootoffset[RE,RO]{\dimexpr\marginparsep+2cm} % lines up number with marks column
     %\fancyhead[RE, RO]{\textbf\thepage}%
     \fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
-    \fancyfoot[RE,RO]{\bfseries\thepage}
-    \fancyfoot[LE,LO]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+    \fancyfoot[LE,RO]{\bfseries\thepage}
+    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
 }
 \pagestyle{internalpages}
 
