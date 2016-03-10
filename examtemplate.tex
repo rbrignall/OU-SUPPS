@@ -7,20 +7,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MODULE/DATE/TIME INFORMATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\modulecode{MU123}
+\modulecode{MST124}
 \conflation{C} % Can be omitted if "specimen" or "secondspecimen" options are on
 \moduletitle{Title of Module}
-\examcode{MU1231606X} % Generates barcode
+\examcode{MST1241606X} % Generates barcode
 \copyrightyear{2016} %Optional: same as \examyear if omitted
 \examyear{2016}
 \exammonth{October}
 \examday{Tuesday 7}
 \examtime{10.00\,am -- 1.00\,pm}
 \timeallowed{3 hours}
+%\optiontext{} %Can be used to change text appearing at top of multi-choice options.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INSTRUCTIONS ON FIRST PAGE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \examinstructions{%
+\textbf{Instructions}
+
 Insert module-specific examination instructions here
 }% ends \examinstructions
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -111,7 +114,6 @@ Choose an inline option.
 The class file is based on the standard article class file, so commands such as section, subsection etc. can all be used if desired.
 
 
-
 \question
 \emph{This question is about nothing in particular.}
 \begin{enumerate}
@@ -153,6 +155,18 @@ The class file is based on the standard article class file, so commands such as 
 \end{enumerate}
 
 
+
+\question
+\emph{This question is about nothing in particular.}
+\begin{enumerate}
+\item one\marks 4
+\item two, with a sufficiently long question that it runs over more than one line.\marks{4}
+\item 
+\begin{enumerate}
+\item Sub-sub\marks 2
+\item Sub-sub that is sufficiently long that it runs over more than one line.\marks 2
+\end{enumerate}
+\end{enumerate}
 
 \question
 \emph{This question is about nothing in particular.}
