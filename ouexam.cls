@@ -230,7 +230,7 @@
 %% Options for multi-choice questions (as per CMAs in ouab.cls)
 
 % Options text
-\def\@optiontext{Options}
+\def\@optiontext{\emph{Options}\par}
 \newcommand\optiontext[1]{%
   \def\@optiontext{
     \ifthenelse{\equal{#1}{}}{}{\emph{#1}\par}
@@ -247,8 +247,8 @@
   \divide\dimen0 by #2\relax%
   \def\item{\hfil\egroup\penalty50 \hfill%
     \refstepcounter{enumi}%
-    % TWL stretch lines if option set
-    %\setstretch{#1}%
+    \def\baselinestretch{#1}%
+    \@currsize
     \leavevmode\hbox to \dimen0 \bgroup\protect\makebox[0.7cm][l]{\textbf{\Alph{enumi}}}\space }%
   % Hack to allow "blank" slots at end of final line (or wherever)
   \def\noitem{\hfil\egroup\penalty50 \hfill%
