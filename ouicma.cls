@@ -92,8 +92,14 @@ Personal identifier (PI): \\[20pt]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\fancypagestyle{frontpage}{%
+  \fancyhf{} % clear all header and footer fields
+  \renewcommand{\headrulewidth}{0pt}
+  \renewcommand{\footrulewidth}{2pt}%
+    \fancyfoot[L]{\textbf{Copyright \copyright\ \@ouyear\ The Open University}\hfill \textbf{\@suppno} }%
+}
 \renewcommand{\maketitle}{
-  \thispagestyle{empty}
+  \thispagestyle{frontpage}
   \vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
   \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
@@ -123,11 +129,6 @@ Personal identifier (PI): \\[20pt]
   \raggedright
   \@instructions
   \end{adjustwidth}
-  \vfill
-\begin{adjustwidth}{0cm}{-4cm}
-  \rule{17cm}{2pt}
-  \textbf{Copyright \copyright\ \@ouyear\ The Open University\hfill \@suppno}
-\end{adjustwidth}
 \newpage
 \vspace*{\fill}
 \hfill \textbf{This page is intentionally left blank.}\hfill 
@@ -147,6 +148,7 @@ Personal identifier (PI): \\[20pt]
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
+  \fancyfootoffset[RE,RO]{4cm} % lines up with full width on front page
     %\fancyhead[RE, RO]{\textbf\thepage}%
     \fancyfoot[C]{page~\thepage~of~\pageref{LastPage}} % internal right hand pages only
     %\fancyfoot[RE,RO]{\bfseries\thepage}
@@ -215,22 +217,37 @@ Personal identifier (PI): \\[20pt]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 
-\def\inlineoptions#1{%
-  \par\medskip\emph{Options}\par
-  \setcounter{enumi}{0}%
-  %\flushleft
-  \dimen0 \linewidth
-  \divide\dimen0 by #1\relax
-  %\advance\dimen0\relax
-  \def\item{\hfil\egroup\penalty50 \hfill
-  \refstepcounter{enumi}%
-  \leavevmode\hbox to \dimen0 \bgroup\protect\makebox[0.7cm][l]{\textbf{\Alph{enumi}}}\space}%
-  \leavevmode\bgroup\hskip 0pt plus -1fill }
-\def\endinlineoptions{\hfil\egroup}%\endflushleft}
+% Options text
+\def\@optiontext{\emph{Options}\par}
+\newcommand\optiontext[1]{%
+  \def\@optiontext{
+    \ifthenelse{\equal{#1}{}}{}{\emph{#1}\par}
+  }
+}
 
-%\newenvironment{options*}{\par\medskip\emph{Options}\par\begin{enumerate*}[label=\textbf{\Alph*},itemjoin=\hspace{1cm}]}{\end{enumerate*}\par}
+% Inline ones (chops page into columns by using boxes of appropriate widths)
+\newenvironment{inlineoptions}[2][1]{%
+% #1 is the optional line spacing stretch. Default is 1
+% #2 is the number of columns
+  \par\medskip\@optiontext
+    \setcounter{enumi}{0}%
+  \dimen0 \linewidth%
+  \divide\dimen0 by #2\relax%
+  \def\item{\hfil\egroup\penalty50 \hfill%
+    \refstepcounter{enumi}%
+    \def\baselinestretch{#1}%
+    \@currsize
+    \leavevmode\hbox to \dimen0 \bgroup\protect\makebox[0.7cm][l]{\textbf{\Alph{enumi}}}\space }%
+  % Hack to allow "blank" slots at end of final line (or wherever)
+  \def\noitem{\hfil\egroup\penalty50 \hfill%
+    \leavevmode\hbox to \dimen0 \bgroup}%
+  \leavevmode\bgroup\hskip 0pt plus -1fill %
+}{\hfil\egroup\par}  
 
-\newenvironment{options}{\par\medskip\emph{Options}\begin{enumerate}[label=\textbf{\Alph*},itemsep=2pt]}{\end{enumerate}}
+% Normal options: this is just using enumitem features with enumerate.
+\newenvironment{options}%
+	{\par\medskip\@optiontext\begin{enumerate}[label=\textbf{\Alph*}]}%
+	{\end{enumerate}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marginnotes etc always appear on RHS:

@@ -12,6 +12,7 @@
 \suppno{WEB 12345 6} %can be omitted for "DRAFT"
 \cutoffdate{26 November 2014}
 \coversmaterialin{Units 1,2 and 3.}
+%\optiontext{} %Can be used to change text appearing at top of multi-choice options.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INSTRUCTIONS ON FIRST PAGE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -112,6 +113,20 @@ Choose an option
 \item yes
 \item yes
 \item yes\answerbox
+\end{inlineoptions}
+
+\question
+Choose an inline option at 1.5 spacing.
+\begin{inlineoptions}[1.5]{3} %optional parameter specifies line spacing
+\item yes
+\item no
+\item maybe
+\item well...
+\item never!
+\item yes
+\item yes
+\item yes
+\noitem %HACK. adds "blank" space so that the items line up as expected
 \end{inlineoptions}
 
 \question
