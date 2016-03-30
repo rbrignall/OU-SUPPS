@@ -141,13 +141,13 @@
 
 \def\@assignmentwithcutoff[#1]#2{%
   	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}
-	{\large \textbf{\@assignmentname\ \@modulecode\ #2} -- cut off date #1}\par
+	{\large \textbf{\@assignmentname\ #2} -- cut-off date #1}\par
 	\@ifnextchar[{\@assignmentsubtitle}{\addtocontents{tma}{\par\medskip}}
 }
 
 \def\@assignmentnocutoff#1{%
   	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #1}
-	{\large \textbf{\@assignmentname\ \@modulecode\ #1}}\par
+	{\large \textbf{\@assignmentname\ #1}}\par
 	\@ifnextchar[{\@assignmentsubtitle}{\addtocontents{tma}{\par\medskip}}
 }
 
@@ -174,8 +174,8 @@
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
 \setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
-\setlist[enumerate,1]{label=(\roman*), ref=(\roman*)}
-\setlist[enumerate,2]{label=(\alph*), ref=(\alph*)}
+\setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
+\setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
 %%%%%%
 %% Marks
 \renewcommand{\marks}[1]{%
