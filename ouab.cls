@@ -163,8 +163,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question headers
 \newcounter{question}
-\newcommand{\question}[2][]{%
-	\if@markcheck%experimental
+
+\def\question{\@ifstar\@question\@@question}
+% \@question is the version with star: it displays no marks
+\newcommand{\@question}[1][]{%
+	\stepcounter{question}
+	\par\bigskip{\textbf{Question~\thequestion}\ #1}\nopagebreak\par}
+% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
+\newcommand{\@@question}[2][]{%
+	\if@markcheck%experimental system to check marks
 		\ifthenelse{\value{marktarget}=\value{marksum}}{\typeout{Q\thequestion, P\thepage, marks ok}}{\ClassError{ouab}{Q\thequestion, P\thepage, mark mismatch}{Press enter to continue compilation}}
 		\setcounter{marktarget}{#2}		
 		\setcounter{marksum}{0}
