@@ -1,9 +1,15 @@
 \NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{ouab}[2016/04/06 v0.91 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
 \DeclareOption{markcheck}{%
   \@markchecktrue
+}
+\newif\if@oneassignment
+\@oneassignmentfalse
+\DeclareOption{oneassignment}{%
+  \@oneassignmenttrue
 }
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -47,6 +53,9 @@
 \@subtitlefalse
 \newcommand\absubtitle[1]{\DeclareRobustCommand\@absubtitle{#1}\@subtitletrue}
 %
+% Applies only in the "oneassignment" option mode
+\newcommand\assignmentdetails[1]{\renewcommand\@assignmentdetails{#1}}
+\newcommand\@assignmentdetails{\@latex@error{No \noexpand\assignmentdetails specified}\@ehc}
 %
 \def\@abinstructions{No special instructions specified.}
 \newcommand\abinstructions[1]{\DeclareRobustCommand\@abinstructions{#1}}
@@ -87,10 +96,14 @@
 
 \medskip\rule{12.5cm}{1pt}
 
+\if@oneassignment
+\medskip\textbf{\@assignmentdetails}\par\medskip
+\else
 \medskip\textbf{Contents\hfill Cut-off date}
 
 %inserts list of TMA/CMA entries
 \@starttoc{tma}
+\fi
 
 \nointerlineskip\vspace{12pt}
 \end{tabular}
