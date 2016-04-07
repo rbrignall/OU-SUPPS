@@ -1,17 +1,22 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2015/05/22 v0.9 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/04/06 v0.91 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
 \DeclareOption{markcheck}{%
   \@markchecktrue
 }
+\newif\if@oneassignment
+\@oneassignmentfalse
+\DeclareOption{oneassignment}{%
+  \@oneassignmenttrue
+}
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \LoadClass[fleqn,12pt,onecolumn,twoside,a4paper]{article}
-\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=2cm,nohead,asymmetric]{geometry}%
+\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=2cm,marginparsep=-4ex,nohead,asymmetric]{geometry}%
 \RequirePackage{fancyhdr}
 \RequirePackage{graphicx}
 \RequirePackage{changepage}
@@ -44,7 +49,13 @@
 \newcommand\@abtitle{\@latex@error{No \noexpand\abtitle specified}\@ehc}
 %
 \def\@absubtitle{\relax}
-\newcommand\absubtitle[1]{\DeclareRobustCommand\@absubtitle{#1}}
+\newif\if@subtitle
+\@subtitlefalse
+\newcommand\absubtitle[1]{\DeclareRobustCommand\@absubtitle{#1}\@subtitletrue}
+%
+% Applies only in the "oneassignment" option mode
+\newcommand\assignmentdetails[1]{\renewcommand\@assignmentdetails{#1}}
+\newcommand\@assignmentdetails{\@latex@error{No \noexpand\assignmentdetails specified}\@ehc}
 %
 \def\@abinstructions{No special instructions specified.}
 \newcommand\abinstructions[1]{\DeclareRobustCommand\@abinstructions{#1}}
@@ -81,14 +92,18 @@
 \rule{12.5cm}{1pt}
 
 \bigskip\bigskip\textbf{\Huge \@abtitle}
-\par\bigskip\textbf{\large \@absubtitle}
+\if@subtitle\par\bigskip\textbf{\large \@absubtitle}\fi
 
 \medskip\rule{12.5cm}{1pt}
 
+\if@oneassignment
+\medskip\textbf{\@assignmentdetails}\par\medskip
+\else
 \medskip\textbf{Contents\hfill Cut-off date}
 
 %inserts list of TMA/CMA entries
 \@starttoc{tma}
+\fi
 
 \nointerlineskip\vspace{12pt}
 \end{tabular}
@@ -112,8 +127,6 @@
   \fancyfootoffset[RE,RO]{4cm} % lines up number with marks column
     %\fancyhead[RE, RO]{\textbf\thepage}%
     \fancyfoot[C]{page~\thepage~of~\pageref{LastPage}} % internal right hand pages only
-    %\fancyfoot[RE,RO]{\bfseries\thepage}
-    %\fancyfoot[LE,LO]{\bfseries\@modulecode\ \@exammonth\ \@examyear}  
 }
 \pagestyle{internalpages}
 
@@ -135,7 +148,8 @@
 \def\assignment#1{%
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	  \setcounter{question}{0}
-  	\iffirstassignment\firstassignmentfalse\else\rule{\textwidth}{2pt}\newpage\fi
+	% Draw a rule under end of previous assignment (if not first assignment)
+  	\iffirstassignment\firstassignmentfalse\else\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}\newpage\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 
@@ -162,8 +176,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question headers
 \newcounter{question}
-\newcommand{\question}[2][]{%
-	\if@markcheck%experimental
+
+\def\question{\@ifstar\@question\@@question}
+% \@question is the version with star: it displays no marks
+\newcommand{\@question}[1][]{%
+	\stepcounter{question}
+	\par\bigskip{\textbf{Question~\thequestion}\ #1}\nopagebreak\par}
+% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
+\newcommand{\@@question}[2][]{%
+	\if@markcheck%experimental system to check marks
 		\ifthenelse{\value{marktarget}=\value{marksum}}{\typeout{Q\thequestion, P\thepage, marks ok}}{\ClassError{ouab}{Q\thequestion, P\thepage, mark mismatch}{Press enter to continue compilation}}
 		\setcounter{marktarget}{#2}		
 		\setcounter{marksum}{0}
@@ -182,6 +203,7 @@
 	\marginnote{\hfill[\textsl{#1}]}
 	\if@markcheck\addtocounter{marksum}{#1}\fi % experimental	
 }
+\let\mk\marks
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 
@@ -297,7 +319,7 @@
 % Line at end of AB
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
-\par\bigskip \rule{\textwidth}{2pt}
+\par\bigskip \rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}
 \@oldenddochook}
 
 %%
