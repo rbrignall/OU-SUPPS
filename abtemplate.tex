@@ -1,16 +1,25 @@
 \documentclass{ouab}
-%% Experimental version to check part marks add up: 
-%\documentclass[markcheck]{ouab} 
+% Options:
+%   oneassigment - mode that suppresses table of contents for
+%                  ABs containing only one assigment.
+%                  Use \assignmentdetails{} to specify text in place
+%                  of contents.
+%   markcheck    - experimental version that checks whether part-marks
+%                  for a question add up to the stated marks for the
+%                  question.
+% e.g. use \documentclass[oneassignment]{ouab}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MODULE/DATE/TIME INFORMATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \faculty{Faculty of STEM}
 \modulecode{MXXX}
 \moduletitle{Title of Module}
-\abyear{2015}
 \abtitle{Title of AB}
+%\absubtitle{Optional subtitle} %optional subtitle
+\abyear{2015}
+%\assignmentdetails{This tutor-marked assignment covers Book A.} % For use with "oneassignment" option.
 \suppno{WEB 12345 6} %can be omitted for "DRAFT"
-\absubtitle{Optional subtitle} %optional subtitle
+\versionno{1.0} %optional
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INSTRUCTIONS ON FIRST PAGE
@@ -76,12 +85,12 @@ Module-specific instructions for the front page.
 \question{25}
 \emph{This question is about nothing in particular.}
 \begin{enumerate}
-\item hello\marks 4
+\item Marks can also be called using \mk 4
 \item goodbye running a long time until it goes over to a second line perhaps
 \item 
 \begin{enumerate}
-\item Sub sub\marks 2
-\item Sub sub question that runs a long time until it goes over to a second line\marks 2
+\item Sub sub\mk 2
+\item Sub sub question that runs a long time until it goes over to a second line\mk 2
 \end{enumerate}
 \end{enumerate}
 Emulate the OUTeX intertext command using the (built-in) enumitem command.
@@ -173,6 +182,11 @@ Choose an option.
 \item goodbye running a long time until it goes over to a second line perhaps
 \end{enumerate}
 
+\question*[(Starred version showing no marks)]
+This question has no marks associated with it on its first line.\mk 4
+
+\question*
+Another starred question, this time with no optional argument.
 
 \end{document}
 
