@@ -15,7 +15,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\LoadClass[fleqn,12pt,onecolumn,twoside,a4paper]{article}
+\LoadClass[fleqn,11pt,onecolumn,twoside,a4paper]{article}
 \RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=2cm,marginparsep=-4ex,nohead,asymmetric]{geometry}%
 \RequirePackage{fancyhdr}
 \RequirePackage{graphicx}
@@ -149,7 +149,7 @@
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	  \setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
-  	\iffirstassignment\firstassignmentfalse\else\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}\newpage\fi
+  	\iffirstassignment\firstassignmentfalse\else\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 
@@ -319,7 +319,7 @@
 % Line at end of AB
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
-\par\bigskip \rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}
+\par\bigskip \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}
 \@oldenddochook}
 
 %%
