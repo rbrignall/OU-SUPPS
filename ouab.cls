@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/04/06 v0.91 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/04/12 v0.92 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -57,10 +57,6 @@
 \@subtitlefalse
 \newcommand\absubtitle[1]{\DeclareRobustCommand\@absubtitle{#1}\@subtitletrue}
 %
-% Applies only in the "oneassignment" option mode
-\newcommand\assignmentdetails[1]{\renewcommand\@assignmentdetails{#1}}
-\newcommand\@assignmentdetails{\@latex@error{No \noexpand\assignmentdetails specified}\@ehc}
-%
 \def\@abinstructions{No special instructions specified.}
 \newcommand\abinstructions[1]{\DeclareRobustCommand\@abinstructions{#1}}
 %
@@ -101,13 +97,13 @@
 \medskip\rule{12.5cm}{1pt}
 
 \if@oneassignment
-\medskip\textbf{\@assignmentdetails}\par\medskip
+\medskip
 \else
-\medskip\textbf{Contents\hfill Cut-off date}
-
+\medskip\textbf{Contents\hfill Cut-off date}\par\medskip
+\fi
 %inserts list of TMA/CMA entries
 \@starttoc{tma}
-\fi
+
 
 \nointerlineskip\vspace{12pt}
 \end{tabular}
@@ -158,19 +154,36 @@
 }
 
 \def\@assignmentwithcutoff[#1]#2{%
-  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}
-	{\large \textbf{\@assignmentname\ #2} -- cut-off date #1}\par
-	\@ifnextchar[{\@assignmentsubtitle}{\addtocontents{tma}{\par\medskip}}
+	\def\@cutoff{Cut-off date #1}
+	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{Cut-off date}\ \ #1}\par
+	\if@oneassignment
+		\relax %\@ifnextchar[{\@oneassignmentsubtitle{#1}}{\addtocontents{tma}{\hfill  \textbf{Cut-off date #1}\par\medskip}}
+	\else
+	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}
+	\fi
+	\@ifnextchar[{\@assignmentsubtitle}{
+		\if@oneassignment\addtocontents{tma}{\hfill\textbf{\@cutoff}}
+		\else\addtocontents{tma}{\par\medskip}\fi
+	}
 }
 
 \def\@assignmentnocutoff#1{%
-  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #1}
+	\def\@cutoff{\relax}
 	{\large \textbf{\@assignmentname\ #1}}\par
+	\if@oneassignment
+		\relax 
+	\else
+	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #1}
+	\fi
 	\@ifnextchar[{\@assignmentsubtitle}{\addtocontents{tma}{\par\medskip}}
 }
 
 \def\@assignmentsubtitle[#1]{%
-  \addtocontents{tma}{\newline\protect\makebox[1cm][l]{}#1\par\medskip}
+	\if@oneassignment
+		\addtocontents{tma}{\textbf{#1\hfill\@cutoff} \par\medskip}
+	\else
+		\addtocontents{tma}{\newline\protect\makebox[1cm][l]{}#1\par\medskip}
+	\fi
 }
 
 % Set up the two most common types of assignment
