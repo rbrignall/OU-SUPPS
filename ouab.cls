@@ -45,6 +45,10 @@
 \newcommand\abyear[1]{\renewcommand\@abyear{#1}}
 \newcommand\@abyear{\@latex@error{No \noexpand\abyear specified}\@ehc}
 %
+% Optional copyrightyear:
+\def\@copyrightyear{\@abyear}
+\newcommand\copyrightyear[1]{\def\@copyrightyear{#1}}
+%
 \newcommand\abtitle[1]{\renewcommand\@abtitle{#1}}
 \newcommand\@abtitle{\@latex@error{No \noexpand\abtitle specified}\@ehc}
 %
@@ -73,25 +77,25 @@
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{2pt}%
-    \fancyfoot[L]{\textbf{Copyright \copyright\ \@abyear\ The Open University}\hfill \textbf{\@suppno}\\
+    \fancyfoot[L]{\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
 \textbf{\@versionno} }%
 }
 \renewcommand{\maketitle}{
   \thispagestyle{frontpage}
-  \vspace{2cm}
+  %\vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
   \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
-  \vspace{1.5cm}
+  \vspace{0.2cm}
   \includegraphics[width=3.5cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
 &
-\vspace{1.5cm}\textbf{\@faculty\newline
+\vspace{0.2cm}\textbf{\@faculty\newline
 \@modulecode\ \@moduletitle}
 
 \bigskip\bigskip\bigskip
 \textbf{\Huge \@modulecode}\newline
 \rule{12.5cm}{1pt}
 
-\bigskip\bigskip\textbf{\Huge \@abtitle}
+\bigskip\bigskip\textbf{\Huge \@abtitle\hfill\@abyear}
 \if@subtitle\par\bigskip\textbf{\large \@absubtitle}\fi
 
 \medskip\rule{12.5cm}{1pt}
@@ -108,12 +112,13 @@
 \nointerlineskip\vspace{12pt}
 \end{tabular}
   \rule{17cm}{2pt}
-\end{adjustwidth}
-
-\begin{adjustwidth}{2.5cm}{-2cm}
-  \raggedright
+\par\medskip
+\begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
+ &\raggedright
   \@abinstructions
-  \end{adjustwidth}
+ \end{tabular}
+\end{adjustwidth}
+%
   \newpage
 }
 
@@ -125,7 +130,6 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{4cm} % lines up number with marks column
-    %\fancyhead[RE, RO]{\textbf\thepage}%
     \fancyfoot[C]{page~\thepage~of~\pageref{LastPage}} % internal right hand pages only
 }
 \pagestyle{internalpages}
