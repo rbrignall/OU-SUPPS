@@ -152,7 +152,7 @@
 \begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
   \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
   \vspace{1.5cm}
-  \includegraphics[width=3.9cm]{ou_compact_grey_24mm}
+  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
 &
 \vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@conflation}} \hfill\ \setbarcode}\\ 
 &

@@ -104,7 +104,7 @@ Personal identifier (PI): \\[20pt]
 \begin{adjustwidth}{0cm}{-4cm}
   \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
   \vspace{1.5cm}
-  \includegraphics[width=3.5cm]{ou_compact_grey_24mm}
+  \includegraphics[width=3.5cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
 &
 \vspace{1.5cm}\textbf{\@faculty\newline
 \@modulecode\ \@moduletitle}
