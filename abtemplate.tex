@@ -1,9 +1,7 @@
 \documentclass{ouab}
 % Options:
-%   oneassigment - mode that suppresses table of contents for
-%                  ABs containing only one assigment.
-%                  Use \assignmentdetails{} to specify text in place
-%                  of contents.
+%   oneassignment - mode that modifies table of contents for
+%                  ABs containing only one assignment.
 %   markcheck    - experimental version that checks whether part-marks
 %                  for a question add up to the stated marks for the
 %                  question.
@@ -16,8 +14,8 @@
 \moduletitle{Title of Module}
 \abtitle{Title of AB}
 %\absubtitle{Optional subtitle} %optional subtitle
-\abyear{2015}
-%\assignmentdetails{This tutor-marked assignment covers Book A.} % For use with "oneassignment" option.
+\abyear{2015B}
+\copyrightyear{2012} % If different from \abyear
 \suppno{WEB 12345 6} %can be omitted for "DRAFT"
 \versionno{1.0} %optional
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
@@ -68,7 +66,7 @@ Module-specific instructions for the front page.
 % \end{inlineoptions}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\tma[12 November 2014]{02}[(Covering nothing in particular)]
+\tma[12 November 2014]{01}[Covers units A and B]
 
 \question[(essay question)]{25}
 \emph{This question is about nothing in particular.}
@@ -100,7 +98,7 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\cma{41}[(Covering more than we taught you)]
+\cma{41}[Covers Units C and D]
 
 \question[(inline multi-choice)]{25}
 Choose an inline option.
@@ -188,5 +186,14 @@ This question has no marks associated with it on its first line.\mk 4
 \question*
 Another starred question, this time with no optional argument.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Other ways to create assessments with/without optional parameters, 
+% to show how they render on the page.
+
+% Assignment with no cutoff or subtitle
+\tma{02}
+
+% Assignment with cutoff but no subtitle
+\cma[an hour ago]{42}
 \end{document}
 
