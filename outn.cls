@@ -1,22 +1,17 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/04/14 v0.1 (Robert Brignall, all rights reserved)]
-% Experimental!
-\newif\if@markcheck
-\@markcheckfalse
-\DeclareOption{markcheck}{%
-  \@markchecktrue
-}
-\newif\if@oneassignment
-\@oneassignmentfalse
-\DeclareOption{oneassignment}{%
-  \@oneassignmenttrue
+\ProvidesClass{outn}[2016/04/18 v0.2 (Robert Brignall, all rights reserved)]
+
+\newif\if@studenttex
+\@studenttexfalse
+\DeclareOption{studenttex}{%
+  \@studenttextrue
 }
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\LoadClass[fleqn,11pt,onecolumn,twoside,a4paper]{article}
-\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=2cm,marginparsep=-4ex,nohead,asymmetric]{geometry}%
+\LoadClass[fleqn,10pt,onecolumn,twoside,a4paper]{article}
+\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=5cm,marginparsep=-6ex,nohead,asymmetric]{geometry}%
 \RequirePackage{fancyhdr}
 \RequirePackage{graphicx}
 \RequirePackage{changepage}
@@ -28,8 +23,15 @@
 \RequirePackage{ifthen}
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
-\RequirePackage[xcolor]{mdframed}
-\RequirePackage{l3regex}
+%\RequirePackage[xcolor]{mdframed}
+\RequirePackage{xparse,environ}
+\if@studenttex
+  \RequirePackage{l3regex,l3tl-analysis,l3str}
+  \RequirePackage{answers}
+\fi
+
+
+
 %%
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -54,13 +56,6 @@
 \newcommand\tntitle[1]{\renewcommand\@tntitle{#1}}
 \newcommand\@tntitle{\@latex@error{No \noexpand\tntitle specified}\@ehc}
 %
-\def\@tninstructions{\relax}
-\newcommand\tninstructions[1]{\DeclareRobustCommand\@tninstructions{#1}}
-%
-\def\@suppno{DRAFT} % default
-\newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
-\def\@versionno{\relax} % default blank
-\newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
@@ -69,9 +64,8 @@
 \fancypagestyle{frontpage}{%
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
-  \renewcommand{\footrulewidth}{2pt}%
-    \fancyfoot[L]{\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
-\textbf{\@versionno} }%
+  %\renewcommand{\footrulewidth}{2pt}%
+    \fancyfoot[L]{\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}}%
 }
 \renewcommand{\maketitle}{
   \thispagestyle{frontpage}
@@ -89,34 +83,8 @@
 \hfill{\fboxsep=5mm\fboxrule=1.5mm\fbox{\large\sf Tutor Notes}}\par
 	\medskip
 	\textbf{\Large \@tntitle\ \@tnyear}
-\\
-%\rule{12.5cm}{1pt}
-
-&\raggedright
-  \@tninstructions
 \end{tabular}
-\rule{17cm}{2pt}
-  
-%\if@oneassignment
-%\medskip
-%\else
-%\medskip\textbf{Contents\hfill Cut-off date}\par\medskip
-%\fi
-%%inserts list of TMA/CMA entries
-%\@starttoc{tma}
-
-
-%\nointerlineskip\vspace{12pt}
-%\end{tabular}
-%  \rule{17cm}{2pt}
-%\par\medskip
-%\begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
-% &\raggedright
-%  \@tninstructions
-% \end{tabular}
 \end{adjustwidth}
-%
-%  \newpage
 }
 
 %%
@@ -150,7 +118,7 @@
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	  \setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
-  	\iffirstassignment\firstassignmentfalse\else\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
+  	\iffirstassignment\firstassignmentfalse\else\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\bigskip\bigskip\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 
@@ -186,11 +154,6 @@
 	\par\bigskip{\textbf{Question~\thequestion}\ #1}\nopagebreak\par}
 % \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
 \newcommand{\@@question}[2][]{%
-	\if@markcheck%experimental system to check marks
-		\ifthenelse{\value{marktarget}=\value{marksum}}{\typeout{Q\thequestion, P\thepage, marks ok}}{\ClassError{outn}{Q\thequestion, P\thepage, mark mismatch}{Press enter to continue compilation}}
-		\setcounter{marktarget}{#2}		
-		\setcounter{marksum}{0}
-	\fi
 	\stepcounter{question}
 	\par\bigskip{\textbf{Question~\thequestion}\ #1} -- #2 marks\nopagebreak\par}
 
@@ -201,11 +164,11 @@
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
 %%%%%%
 %% Marks
-\renewcommand{\marks}[1]{%
-	\marginnote{\hfill[\textsl{#1}]}
-	\if@markcheck\addtocounter{marksum}{#1}\fi % experimental	
-}
-\let\mk\marks
+\newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
+\newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{3cm}}}
+\newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[2cm][r]{#1}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #2}}}}
+\def\marks{\bracketedmarks}
+\def\mk{\marks}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 
@@ -240,12 +203,6 @@
 \newenvironment{options}%
 	{\par\medskip\@optiontext\begin{enumerate}[label=\textbf{\Alph*}]}%
 	{\end{enumerate}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Experimental mark counter
-\if@markcheck
-	\newcounter{marksum} % rolling sum of submarks
-	\newcounter{marktarget} % stated total of marks
-\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
 %% Needed for marginnote package
@@ -318,11 +275,66 @@
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Solutions
-\newmdenv[linewidth=0pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,frametitle=Solution to \thequestion]{solutionbox}
+
+%\newmdenv[linewidth=0pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,frametitle=Solution to \thequestion]{solutionbox}
 %
-\newenvironment{solution}
- {\def\marks{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
- {\end{solutionbox}\end{adjustwidth}\def\marks{\bracketedmarks}}
+%\newenvironment{solution}
+% {\def\marks{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
+% {\end{solutionbox}\end{adjustwidth}\def\marks{\bracketedmarks}}
+\if@studenttex
+    \ExplSyntaxOn
+    \NewEnviron{solution}
+     {
+      \def\marks{\solnmarks}
+      \textbf{Solution}
+      \par
+      \strip_marks:V \BODY
+     }[\def\marks{\bracketedmarks}]
+     
+    \tl_new:N \l_solution_text_tl
+    \iow_new:N \g_solution_stream
+  
+    \cs_generate_variant:Nn \tl_replace_all:Nnn {NV}
+    \cs_generate_variant:Nn \iow_now:Nn { NV }
+    \str_const:Nx \c_other_eol_str { \cs_to_str:N \^^M }
+    
+    \cs_new_protected:Npn \strip_marks:n #1
+    {
+        \tl_set:Nn \l_solution_text_tl { #1 }
+        \l_solution_text_tl % Send token list to normal output unmodified 
+        %\tl_show_analysis:n { \l_solution_text_tl } % for debugging
+        % Remove all instances of \marks{} commands
+        \regex_replace_all:nnN { \c{marks}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
+        \regex_replace_all:nnN { \c{marks} \w } {  } \l_solution_text_tl
+        \regex_replace_all:nnN { \c{solnmarksplus}\cB\{ [^\}]* \cE\} \cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
+        \regex_replace_all:nnN { \c{solnmarksplus} ^[\}|\{] } {  } \l_solution_text_tl
+        \regex_replace_all:nnN { \c{mk}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
+        \regex_replace_all:nnN { \c{mk} \w } {  } \l_solution_text_tl
+        %\regex_replace_all:nnN { \r } { BLOB } \l_solution_text_tl
+        \iow_now:Nx \g_solution_stream {Solution~to~Question~\thequestion}
+        \iow_now:NV \g_solution_stream \l_solution_text_tl % Send modified token list to stream.
+    }
+    \cs_generate_variant:Nn \strip_marks:n { V }
+    
+    \AtBeginDocument{
+      \iow_open:Nn \g_solution_stream { \jobname-student.tex }
+      \def\solnpreamble{\documentclass{article}\usepackage{amsmath}\begin{document}}
+      \iow_now:Nn \g_solution_stream {\documentclass{article}\usepackage{amsmath}\begin{document}}
+    }
+    \AtEndDocument{
+      \iow_now:Nn \g_solution_stream{\end{document}}
+      \iow_close:N \g_solution_stream
+    }
+    \ExplSyntaxOff
+\else %matches \if@studenttex
+  \NewEnviron{solution}
+  {
+    \textbf{Solution}
+    \par
+    \BODY
+  }
+\fi
+
 %
 %
 %

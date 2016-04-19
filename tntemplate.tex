@@ -1,10 +1,9 @@
-\documentclass{outn}
+\documentclass[studenttex]{outn}
 % Options:
 %   oneassignment - mode that modifies table of contents for
 %                  ABs containing only one assignment.
-%   markcheck    - experimental version that checks whether part-marks
-%                  for a question add up to the stated marks for the
-%                  question.
+%   studenttex   - outputs to tex file plain LaTeX solutions for
+%                  distribution to ALs
 % e.g. use \documentclass[oneassignment]{ouab}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MODULE/DATE/TIME INFORMATION
@@ -15,13 +14,7 @@
 \tntitle{Title of TN}
 \tnyear{2015B}
 \copyrightyear{2012} % If different from \abyear
-\suppno{WEB 12345 6} %can be omitted for "DRAFT"
-\versionno{1.0} %optional
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% INSTRUCTIONS ON FIRST PAGE
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\tninstructions{Optional module-specific instructions for the front page.}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \maketitle
@@ -77,8 +70,20 @@
 \end{enumerate}
 \end{enumerate}
 \begin{solution}
+\begin{enumerate}
+\item One\marks{4}
+\item $\int_0^\infty x$ and \[a^2=b^2=c^2\marks{2}\] 
+Time to test marks: \marks{4M 1A} 
 
+\item Marks with comments. \solnmarksplus{40}{Method}
+
+hgjghjh gjh \marks 34
+\end{enumerate}
+also \mk 41
+
+and finally \mk{41}
 \end{solution}
+
 \question*
 \begin{solution}
 sdfsdf
