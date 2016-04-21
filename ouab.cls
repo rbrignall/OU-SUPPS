@@ -80,7 +80,7 @@
   \thispagestyle{frontpage}
   %\vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
-  \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
+  \begin{tabular}{@{}p{4cm}@{}p{\textwidth}@{}}
   \vspace{0.2cm}
   \includegraphics[width=3.5cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
 &
@@ -89,12 +89,12 @@
 
 \bigskip\bigskip\bigskip
 \textbf{\Huge \@modulecode}\newline
-\rule{12.5cm}{1pt}
+\rule{\textwidth}{1pt}
 
 \bigskip\bigskip\textbf{\Huge \@abtitle\hfill\@abyear}
 \if@subtitle\par\bigskip\textbf{\large \@absubtitle}\fi
 
-\medskip\rule{12.5cm}{1pt}
+\medskip\rule{\textwidth}{1pt}
 
 \if@oneassignment
 \medskip
@@ -107,12 +107,12 @@
 
 \nointerlineskip\vspace{12pt}
 \end{tabular}
-  \rule{17cm}{2pt}
+  \rule{\dimexpr\textwidth+4cm}{2pt}
 \par\medskip
-\begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
- &\raggedright
+\end{adjustwidth}
+%
+\begin{adjustwidth}{4cm}{-4cm} 
   \@abinstructions
- \end{tabular}
 \end{adjustwidth}
 %
   \newpage
@@ -207,7 +207,7 @@
 		\setcounter{marksum}{0}
 	\fi
 	\stepcounter{question}
-	\par\bigskip{\textbf{Question~\thequestion}\ #1} -- #2 marks\nopagebreak\par}
+	\par\bigskip{\textbf{Question~\thequestion}\ifthenelse{\equal{#1}{}}{\relax}{\ #1}} -- #2 marks\nopagebreak\par}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
