@@ -1,0 +1,352 @@
+% +--------------------------------------------------+
+% | Typeset this file to document the OU_SUPPS       |
+% +--------------------------------------------------+
+%
+% Copyright (c) 20015-2016 by Robert Brignall for The Open University.
+% All Rights Reserved.
+%
+% This file is part of the OU-SUPPS distribution.
+% ------------------------------------------------------------
+% 
+% It may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%   http://www.latex-project.org/lppl.txt
+% and version 1.3 or later is part of all distributions of LaTeX
+% version 2003/12/01 or later.
+% 
+
+\documentclass[a4paper]{ltxguide}
+
+\makeatletter
+\newenvironment{desc}
+  {\if@nobreak
+     \vskip-\lastskip
+     \vspace*{-2.5ex}%
+   \fi
+   \decl}
+  {\enddecl}
+\makeatother
+
+\newcommand\3{\unskip\enspace\fbox{\fontsize{4}{4}\selectfont NEW 3.0}}
+
+\usepackage{hyperref}
+
+%\usepackage{pslatex}
+
+\title{\textsf{OU-SUPPS}\\Class files for Open University teaching material}
+
+\author{Robert Brignall\footnote{For bug reports, comments and
+suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
+{\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
+
+\date{Version 1.0\\2016-04-22}
+
+\IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
+
+\addtolength{\topmargin}{-3pc}
+\addtolength{\textwidth}{6pc}
+\addtolength{\oddsidemargin}{-2pc}
+\addtolength{\textheight}{7pc}
+
+\raggedright
+
+\parindent 0pt
+\parskip 4pt
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The \textsf{OU-SUPPS} repository contains four class files:
+\begin{itemize}
+\item \texttt{ouab.cls} for Assignment Booklets and TMA booklets;
+\item \texttt{outn.cls} for Tutor Notes and specimen solutions (for distribution to students);
+\item \texttt{ouexam.cls} for exams, specimen exams, and solutions;
+\item \texttt{ouicma.cls} for print versions of iCMAs (e.g. for offender learners).
+\end{itemize}
+
+In addition, template \LaTeX\ files for each class file are available, illustrating most of the features available.
+
+\section{Installation}
+
+\textsf{OU-SUPPS} does not need installation. To use:
+
+\begin{enumerate}
+\item Download the contents of the \textsf{OU-SUPPS} repository from \href{https://github.com/rbrignall/OU-SUPPS}%
+{\texttt{https://github.com/rbrignall/OU-SUPPS}}.
+\item Save the contents in your working folder.
+\item Open the template tex file for the class you want to use with your \LaTeX\ editor, and compile it \emph{twice} (using either \texttt{latex} or \texttt{pdflatex}). 
+\item Your \LaTeX\ distribution may ask to install a few packages the first time you compile each of the template files.
+\item If it compiled successfully, then everything is working as expected.
+\end{enumerate}
+
+\paragraph{Important:} When writing a SUPP file using the new system, as a minimum you will need to have the following files in your working folder:
+\begin{itemize}
+\item The tex source for your document.
+\item The relevant class file (e.g.\ \texttt{ouab.cls} if you're creating an Assignment Booklet).
+\item The two OU logo files.
+\end{itemize}
+
+
+
+\section{Using \texttt{ouab.cls}}
+
+This section covers the features available in |ouab.cls|, for writing Assignment Booklets and TMA books. |ouab.cls| is based on the standard |article| class file, so any commands used there can be used in |ouab|.
+
+\subsection{Preamble}
+
+\subsubsection{Options}
+As well as the default version, there are two options available. These options do not affect the syntax you use for the rest of your file.
+
+\begin{desc}
+|\documentclass{ouab}|
+\end{desc}
+
+This is the default operation for using |ouab.cls|. It produces a table of contents on the front page, and is designed for Assignment Booklets containing more than one TMA/CMA.
+
+\begin{desc}
+|\documentclass[oneassignment]{ouab}|
+\end{desc}
+
+This version is designed for booklets that contain (e.g.) a single TMA (although it will let you have more than one assignment in the source). Instead of a table of contents on the front page, it inserts information provided by the first assignment in the |latex| file.
+
+\begin{desc}
+|\documentclass[markcheck]{ouab}|
+\end{desc}
+
+(EXPERIMENTAL) This version can be used to check  that the stated total marks for a question (i.e. the number $n$ in |\question[...]{|$n$|}[...]|) is equal to the number of marks produced by |\marks{...}| in the subquestions. If the numbers do not add up, it interrupts the compilation and reports this. Do not wholly rely on this, as it is an experimental feature!
+
+\begin{desc}
+|\documentclass[oneassignment,markcheck]{ouab}|
+\end{desc}
+
+As always, you can combine options and the effects of each option will be seen.
+
+
+
+\subsubsection{Commands to be used in the preamble}
+\begin{desc}
+|\faculty{...}|
+\end{desc}
+The name of the faculty (optional, default is `Mathematics, Computing and Technology')
+\begin{desc}
+|\modulecode{...}|
+\end{desc}
+Sets the code of the module (required).
+\begin{desc}
+|\moduletitle{...}|
+\end{desc}
+Sets the title (i.e./ name) of the module (required).
+
+\begin{desc}
+|\abtitle{...}|
+\end{desc}
+Sets the title for the Assignment Booklet (required).
+
+\begin{desc}
+|\absubtitle{...}|
+\end{desc}
+Subtitle for the Assignment Booklet (optional, default is blank).
+
+\begin{desc}
+|\abyear{...}|
+\end{desc}
+Sets the year/presentation for this AB (required).
+
+\begin{desc}
+|\copyrightyear{...}|
+\end{desc}
+Sets the date for copyright, used in the footer on the front page (optional, default is same as |\abyear|).
+
+
+\begin{desc}
+|\suppno{...}| %can be omitted for "DRAFT"
+\end{desc}
+Sets the SUPP number, mainly used by DPU/LTS (optional, default is `DRAFT').
+
+\begin{desc}
+|\versionno{...}| %optional
+\end{desc}
+Sets the version number, mainly used by DPU/LTS (optional, default is blank).
+
+\begin{desc}
+|\optiontext{...}|
+\end{desc}
+Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
+
+
+\begin{desc}
+|\abinstructions{...}|
+\end{desc}
+Command for the instructions/rubric on the front page of the booklet (optional, but defaults to `No special instructions specified.')
+
+
+\subsection{Creating assignments}
+Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type.
+
+\begin{desc}
+|\tma[<date>]{<number>}[<subtitle>]|
+\end{desc}
+Creates a TMA with number equal to |<number>|. The |<date>| and |<subtitle>| parts are both optional and can be omitted.
+
+|<date>| specifies the cut-off date for the TMA.
+
+|<subtitle>| specifies text for the `subtitle', which is only used in the description of the assignment on the front page.
+
+\begin{desc}
+|\cma[<date>]{<number>}[<subtitle>]|
+\end{desc}
+Creates a CMA, usage as per |\tma|.
+
+\begin{desc}
+|\assignment{<name>}[<date>]{<number>}[<subtitle>]|
+\end{desc}
+
+Creates an assignment type |<name>| (required), numbered with |<number>|. The |<date>| and |<subtitle>| parts are both optional and can be omitted. 
+
+It is worth noting that the |\tma| command is simply defined in |ouab.cls| using \\
+|\def\tma{\assignment{TMA}}|
+
+All assignment types add an entry  to the table of contents on the front page, and reset the |question| counter to 0. The behaviour of the table of contents depends on whether the |oneassignment| option has been specified or not.
+
+\subsection{Creating questions}
+The internal counter used for generating questions is |question|.  This gets reset at the start of each assignment.
+
+
+\subsubsection{Question syntax}
+
+\begin{desc}
+|\question[<description>]{<marks>}|
+\end{desc}
+Creates a new question, with the number of marks available specified by the command |<marks>|.
+
+The parameter |<description>| is optional, and can be used to provide additional information about the question in its header line. 
+
+
+\begin{desc}
+|\question*[<description>]|
+\end{desc}
+Starred variant of |\question| which does not require the number of marks to be specified. The parameter |<description>| is optional.
+
+
+\subsubsection{Subquestions}
+To create subquestions, use the standard \LaTeX\ |enumerate| environment.
+
+\begin{verbatim}
+\begin{enumerate}
+\item ...
+\item ...
+...
+\end{enumerate}
+\end{verbatim}
+
+These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
+
+The class file |ouab.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
+
+\begin{itemize}
+\item Changing the numbering: Start the environment using, e.g.\ |\begin{enumerate}[A.]|, to modify the numbering system to |A.,B.,...|.
+\item Resuming numbering after a break: use |\begin{enumerate}[resume]| to continue counting from the previous time an enumerate environment at this level was called.
+\end{itemize} 
+
+For fuller details of the possibilities with |enumitem|, see the documentation on its CTAN entry.
+
+\subsubsection{Marks}
+Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned.
+
+\begin{desc}
+|\marks{<n>}|
+\end{desc}
+Places |<n>| in square brackets in the right hand margin on the line. 
+
+\emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
+
+\begin{desc}
+|\mk{<n>}|
+\end{desc}
+A synonym for |\marks|, for those moving from OUTeX.
+
+If using the experimental |markcheck| option, when compiled, \LaTeX\ will check whether the sum of the entries inside |\marks| and |\mk| commands adds up to the parameter |<marks>| specified by the preceding |\question|. This has some limitations (e.g.\ it won't understand |\tfrac{1}{2}|).
+
+If the numbers are not the same, |markcheck| will cause the compilation to stop and give you information about where the marks do not add up. Press |<enter>| to carry on compiling your tex file.
+
+
+\subsubsection{Multiple choice} 
+
+For CMAs and other assignment types that have multiple choice questions, the following commands are available.
+
+The text appearing at the top of each list of options can be changed using the |\optiontext{<title>}| command. This command can be used in the premable, or at any point in the document.
+
+\begin{desc}
+|\begin{options}|\\
+|   \item ...|\\
+|   \item ...|\\
+|\end{options}|
+\end{desc}
+Creates a list of options, with the text of each |\item| starting on a new line. Options are labelled |A.,B.,C.,...|.
+
+\begin{desc}
+|\begin{inlineoptions}[<line spacing>]{<columns>}|\\
+|   \item ...|\\
+|   \item ...|\\
+|\end{inlineoptions}|
+\end{desc}
+Creates a list of options, displayed in |<columns>| number of columns, equally spaced. Each successive |\item| is placed sequentially from left to right, then starting a new line as necessary. Options are labelled |A.,B.,C.,...|.
+
+The optional parameter |<line spacing>| can be used to increase the spacing between each line. However, note that this also affect spacing within options, which can have undesired effect if your options include, e.g., a |matrix| environment.
+
+\begin{desc}
+|\noitem|
+\end{desc}
+This command can be used within  |inlineoptions| to leave a `blank' in the list of options. This is particularly useful on the final line if you have fewer |\item|s left than the specified number of |<columns>|.
+
+
+\subsection{Technical info}
+This section can be omitted unless you need/want to know a bit more about the class file.
+
+\subsubsection{Packages loaded}
+|ouab.cls| loads the following packages automatically, so you do not need to call |\usepackage{...}| to use the features provided by these.
+
+\begin{itemize}
+\item |geometry| to set page margins, sizes, etc
+\item |fancyhdr| for formatting headings
+\item |graphicx| for handling images, etc
+\item |changepage| to adjust page widths automatically
+\item |array| extends the |array| and |tabular| environments.
+\item |amsmath| loaded with the |fleqn| option to left-align displayed mathematics.
+\item |amssymb| extra mathematical symbols
+\item |lastpage| for knowing how many pages the document contains
+\item |ifthen| for internal latex coding
+\item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
+\item |marginnote| for handling marks, etc in the margin.
+\item |caption| with option |labelsep=quad| to improve formatting for figures.
+\end{itemize}
+
+\section{Using \texttt{outn.cls}}
+Not yet written!
+
+\section{Using \texttt{ouexam.cls}}
+Not yet written!
+
+\section{Using \texttt{ouicma.cls}}
+Not yet written!
+
+\section{Moving from OUTeX}
+
+Some features in OUTeX have not been carried over. Here is some help to help you adjust to standard \LaTeX.
+
+\begin{tabular}{p{0.3\textwidth}p{0.6\textwidth}}
+OUTeX& \LaTeX\\\hline
+|\intertext|&|\end{enumerate}...\begin{enumerate}[resume]|\\\hline
+|\|\texttt{\textless ...\&...}|\|\texttt{\textgreater}&|\begin{align*}...&...\end{align*}|\newline
+You can recover the OUTeX command by inserting the following into your preamble:\newline
+|\def\|\texttt{\textless}|#1\|\texttt{\textgreater}|{\begin{align*}#1\end{align*}}|\newline
+However, we do not recommend you use this, as it will not be understood by anyone not previously familiar with OUTeX (e.g. ALs).
+\\\hline
+Matrix alignment & Load the |mathtools| package, or use the |array| environment instead, with |\left(| and |right)| as appropriate.\\
+\end{tabular}
+
+\end{document}
