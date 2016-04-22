@@ -1,10 +1,12 @@
-\documentclass[studenttex]{outn}
+\documentclass{outn}
 % Options:
-%   oneassignment - mode that modifies table of contents for
+%   specsolns    - mode that produces output with marks, solnmarksplus,
+%                  and remarks suppressed.
 %                  ABs containing only one assignment.
-%   studenttex   - outputs to tex file plain LaTeX solutions for
-%                  distribution to ALs
-% e.g. use \documentclass[oneassignment]{ouab}
+%   studenttex   - outputs to tex file \jobname-student.tex the plain
+%                  LaTeX solutions for distribution to ALs with marks
+%                  remarks, etc removed. [EXPERIMENTAL]
+% e.g. use \documentclass[specsolns]{outn}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MODULE/DATE/TIME INFORMATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -56,10 +58,15 @@
 % \end{inlineoptions}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\remark{For making comments for tutors.}
+
+% The syntax for defining assignments and questions 
+% is identical to that used in the ouab class.
 \tma[12 November 2014]{01}[Covers units A and B]
 
 \question[(essay question)]{25}
-\emph{This question is about nothing in particular.}
+\remark{This question is about nothing in particular.} 
+
 \begin{enumerate}
 \item hello\marks 4
 \item goodbye running a long time until it goes over to a second line perhaps
@@ -69,26 +76,25 @@
 \item Sub sub question that runs a long time until it goes over to a second line\marks 2
 \end{enumerate}
 \end{enumerate}
-\begin{solution}
-\begin{enumerate}
-\item One\marks{4}
-\item $\int_0^\infty x$ and \[a^2=b^2=c^2\marks{2}\] 
-Time to test marks: \marks{4M 1A} 
-
-\item Marks with comments. \solnmarksplus{40}{Method}
-
-hgjghjh gjh \marks 34
-\end{enumerate}
-also \mk 41
-
-and finally \mk{41}
-\end{solution}
 
 \question*
+% Put your solution inside the solution environment
+% if you want to try using the studenttex option.
 \begin{solution}
-sdfsdf
+\begin{enumerate}
+\item First part of the solution, inside the solution environment. \marks{4}
+\item Some mathematics: $\int_0^\infty x$ and \[a^2=b^2=c^2\marks{2}\] 
+
+\remark{Award no marks for this part of the question.}
+
+\item Marks with marginal comments. \solnmarksplus{40}{Method. Ignore all attempts at this question.}
+
+Some more marks. \marks 3
+\end{enumerate}
 \end{solution}
+
 \question{25}
+\begin{solution}
 \emph{This question is about nothing in particular.}
 \begin{enumerate}
 \item Marks can also be called using \mk 4
@@ -103,7 +109,7 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
 \begin{enumerate}[resume]
 \item Numbering continues
 \end{enumerate}
-
+\end{solution}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \cma{41}[Covers Units C and D]

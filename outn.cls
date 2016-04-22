@@ -1,10 +1,15 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/04/18 v0.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/04/21 v0.3 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
 \DeclareOption{studenttex}{%
   \@studenttextrue
+}
+\newif\if@specsolns
+\@specsolnsfalse
+\DeclareOption{specsolns}{%
+  \@specsolnstrue
 }
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,13 +154,13 @@
 
 \def\question{\@ifstar\@question\@@question}
 % \@question is the version with star: it displays no marks
-\newcommand{\@question}[1][]{%
+\newcommand{\@question}[1][\unskip]{%
 	\stepcounter{question}
-	\par\bigskip{\textbf{Question~\thequestion}\ #1}\nopagebreak\par}
+	\par\bigskip{\textbf{Solution to Question~\thequestion} #1}\nopagebreak\par}
 % \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
-\newcommand{\@@question}[2][]{%
+\newcommand{\@@question}[2][\unskip]{%
 	\stepcounter{question}
-	\par\bigskip{\textbf{Question~\thequestion}\ #1} -- #2 marks\nopagebreak\par}
+	\par\bigskip{\textbf{Solution to Question~\thequestion} #1} -- #2 marks\nopagebreak\par}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
@@ -163,11 +168,21 @@
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
 %%%%%%
-%% Marks
-\newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
-\newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{3cm}}}
-\newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[2cm][r]{#1}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #2}}}}
-\def\marks{\bracketedmarks}
+%% Marks and remarks
+
+\if@specsolns
+  \newcommand{\bracketedmarks}[1]{\relax}
+  \newcommand{\solnmarks}[1]{\relax}
+  \newcommand{\solnmarksplus}[2]{\relax}
+  \newcommand{\remark}[1]{\relax}
+\else
+  \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
+  \newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{3cm}}}
+  \newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[2cm][r]{#1}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #2}}}}
+  \newcommand{\remark}[1]{\emph{Remark: #1}}
+\fi
+%
+\def\marks{\solnmarks}
 \def\mk{\marks}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
@@ -329,8 +344,6 @@
 \else %matches \if@studenttex
   \NewEnviron{solution}
   {
-    \textbf{Solution}
-    \par
     \BODY
   }
 \fi
