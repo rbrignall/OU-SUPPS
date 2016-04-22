@@ -197,18 +197,18 @@
 
 \def\question{\@ifstar\@question\@@question}
 % \@question is the version with star: it displays no marks
-\newcommand{\@question}[1][]{%
+\newcommand{\@question}[1][\unskip]{%
 	\stepcounter{question}
-	\par\bigskip{\textbf{Question~\thequestion}\ #1}\nopagebreak\par}
+	\par\bigskip{\textbf{Question~\thequestion} #1}\nopagebreak\par}
 % \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
-\newcommand{\@@question}[2][]{%
+\newcommand{\@@question}[2][\unskip]{%
 	\if@markcheck%experimental system to check marks
 		\ifthenelse{\value{marktarget}=\value{marksum}}{\typeout{Q\thequestion, P\thepage, marks ok}}{\ClassError{ouab}{Q\thequestion, P\thepage, mark mismatch}{Press enter to continue compilation}}
 		\setcounter{marktarget}{#2}		
 		\setcounter{marksum}{0}
 	\fi
 	\stepcounter{question}
-	\par\bigskip{\textbf{Question~\thequestion}\ifthenelse{\equal{#1}{}}{\relax}{\ #1}} -- #2 marks\nopagebreak\par}
+	\par\bigskip{\textbf{Question~\thequestion} #1} -- #2 marks\nopagebreak\par}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
