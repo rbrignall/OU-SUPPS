@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/04/21 v0.3 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/04/25 v0.4 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
@@ -16,7 +16,7 @@
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \LoadClass[fleqn,10pt,onecolumn,twoside,a4paper]{article}
-\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=5cm,marginparsep=-6ex,nohead,asymmetric]{geometry}%
+\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=5cm,marginparsep=0ex,nohead,asymmetric]{geometry}%
 \RequirePackage{fancyhdr}
 \RequirePackage{graphicx}
 \RequirePackage{changepage}
@@ -29,12 +29,15 @@
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
 %\RequirePackage[xcolor]{mdframed}
-\RequirePackage{xparse,environ}
+\RequirePackage{environ}
 \if@studenttex
   \RequirePackage{l3regex,l3tl-analysis,l3str}
   \RequirePackage{answers}
+  \RequirePackage{xparse}
 \fi
-
+\if@specsolns
+  \RequirePackage{verbatim}
+\fi
 
 
 %%
@@ -155,11 +158,11 @@
 \def\question{\@ifstar\@question\@@question}
 % \@question is the version with star: it displays no marks
 \newcommand{\@question}[1][\unskip]{%
-	\stepcounter{question}
+	\refstepcounter{question}
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1}\nopagebreak\par}
 % \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
 \newcommand{\@@question}[2][\unskip]{%
-	\stepcounter{question}
+	\refstepcounter{question}
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1} -- #2 marks\nopagebreak\par}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
@@ -175,15 +178,22 @@
   \newcommand{\solnmarks}[1]{\relax}
   \newcommand{\solnmarksplus}[2]{\relax}
   \newcommand{\remark}[1]{\relax}
+  \newcommand{\total}[1]{\relax}
+  \newcommand{\subtotal}[1]{\relax}
+  \newenvironment{longremark}{\comment}{\endcomment}
 \else
-  \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
-  \newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{3cm}}}
-  \newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[2cm][r]{#1}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #2}}}}
-  \newcommand{\remark}[1]{\emph{Remark: #1}}
+  \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{4cm}}}
+  \newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{4cm}}}
+  \newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[1cm][r]{#1}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #2}}}}
+  \newcommand{\remark}[1]{\emph{Remark:} #1}
+  \newcommand{\total}[2][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{#2}\ Total\ #1}}
+  \newcommand{\subtotal}[2][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}}
+  \newenvironment{longremark}{\emph{Remarks:}\par}{}
 \fi
 %
 \def\marks{\solnmarks}
-\def\mk{\marks}
+\def\mk{\solnmarks}
+\newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 
@@ -325,7 +335,7 @@
         \regex_replace_all:nnN { \c{solnmarksplus} ^[\}|\{] } {  } \l_solution_text_tl
         \regex_replace_all:nnN { \c{mk}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
         \regex_replace_all:nnN { \c{mk} \w } {  } \l_solution_text_tl
-        %\regex_replace_all:nnN { \r } { BLOB } \l_solution_text_tl
+        \regex_replace_all:nnN { \c{remark}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
         \iow_now:Nx \g_solution_stream {Solution~to~Question~\thequestion}
         \iow_now:NV \g_solution_stream \l_solution_text_tl % Send modified token list to stream.
     }

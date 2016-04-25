@@ -58,14 +58,13 @@
 % \end{inlineoptions}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\remark{For making comments for tutors.}
 
 % The syntax for defining assignments and questions 
 % is identical to that used in the ouab class.
 \tma[12 November 2014]{01}[Covers units A and B]
 
-\question[(essay question)]{25}
-\remark{This question is about nothing in particular.} 
+\question[(essay question)]{25}\label{myqnnum}
+\remark{For making short comments for tutors.}
 
 \begin{enumerate}
 \item hello\marks 4
@@ -73,11 +72,18 @@
 \item 
 \begin{enumerate}
 \item Sub sub\marks 2
-\item Sub sub question that runs a long time until it goes over to a second line\marks 2
+\item Sub sub\marks 2
 \end{enumerate}
+\subtotal{4}
 \end{enumerate}
+\textref{Unit A, pages 1--2} % Reference to course material
+\total[for Question \ref{myqnnum}]{5} % Total marks for a question
 
-\question*
+\begin{longremark}
+You can place longer remarks inside the longremark environment.
+\end{longremark}
+
+\question*\label{myqnnum-a}
 % Put your solution inside the solution environment
 % if you want to try using the studenttex option.
 \begin{solution}
@@ -89,16 +95,19 @@
 
 \item Marks with marginal comments. \solnmarksplus{40}{Method. Ignore all attempts at this question.}
 
-Some more marks. \marks 3
+\item The final part.\marks{3}
+
+\subtotal[for part (a)]{1}
 \end{enumerate}
+\textref{Unit B, Theorem 1.1}\total[for Question \ref{myqnnum-a}]{5}
 \end{solution}
 
 \question{25}
 \begin{solution}
-\emph{This question is about nothing in particular.}
+
 \begin{enumerate}
 \item Marks can also be called using \mk 4
-\item goodbye running a long time until it goes over to a second line perhaps
+\item Separate marks for accuracy and method.\mk{1A 2M}
 \item 
 \begin{enumerate}
 \item Sub sub\mk 2
@@ -110,12 +119,13 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
 \item Numbering continues
 \end{enumerate}
 \end{solution}
+\total{3}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \cma{41}[Covers Units C and D]
 
 \question[(inline multi-choice)]{25}
-Choose an inline option.
+\remark{Inline options work in the Tutornote class file in exactly the same way as in the assignment booklet.}
 
 \begin{inlineoptions}{5} %parameter specifies number of columns
 \item yes
@@ -141,18 +151,6 @@ Choose an inline option from four columns.
 \item never!
 \item yes
 \item yes
-\item yes
-\end{inlineoptions}
-
-\question[(inline multi-choice)]{25}
-Choose an inline option from three columns.
-
-\begin{inlineoptions}{3} %parameter specifies number of columns
-\item yes
-\item no
-\item maybe
-\item well...
-\item never!
 \item yes
 \end{inlineoptions}
 
