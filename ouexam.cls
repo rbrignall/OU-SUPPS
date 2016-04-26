@@ -374,13 +374,23 @@
 %
 % NOTICE at end of exam paper
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \putendtext command allows hook to be placed
+% before enddochook (e.g. to insert blank pages at the end)
+\def\@endtext{[END OF QUESTION PAPER]}
+\newcommand\putendtext{%
+	{\par\bigskip\centering \bfseries%
+	\@endtext\par
+	}
+	\def\@endtext{\relax}
+}
+
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
 \par\bigskip\centering \bfseries%
 \if@solutions
 	 [END OF SOLUTIONS]
 \else
-	[END OF QUESTION PAPER]
+	\@endtext	
 \fi
 \@oldenddochook}
 %%
