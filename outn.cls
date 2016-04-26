@@ -193,6 +193,7 @@
 %
 \def\marks{\solnmarks}
 \def\mk{\solnmarks}
+\def\mkplus{\solnmarksplus}
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs

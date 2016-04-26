@@ -217,7 +217,7 @@
 %% Question headers
 \newcounter{question}
 \def\questiontext{Question}
-\newcommand{\@question}[1][]{\stepcounter{question}\par\bigskip{\bfseries \questiontext~\thequestion}\ #1\nopagebreak\par\nobreak\@afterheading}
+\newcommand{\@question}[1][]{\refstepcounter{question}\par\bigskip{\bfseries \questiontext~\thequestion}\ #1\nopagebreak\par\nobreak\@afterheading}
 \newcommand{\question}[1]{\@question #1}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
@@ -266,6 +266,8 @@
 \newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{3cm}}}
 \newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[2cm][r]{#1}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #2}}}}
 \def\marks{\bracketedmarks}
+\def\mk{\bracketedmarks}
+\def\mkplus{\solnmarksplus}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
 %% Needed for marginnote package
