@@ -33,6 +33,9 @@
 
 \usepackage{hyperref}
 
+\pagestyle{headings}
+\let\MakeUppercase=\relax
+
 %\usepackage{pslatex}
 
 \title{\textsf{OU-SUPPS}\\Class files for Open University teaching material}
@@ -41,7 +44,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 1.0\\2016-04-22}
+\date{Version 1.1\\2016-04-25}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -57,6 +60,8 @@ suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 \begin{document}
 
 \maketitle
+
+\tableofcontents
 
 \section{Introduction}
 
@@ -325,15 +330,310 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |caption| with option |labelsep=quad| to improve formatting for figures.
 \end{itemize}
 
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Using \texttt{outn.cls}}
 Not yet written!
 
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Using \texttt{ouexam.cls}}
-Not yet written!
 
+This section covers the features available in |ouexam.cls|, for writing exam papers, specimen (and second specimen) papers, and solutions to exams. 
+
+In theory, the same |latex| source file can be used to generate both an exam script and its model solutions, which might be helpful for drafting purposes. For the final version to be handed over, it is advised that you create two source files (one for the exam, one for its solutions).
+
+\subsection{Preamble}
+
+\subsubsection{Options}
+As well as the default version, there are three options available. These options do not affect the syntax you use for the rest of your file, except for some of the commands in the preamble (detailed later).
+
+\begin{desc}
+|\documentclass{ouexam}|
+\end{desc}
+
+This is the default operation for using |ouexam.cls| for setting exam papers. Any text in |solution| environments is ignored.
+
+\begin{desc}
+|\documentclass[specimen]{ouexam}|
+\end{desc}
+
+This version is designed for specimen exam papers. The formatting on the front page is changed, and certain commands (e.g.\ |\examtime|) are not required.
+
+\begin{desc}
+|\documentclass[secondspecimen]{ouexam}|
+\end{desc}
+
+Version for second specimen exam papers. Formatting on the front page and requirements are similar to the |specimen| option.
+
+
+\begin{desc}
+|\documentclass[showsolutions]{ouexam}|
+\end{desc}
+
+This version creates a solution booklet. Formatting on the front page is changed, and the contents of |solution| environments gets displayed.
+
+\begin{desc}
+|\documentclass[specimen,showsolutions]{ouexam}|
+\end{desc}
+
+The |showsolutions| option can be used alongside the |specimen| or |secondspecimen| options to provide model solutions for (second) specimen exams.
+
+
+
+
+\subsubsection{Commands to be used in the preamble}
+\begin{desc}
+|\modulecode{...}|
+\end{desc}
+Sets the code of the module (required).
+
+\begin{desc}
+|\conflation{...}|
+\end{desc}
+Sets the conflation code for the exam (required, except for |specimen| and |secondspecimen|).
+
+\begin{desc}
+|\moduletitle{...}|
+\end{desc}
+Sets the title (i.e./ name) of the module (required).
+
+\begin{desc}
+|\examcode{<code>}|
+\end{desc}
+Encodes |<code>| for the barcode on the front page (optional, default is blank).
+
+\begin{desc}
+|\examtime{<start> -- <finish>}|\\
+|\examday{<day>}|\\
+|\exammonth{<month>}|\\
+|\examyear{<year>}|
+\end{desc}
+
+Specifies the time, day, month and year of the exam (required, except for |specimen| and |secondspecimen|).
+
+\begin{desc}
+|\timeallowed{<n> hours}|
+\end{desc}
+Specifies the time allowed (required).
+
+\begin{desc}
+|\copyrightyear{...}|
+\end{desc}
+Sets the date for copyright, used in the footer on the front page (optional, default is same as |\examyear|).
+
+
+\begin{desc}
+|\suppno{...}| %can be omitted for "DRAFT"
+\end{desc}
+Sets the SUPP number for |specimen| and |secondspecimen| options, mainly used by DPU/LTS (optional, default is blank).
+
+\begin{desc}
+|\versionno{...}| %optional
+\end{desc}
+Sets the version number for |specimen| and |secondspecimen| options, mainly used by DPU/LTS (optional, default is blank).
+
+\begin{desc}
+|\optiontext{...}|
+\end{desc}
+Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
+
+
+\begin{desc}
+|\examinstructions{...}|
+\end{desc}
+Command for the instructions/rubric on the front page of the exam (optional, but defaults to `No special instructions specified.')
+
+\subsection{Creating questions}
+The internal counter used for generating questions is |question|. 
+
+\subsubsection{Question syntax}
+
+\begin{desc}
+|\question[<description>]|
+\end{desc}
+Creates a question. The parameter |<description>| is optional, and can be used to provide additional information about the question in its header line. 
+
+
+\subsubsection{Subquestions}
+To create subquestions, use the standard \LaTeX\ |enumerate| environment.
+
+\begin{verbatim}
+\begin{enumerate}
+\item ...
+\item ...
+...
+\end{enumerate}
+\end{verbatim}
+
+These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
+
+The class file |ouexam.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
+
+\begin{itemize}
+\item Changing the numbering: Start the environment using, e.g.\ |\begin{enumerate}[A.]|, to modify the numbering system to |A.,B.,...|.
+\item Resuming numbering after a break: use |\begin{enumerate}[resume]| to continue counting from the previous time an enumerate environment at this level was called.
+\end{itemize} 
+
+For fuller details of the possibilities with |enumitem|, see the documentation on its CTAN entry.
+
+\subsubsection{Marks}
+Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned.
+
+\begin{desc}
+|\marks{<n>}|
+\end{desc}
+Places |<n>| in square brackets in the right hand margin on the line. 
+
+\emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
+
+\begin{desc}
+|\mk{<n>}|
+\end{desc}
+A synonym for |\marks|, for those moving from OUTeX.
+
+
+\subsubsection{Multiple choice} 
+
+For exams that have multiple choice questions, the following commands are available. The syntax is the same as for |ouab.cls| and |ouicma.cls|.
+
+The text appearing at the top of each list of options can be changed using the |\optiontext{<title>}| command. This command can be used in the premable, or at any point in the document.
+
+\begin{desc}
+|\begin{options}|\\
+|   \item ...|\\
+|   \item ...|\\
+|\end{options}|
+\end{desc}
+Creates a list of options, with the text of each |\item| starting on a new line. Options are labelled |A.,B.,C.,...|.
+
+\begin{desc}
+|\begin{inlineoptions}[<line spacing>]{<columns>}|\\
+|   \item ...|\\
+|   \item ...|\\
+|\end{inlineoptions}|
+\end{desc}
+Creates a list of options, displayed in |<columns>| number of columns, equally spaced. Each successive |\item| is placed sequentially from left to right, then starting a new line as necessary. Options are labelled |A.,B.,C.,...|.
+
+The optional parameter |<line spacing>| can be used to increase the spacing between each line. However, note that this also affect spacing within options, which can have undesired effect if your options include, e.g., a |matrix| environment.
+
+\begin{desc}
+|\noitem|
+\end{desc}
+This command can be used within  |inlineoptions| to leave a `blank' in the list of options. This is particularly useful on the final line if you have fewer |\item|s left than the specified number of |<columns>|.
+
+
+\subsection{Creating solutions}
+
+\begin{desc}
+|\begin{solution}|\\
+|...|\\
+|\end{solution}|
+\end{desc}
+
+Enter the contents of solutions inside the |solution| environment. This is simply a wrapper environment, and can be used within an |enumerate| environment (i.e.\ solutions per subquestion/subsubquestion), and/or you can use |enumerate| environments inside the solution environment. 
+
+The text inside the |solution| environment is \emph{only} displayed when the |showsolutions| option is specified in the preamble. 
+
+When displayed, the text of the solutions is set to |\small|, and placed on a beige background with a thick black line on the left, to indicate the scope of the solution.
+
+\subsubsection{Specifying marks within the \texttt{solution} environment}
+
+
+\begin{desc}
+|\marks{<n>}|\\
+|\mk{<n>}|
+\end{desc}
+These two commands can be used to specify marks, as per the format for creating questions. Within the |solution| environment, however, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets.
+
+\begin{desc}
+|\solnmarksplus{<n>}{<comment>}|\\
+|\mkplus{<n>}{<comment>}|
+\end{desc}
+These two commands can be used to enter |<n>| marks in the right hand column (as per |\marks|), but additionally enters |<comment>| in the margin, to the right of |<n>|. 
+
+
+\subsection{Alternative method to create solutions}
+If you prefer not to have solutions appearing in-line with the questions, an alternative method is to place all solutions at the end.
+
+
+\begin{desc}
+|\solutions|
+\end{desc}
+
+This flag behaves similarly to the |\appendix| flag in standard \LaTeX\ files: here, |\solutions| marks the end of the exam paper, resets the |question| counter, and redefines the text in the |\question| command to `Solution to Question~|\thequestion|'. 
+
+Solutions can then be created using the |\question| command to create questions, and all other commands are available.
+
+
+\emph{Important note:} Contents after the |\solutions| flag will be displayed irrespective of whether the |showsolutions| option is specified in the preamble. However, you may want to specify |showsolutions| in order to adjust the formatting of the cover page.
+
+\subsection{Technical info}
+This section can be omitted unless you need/want to know a bit more about the class file.
+
+\subsubsection{Packages loaded}
+|ouexam.cls| loads the following packages automatically, so you do not need to call |\usepackage{...}| to use the features provided by these.
+
+\begin{itemize}
+\item |geometry| to set page margins, sizes, etc
+\item |fancyhdr| for formatting headings
+\item |graphicx| for handling images, etc
+\item |changepage| to adjust page widths automatically
+\item |array| extends the |array| and |tabular| environments.
+\item |amsmath| loaded with the |fleqn| option to left-align displayed mathematics.
+\item |amssymb| extra mathematical symbols
+\item |lastpage| for knowing how many pages the document contains
+\item |ifthen| for internal latex coding
+\item |enumitem|. This is a powerful tool that will help preparing subquestions (see later).
+\item |marginnote| for handling marks, etc in the margin.
+\item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions.
+\item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.
+\item |barcodes| for creating the barcode on the front page. 
+\end{itemize}
+
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Using \texttt{ouicma.cls}}
 Not yet written!
 
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Moving from OUTeX}
 
 Some features in OUTeX have not been carried over. Here is some help to help you adjust to standard \LaTeX.
