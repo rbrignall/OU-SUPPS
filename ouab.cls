@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/04/12 v0.92 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/04/27 v0.93 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -100,7 +100,7 @@
 \if@oneassignment
 \medskip
 \else
-\medskip\textbf{Contents\hfill Cut-off date}\par\medskip
+\medskip\textbf{Contents\hfill \@cutofftext}\par\medskip
 \fi
 %inserts list of TMA/CMA entries
 \@starttoc{tma}
@@ -155,10 +155,10 @@
 }
 
 \def\@assignmentwithcutoff[#1]#2{%
-	\def\@cutoff{Cut-off date #1}
-	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{Cut-off date}\ \ #1}\par
+	\def\@cutoff{\@cutofftext #1}
+	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}\ \ #1}\par
 	\if@oneassignment
-		\relax %\@ifnextchar[{\@oneassignmentsubtitle{#1}}{\addtocontents{tma}{\hfill  \textbf{Cut-off date #1}\par\medskip}}
+		\relax %\@ifnextchar[{\@oneassignmentsubtitle{#1}}{\addtocontents{tma}{\hfill  \textbf{\@cutofftext #1}\par\medskip}}
 	\else
 	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}
 	\fi
@@ -186,6 +186,10 @@
 		\addtocontents{tma}{\newline\protect\makebox[1cm][l]{}#1\par\medskip}
 	\fi
 }
+
+% Allows cut-off text to be suppressed
+\def\@cutofftext{Cut-off date}
+\def\nocutoffdate{\def\@cutofftext{\relax}}
 
 % Set up the two most common types of assignment
 % usage e.g. \tma[cut off]{number}[subtitle]
