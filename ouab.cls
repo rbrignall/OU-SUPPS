@@ -155,10 +155,10 @@
 }
 
 \def\@assignmentwithcutoff[#1]#2{%
-	\def\@cutoff{\@cutofftext #1}
+	\def\@cutoff{\@cutofftext\ #1}
 	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}\ \ #1}\par
 	\if@oneassignment
-		\relax %\@ifnextchar[{\@oneassignmentsubtitle{#1}}{\addtocontents{tma}{\hfill  \textbf{\@cutofftext #1}\par\medskip}}
+		\relax %\@ifnextchar[{\@oneassignmentsubtitle{#1}}{\addtocontents{tma}{\hfill  \textbf{\@cutofftext\ #1}\par\medskip}}
 	\else
 	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}
 	\fi
