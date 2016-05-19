@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/04/27 v0.93 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/05/19 v0.94 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -146,11 +146,20 @@
 % Usage syntax: \assignment{name}[cut off]{number}[subtitle]
 \newif\iffirstassignment
 \firstassignmenttrue
+
 \def\assignment#1{%
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	  \setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
   	\iffirstassignment\firstassignmentfalse\else\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
+	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
+}
+% Version that doesn't add a new page
+\def\samepageassignment#1{%
+	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
+	  \setcounter{question}{0}
+	% Draw a rule under end of previous assignment (if not first assignment)
+  	\iffirstassignment\firstassignmentfalse\else\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\par\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 
@@ -191,10 +200,16 @@
 \def\@cutofftext{Cut-off date}
 \def\nocutoffdate{\def\@cutofftext{\relax}}
 
-% Set up the two most common types of assignment
+% Set up the two most common types of assignment, and starred versions (which add no new page)
 % usage e.g. \tma[cut off]{number}[subtitle]
-\def\tma{\assignment{TMA}}
-\def\cma{\assignment{CMA}}
+\def\tma{\@ifstar\@tma\@@tma}
+\def\@tma{\samepageassignment{TMA}}
+\def\@@tma{\assignment{TMA}}
+% And for CMAs
+\def\cma{\@ifstar\@cma\@@cma}
+\def\@cma{\samepageassignment{CMA}}
+\def\@@cma{\assignment{CMA}}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question headers
 \newcounter{question}
@@ -217,6 +232,7 @@
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
 \setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
+\setlist[itemize]{align=left,leftmargin=10mm,labelsep*=0pt}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
 %%%%%%

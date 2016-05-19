@@ -36,6 +36,9 @@ Module-specific instructions for the front page.
 % \tma[cut off date]{number}[second line in contents]
 % \cma[cut off date]{number}[second line in contents]
 %
+% Also available: \tma* and \cma* (same syntax}, which does
+% not insert \newpage before the assignment begins.
+%
 % Items in square brackets are optional
 %
 % Generic command also available:
@@ -193,11 +196,12 @@ Another starred question, this time with no optional argument.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Other ways to create assessments with/without optional parameters, 
 % to show how they render on the page.
+% Starred versions do not insert a new page before starting the assignment
 
 % Assignment with no cutoff or subtitle
-\tma{02}
+\tma*{02}
 
 % Assignment with cutoff but no subtitle
-\cma[an hour ago]{42}
+\cma*[an hour ago]{42}
 \end{document}
 
