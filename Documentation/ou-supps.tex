@@ -198,27 +198,27 @@ Command for the instructions/rubric on the front page of the booklet (optional, 
 Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type.
 
 \begin{desc}
-|\tma[<date>]{<number>}[<subtitle>]|
+|\tma[<date>]{<number>}[<subtitle>]|\\
+|\tma*[<date>]{<number>}[<subtitle>]|
 \end{desc}
-Creates a TMA with number equal to |<number>|. The |<date>| and |<subtitle>| parts are both optional and can be omitted.
+Creates a TMA with number equal to |<number>|. The |<date>| and |<subtitle>| parts are both optional and can be omitted. The starred version suppresses the |\newpage| command, so does not insert a new page before the assignment.
 
 |<date>| specifies the cut-off date for the TMA.
 
 |<subtitle>| specifies text for the `subtitle', which is only used in the description of the assignment on the front page.
 
 \begin{desc}
-|\cma[<date>]{<number>}[<subtitle>]|
+|\cma[<date>]{<number>}[<subtitle>]|\\
+|\cma*[<date>]{<number>}[<subtitle>]|
 \end{desc}
-Creates a CMA, usage as per |\tma|.
+Creates a CMA, usage as per |\tma|. The starred version suppresses the |\newpage| command, so does not insert a new page before the assignment.
 
 \begin{desc}
-|\assignment{<name>}[<date>]{<number>}[<subtitle>]|
+|\assignment{<name>}[<date>]{<number>}[<subtitle>]|\\
+|\samepageassignment{<name>}[<date>]{<number>}[<subtitle>]|
 \end{desc}
 
-Creates an assignment type |<name>| (required), numbered with |<number>|. The |<date>| and |<subtitle>| parts are both optional and can be omitted. 
-
-It is worth noting that the |\tma| command is simply defined in |ouab.cls| using \\
-|\def\tma{\assignment{TMA}}|
+Creates an assignment type |<name>| (required), numbered with |<number>|. The |<date>| and |<subtitle>| parts are both optional and can be omitted. The |\samepageassignment| variant creates an assignment without inserting a new page, whereas |\assignment| inserts a new page.
 
 All assignment types add an entry  to the table of contents on the front page, and reset the |question| counter to 0. The behaviour of the table of contents depends on whether the |oneassignment| option has been specified or not.
 
