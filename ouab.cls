@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/05/19 v0.94 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/05/25 v0.95 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -74,7 +74,7 @@
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{2pt}%
-    \fancyfoot[L]{\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
+    \fancyfoot[L]{\large\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
 \textbf{\@versionno} }%
 }
 \renewcommand{\maketitle}{
@@ -100,7 +100,7 @@
 \if@oneassignment
 \medskip
 \else
-\medskip\textbf{Contents\hfill \@cutofftext}\par\medskip
+\medskip{\large\textbf{Contents\hfill \@cutofftext}}\par\medskip
 \fi
 %inserts list of TMA/CMA entries
 \@starttoc{tma}
