@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/05/25 v0.95 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/05/26 v0.951 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -104,10 +104,9 @@
 \fi
 %inserts list of TMA/CMA entries
 \@starttoc{tma}
-
-
-\nointerlineskip\vspace{12pt}
+\nointerlineskip
 \end{tabular}
+\par\medskip
   \rule{\dimexpr\textwidth+4cm}{2pt}
 \par\medskip
 \end{adjustwidth}
@@ -137,9 +136,9 @@
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
 \raggedbottom                
-\setlength{\mathindent}{40pt}\relax
+\setlength{\mathindent}{20pt}\relax
 \parindent 0pt
-\parskip 4pt
+\parskip 6pt
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TMA/CMA initiators
