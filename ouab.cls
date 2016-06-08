@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/05/26 v0.951 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/06/08 v0.952 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -100,7 +100,7 @@
 \if@oneassignment
 \medskip
 \else
-\medskip{\large\textbf{Contents\hfill \@cutofftext}}\par\medskip
+\medskip{\large\textbf{Contents\hfill \@covercutofftext}}\par\medskip
 \fi
 %inserts list of TMA/CMA entries
 \@starttoc{tma}
@@ -197,7 +197,8 @@
 
 % Allows cut-off text to be suppressed
 \def\@cutofftext{Cut-off date}
-\def\nocutoffdate{\def\@cutofftext{\relax}}
+\def\@covercutofftext{Cut-off date}
+\def\nocutoffdate{\def\@cutofftext{See module website for the cut-off date.}\def\@covercutofftext{\relax}}
 
 % Set up the two most common types of assignment, and starred versions (which add no new page)
 % usage e.g. \tma[cut off]{number}[subtitle]
