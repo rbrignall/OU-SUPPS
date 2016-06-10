@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/06/08 v0.952 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/06/10 v0.96 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -136,9 +136,14 @@
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
 \raggedbottom                
-\setlength{\mathindent}{20pt}\relax
 \parindent 0pt
 \parskip 6pt
+\setlength{\mathindent}{20pt}\relax
+\g@addto@macro{\normalsize}{%
+	\setlength\abovedisplayskip{8pt plus 1 pt minus 1pt}%
+	\setlength\belowdisplayskip{8pt plus 1pt minus 1pt}%
+
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TMA/CMA initiators
@@ -150,7 +155,7 @@
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	  \setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
-  	\iffirstassignment\firstassignmentfalse\else\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
+  	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 % Version that doesn't add a new page
@@ -158,13 +163,13 @@
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	  \setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
-  	\iffirstassignment\firstassignmentfalse\else\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\par\fi
+  	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\par\bigskip\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 
 \def\@assignmentwithcutoff[#1]#2{%
 	\def\@cutoff{\@cutofftext\ #1}
-	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}\ \ #1}\par
+	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}#1}
 	\if@oneassignment
 		\relax %\@ifnextchar[{\@oneassignmentsubtitle{#1}}{\addtocontents{tma}{\hfill  \textbf{\@cutofftext\ #1}\par\medskip}}
 	\else
@@ -173,18 +178,19 @@
 	\@ifnextchar[{\@assignmentsubtitle}{
 		\if@oneassignment\addtocontents{tma}{\hfill\textbf{\@cutoff}}
 		\else\addtocontents{tma}{\par\medskip}\fi
+		\par\addvspace{\bigskipamount}
 	}
 }
 
 \def\@assignmentnocutoff#1{%
 	\def\@cutoff{\relax}
-	{\large \textbf{\@assignmentname\ #1}}\par
+	{\large \textbf{\@assignmentname\ #1}}%
 	\if@oneassignment
 		\relax 
 	\else
 	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #1}
 	\fi
-	\@ifnextchar[{\@assignmentsubtitle}{\addtocontents{tma}{\par\medskip}}
+	\@ifnextchar[{\@assignmentsubtitle}{\addtocontents{tma}{\par\medskip}\par\addvspace{\bigskipamount}}
 }
 
 \def\@assignmentsubtitle[#1]{%
@@ -193,10 +199,11 @@
 	\else
 		\addtocontents{tma}{\newline\protect\makebox[1cm][l]{}#1\par\medskip}
 	\fi
+	\par\addvspace{\bigskipamount}
 }
 
 % Allows cut-off text to be suppressed
-\def\@cutofftext{Cut-off date}
+\def\@cutofftext{Cut-off date\ \ }
 \def\@covercutofftext{Cut-off date}
 \def\nocutoffdate{\def\@cutofftext{See module website for the cut-off date.}\def\@covercutofftext{\relax}}
 
@@ -215,19 +222,23 @@
 \newcounter{question}
 
 \def\question{\@ifstar\@question\@@question}
-% \@question is the version with star: it displays no marks
+%
+%% \@question is the version with star: it displays no marks
 \newcommand{\@question}[1][\unskip]{%
-	\stepcounter{question}
-	\par\bigskip{\textbf{Question~\thequestion} #1}\nopagebreak\par}
-% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
+	\stepcounter{question}%
+	\par\addvspace{\bigskipamount}%
+	{\textbf{Question~\thequestion} #1}\nopagebreak\par}
+%
+%% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
 \newcommand{\@@question}[2][\unskip]{%
 	\if@markcheck%experimental system to check marks
 		\ifthenelse{\value{marktarget}=\value{marksum}}{\typeout{Q\thequestion, P\thepage, marks ok}}{\ClassError{ouab}{Q\thequestion, P\thepage, mark mismatch}{Press enter to continue compilation}}
 		\setcounter{marktarget}{#2}		
 		\setcounter{marksum}{0}
 	\fi
-	\stepcounter{question}
-	\par\bigskip{\textbf{Question~\thequestion} #1} -- #2 marks\nopagebreak\par}
+	\stepcounter{question}%
+	\par\addvspace{\bigskipamount}% 
+	{\textbf{Question~\thequestion} #1}\hspace{12pt}--\hspace{12pt}#2 marks\nopagebreak\par}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
@@ -357,7 +368,7 @@
 % Line at end of AB
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
-\par\bigskip \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}
+\par\addvspace{\smallskipamount} \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}
 \@oldenddochook}
 
 %%
