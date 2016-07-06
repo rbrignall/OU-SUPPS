@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/06/10 v0.96 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/07/06 v0.961 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -142,7 +142,6 @@
 \g@addto@macro{\normalsize}{%
 	\setlength\abovedisplayskip{8pt plus 1 pt minus 1pt}%
 	\setlength\belowdisplayskip{8pt plus 1pt minus 1pt}%
-
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -368,8 +367,7 @@
 % Line at end of AB
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
-\par\addvspace{\smallskipamount} \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}
+\par\addvspace{\smallskipamount} \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}%
 \@oldenddochook}
-
 %%
 %% EOF
