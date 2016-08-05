@@ -44,7 +44,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 1.1\\2016-04-25}
+\date{Version 1.2\\2016-08-05}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -402,8 +402,11 @@ This version creates a solution booklet. Formatting on the front page is changed
 
 The |showsolutions| option can be used alongside the |specimen| or |secondspecimen| options to provide model solutions for (second) specimen exams.
 
+\begin{desc}
+|\documentclass[14pt]{ouexam}|
+\end{desc}
 
-
+This provides a large-print version for visually impaired students. Also available are |17pt| and |20pt|, and these all work with other options. These options should only be used in response to specific requests made by students, and should not be used to produce the standard exam.
 
 \subsubsection{Commands to be used in the preamble}
 \begin{desc}
@@ -412,9 +415,9 @@ The |showsolutions| option can be used alongside the |specimen| or |secondspecim
 Sets the code of the module (required).
 
 \begin{desc}
-|\conflation{...}|
+|\session{...}|
 \end{desc}
-Sets the conflation code for the exam (required, except for |specimen| and |secondspecimen|).
+Sets the session code for the exam (required, except for |specimen| and |secondspecimen|). This replaces the deprecated |\conflation{...}| command (although this still works to ensure backwards compatibility).
 
 \begin{desc}
 |\moduletitle{...}|
