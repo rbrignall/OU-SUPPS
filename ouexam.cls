@@ -1,7 +1,8 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2015/12/10 v1.0 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2016/08/05 v1.1 (Robert Brignall, all rights reserved)]
+
 %% Handles options 
 \newif\if@specimen
 \@specimenfalse
@@ -18,11 +19,28 @@
 \DeclareOption{showsolutions}{%
  \@showsolutionstrue
 }
+\newif\if@bigfontneeded
+\@bigfontneededfalse
+\DeclareOption{14pt}{%
+ \@bigfontneededtrue
+ \def\@txtsize{14pt}
+}
+\DeclareOption{17pt}{%
+ \@bigfontneededtrue
+ \def\@txtsize{17pt}
+}
+\DeclareOption{20pt}{%
+ \@bigfontneededtrue
+ \def\@txtsize{20pt}
+}
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \LoadClass[fleqn,12pt,onecolumn,twoside,a4paper]{article}
+\if@bigfontneeded
+	\RequirePackage[\@txtsize]{extsizes}
+\fi
 \RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=5cm,nohead,asymmetric]{geometry}%
 \RequirePackage{fancyhdr}
 \RequirePackage{graphicx}
@@ -38,6 +56,7 @@
 \RequirePackage[xcolor]{mdframed}
 \RequirePackage{verbatim}
 \RequirePackage{barcodes}
+
 %%
 
 
@@ -84,17 +103,18 @@
 \def\@examinstructions{No special instructions specified.}
 \newcommand\examinstructions[1]{\renewcommand\@examinstructions{#1}}
 
-\def\@conflation{C}
+\def\@session{C}
 \if@specimen
-	\def\@conflation{Specimen}
+	\def\@session{Specimen}
 \else
 	\if@secondspecimen
-		\def\@conflation{Second Specimen}
+		\def\@session{Second Specimen}
 	\fi
 \fi
 
 
-\newcommand\conflation[1]{\renewcommand\@conflation{#1}}
+\newcommand\conflation[1]{\renewcommand\@session{#1}} % backwards compatibility
+\newcommand\session[1]{\renewcommand\@session{#1}}
 \def\@suppno{\relax} % default
 \newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
 \def\@versionno{\relax} % default blank
@@ -136,6 +156,7 @@
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+
 % Footers for title page (copyright, etc)
 \fancypagestyle{frontpage}{%
   \fancyhf{} % clear all header and footer fields
@@ -150,11 +171,38 @@
   \thispagestyle{frontpage}
   \vspace*{1cm}
 \begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
+\if@bigfontneeded
+  \fontsize{14.4}{18}\selectfont % equivalent to \large in 12pt for most of the title page
   \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
   \vspace{1.5cm}
   \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
 &
-\vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@conflation}} \hfill\ \setbarcode}\\ 
+  \vspace{1.5cm}{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
+&
+\raggedright\bfseries Module Examination \@examyear \newline
+
+\vspace*{-10pt}
+\@moduletitle\newline
+
+\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
+\rule{\titletablewidth}{1pt}
+
+\nointerlineskip\vspace{12pt}
+{\if@showsolutions
+{\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill}
+\else
+{\hfill Time allowed:\ \@timeallowed\hfill}
+\fi}
+
+\nointerlineskip\vspace{12pt}
+\rule{\titletablewidth}{1pt}
+\end{tabular}
+\else % @bigfontneeded is false
+  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
+  \vspace{1.5cm}
+  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+&
+  \vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
 &
 \raggedright\bfseries Module Examination \@examyear \newline
 
@@ -174,6 +222,8 @@
 \nointerlineskip\vspace{12pt}
 \rule{\titletablewidth}{1pt}
 \end{tabular}
+
+\fi
 \end{adjustwidth}
 \vspace{30pt}
 
@@ -197,9 +247,13 @@
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{\dimexpr\marginparsep+2cm} % lines up number with marks column
     %\fancyhead[RE, RO]{\textbf\thepage}%
-    \fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
+   \fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
     \fancyfoot[LE,RO]{\bfseries\thepage}
+\if@bigfontneeded
+    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+\else
     \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+\fi
 }
 \pagestyle{internalpages}
 
