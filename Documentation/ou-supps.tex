@@ -136,7 +136,7 @@ As always, you can combine options and the effects of each option will be seen.
 \begin{desc}
 |\faculty{...}|
 \end{desc}
-The name of the faculty (optional, default is `Mathematics, Computing and Technology')
+The name of the faculty (optional, default is `Faculty of Science, Technology, Engineering and Mathematics')
 \begin{desc}
 |\modulecode{...}|
 \end{desc}
@@ -397,10 +397,11 @@ Version for second specimen exam papers. Formatting on the front page and requir
 This version creates a solution booklet. Formatting on the front page is changed, and the contents of |solution| environments gets displayed.
 
 \begin{desc}
+|\documentclass[specimensolutions]{ouexam}|\\
 |\documentclass[specimen,showsolutions]{ouexam}|
 \end{desc}
 
-The |showsolutions| option can be used alongside the |specimen| or |secondspecimen| options to provide model solutions for (second) specimen exams.
+The |showsolutions| option can be used alongside the |specimen| option to provide model solutions for specimen exams formatted in a style expected by LTS. The major changes in this mode are the formatting of teh title, footer information, and text within the |solutions| environment will be displayed without additional formatting. The |specimensolutions| option is an alias for |specimen,showsolutions|.
 
 \begin{desc}
 |\documentclass[14pt]{ouexam}|
@@ -458,6 +459,11 @@ Sets the SUPP number for |specimen| and |secondspecimen| options, mainly used by
 |\versionno{...}| %optional
 \end{desc}
 Sets the version number for |specimen| and |secondspecimen| options, mainly used by DPU/LTS (optional, default is blank).
+
+\begin{desc}
+|\faculty{...}| %optional
+\end{desc}
+Sets the name for the faculty (appears in |specimensolutions| mode only). The default is `Faculty of Science, Technology, Engineering and mathematics'.
 
 \begin{desc}
 |\optiontext{...}|
@@ -559,9 +565,15 @@ This command can be used within  |inlineoptions| to leave a `blank' in the list 
 
 Enter the contents of solutions inside the |solution| environment. This is simply a wrapper environment, and can be used within an |enumerate| environment (i.e.\ solutions per subquestion/subsubquestion), and/or you can use |enumerate| environments inside the solution environment. 
 
-The text inside the |solution| environment is \emph{only} displayed when the |showsolutions| option is specified in the preamble. 
+The text inside the |solution| environment is \emph{only} displayed when one of the |showsolutions| or the |specimensolutions| options is specified in the preamble. 
 
-When displayed, the text of the solutions is set to |\small|, and placed on a beige background with a thick black line on the left, to indicate the scope of the solution.
+When displayed, the solutions can be formatted in one of two ways:
+\begin{description}
+\item[{|[specimensolutions]| or |[specimen,showsolutions]|:}] The text is displayed without further formatting.
+\item[{|[showsolutions]|:}] The text of the solutions is set to |\small|, and placed on a beige background with a thick black line on the left, to indicate the scope of the solution.
+\end{description}
+
+\emph{Note:} The showing/hiding solutions features of |ouexam| are designed for use by authors when drafting exams, to help you check answers tally up to the corresponding questions. When creating the final version for handover, you will probably want to make two copies of your working file, one to create the exam (with solutions removed), the other to create the solutions (possibly with the questions removed, though this is option except for specimen solutions).
 
 \subsubsection{Specifying marks within the \texttt{solution} environment}
 
@@ -570,7 +582,7 @@ When displayed, the text of the solutions is set to |\small|, and placed on a be
 |\marks{<n>}|\\
 |\mk{<n>}|
 \end{desc}
-These two commands can be used to specify marks, as per the format for creating questions. Within the |solution| environment, however, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets.
+These two commands can be used to specify marks, as per the format for creating questions. Within the |solution| environment in |[showsolutions]| mode, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets. 
 
 \begin{desc}
 |\solnmarksplus{<n>}{<comment>}|\\
@@ -580,7 +592,7 @@ These two commands can be used to enter |<n>| marks in the right hand column (as
 
 
 \subsection{Alternative method to create solutions}
-If you prefer not to have solutions appearing in-line with the questions, an alternative method is to place all solutions at the end.
+If you prefer not to have solutions appearing in-line with the questions, an alternative method is to place all solutions at the end. You should not use this method for creating specimen solutions.
 
 
 \begin{desc}
@@ -615,6 +627,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions.
 \item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.
 \item |barcodes| for creating the barcode on the front page. 
+\item |extsizes| when options |14pt|, |17pt| or |20pt| are used, to handle larger font sizes. 
 \end{itemize}
 
 %
@@ -654,7 +667,9 @@ You can recover the OUTeX command by inserting the following into your preamble:
 |\def\|\texttt{\textless}|#1\|\texttt{\textgreater}|{\begin{align*}#1\end{align*}}|\newline
 However, we do not recommend you use this, as it will not be understood by anyone not previously familiar with OUTeX (e.g. ALs).
 \\\hline
-Matrix alignment & Load the |mathtools| package, or use the |array| environment instead, with |\left(| and |right)| as appropriate.\\
+Matrix alignment & Load the |mathtools| package, or use the |array| environment instead, with |\left(| and |right)| as appropriate.
+\\\hline
+Figures & Use the standard LaTeX figure environment. If embedding |eps| files, you will need to compile using latex, dvips and ps2pdf, rather than pdflatex.
 \end{tabular}
 
 \end{document}
