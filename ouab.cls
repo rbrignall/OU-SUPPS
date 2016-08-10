@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/07/06 v0.961 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2016/08/10 v0.962 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -34,7 +34,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\@faculty{Mathematics, Computing and Technology}
+\def\@faculty{Faculty of Science, Technology, Engineering and Mathematics}
 \newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
 %
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
