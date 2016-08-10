@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2016/08/05 v1.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2016/08/10 v1.2 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -15,8 +15,17 @@
   \@secondspecimentrue
 }
 \newif\if@showsolutions
+\newif\if@specimensolutions
 \@showsolutionsfalse
+\@specimensolutionsfalse
 \DeclareOption{showsolutions}{%
+ \@showsolutionstrue
+ \if@specimen
+   \@specimensolutionstrue
+  \fi
+}
+\DeclareOption{specimensolutions}{%
+ \@specimensolutionstrue
  \@showsolutionstrue
 }
 \newif\if@bigfontneeded
@@ -120,7 +129,8 @@
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 
-
+\def\@faculty{Faculty of Science, Technology, Engineering and Mathematics} % only used in specimensolutions
+\newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -170,68 +180,100 @@
 \renewcommand{\maketitle}{
   \thispagestyle{frontpage}
   \vspace*{1cm}
-\begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
-\if@bigfontneeded
-  \fontsize{14.4}{18}\selectfont % equivalent to \large in 12pt for most of the title page
-  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-  \vspace{1.5cm}
-  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
-&
-  \vspace{1.5cm}{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
-&
-\raggedright\bfseries Module Examination \@examyear \newline
-
-\vspace*{-10pt}
-\@moduletitle\newline
-
-\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
-\rule{\titletablewidth}{1pt}
-
-\nointerlineskip\vspace{12pt}
-{\if@showsolutions
-{\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill}
+\if@specimensolutions
+  \@makespecimensolutionstitle
 \else
-{\hfill Time allowed:\ \@timeallowed\hfill}
-\fi}
-
-\nointerlineskip\vspace{12pt}
-\rule{\titletablewidth}{1pt}
-\end{tabular}
-\else % @bigfontneeded is false
-  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-  \vspace{1.5cm}
-  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
-&
-  \vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
-&
-\raggedright\bfseries Module Examination \@examyear \newline
-
-\vspace*{-10pt}
-\@moduletitle\newline
-
-\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
-\rule{\titletablewidth}{1pt}
-
-\nointerlineskip\vspace{12pt}
-{\if@showsolutions
-{\hfill \textbf{\Large ***SOLUTIONS***}\hfill}
-\else
-{\hfill Time allowed:\ \@timeallowed\hfill}
-\fi}
-
-\nointerlineskip\vspace{12pt}
-\rule{\titletablewidth}{1pt}
-\end{tabular}
-
+  \@makestandardtitle
 \fi
-\end{adjustwidth}
-\vspace{30pt}
+}
 
-  \begin{adjustwidth}{2cm}{-2cm}
-  \raggedright
-  \@examinstructions
-  \end{adjustwidth}
-  \newpage
+
+\def\@makestandardtitle{%
+     \begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
+     \if@bigfontneeded
+	  \fontsize{14.4}{18}\selectfont % equivalent to \large in 12pt for most of the title page
+	  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
+	  \vspace{1.5cm}
+	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+	&
+	  \vspace{1.5cm}{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
+	&
+	\raggedright\bfseries Module Examination \@examyear \newline
+	
+	\vspace*{-10pt}
+	\@moduletitle\newline
+	
+	\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
+	\rule{\titletablewidth}{1pt}
+	
+	\nointerlineskip\vspace{12pt}
+	{\if@showsolutions
+	{\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill}
+	\else
+	{\hfill Time allowed:\ \@timeallowed\hfill}
+	\fi}
+	
+	\nointerlineskip\vspace{12pt}
+	\rule{\titletablewidth}{1pt}
+	\end{tabular}
+     \else % @bigfontneeded is false
+	  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
+	  \vspace{1.5cm}
+	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+	&
+	  \vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
+	&
+	\raggedright\bfseries Module Examination \@examyear \newline
+	
+	\vspace*{-10pt}
+	\@moduletitle\newline
+	
+	\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
+	\rule{\titletablewidth}{1pt}
+	
+	\nointerlineskip\vspace{12pt}
+	{\if@showsolutions
+	{\hfill \textbf{\Large ***SOLUTIONS***}\hfill}
+	\else
+	{\hfill Time allowed:\ \@timeallowed\hfill}
+	\fi}
+	
+	\nointerlineskip\vspace{12pt}
+	\rule{\titletablewidth}{1pt}
+	\end{tabular}
+    \fi
+	\end{adjustwidth}
+	\vspace{30pt}
+	
+	  \begin{adjustwidth}{2cm}{-2cm}
+	  \raggedright
+	  \@examinstructions
+	  \end{adjustwidth}
+	  \newpage
+}
+\def\@makespecimensolutionstitle{%
+	\begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
+	\if@bigfontneeded
+	  \begin{tabular}{@{}p{\titletablewidth}@{}p{4.5cm}@{}}
+	  \fontsize{14.4}{18}\selectfont\raggedright\textbf{\@faculty}\newline
+             \textbf{\@modulecode\ \@moduletitle}
+	&
+	  \vspace{-0.5cm}
+	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}\\
+	  \fontsize{24.88}{30}\selectfont \raggedright \textbf{\@modulecode\ Solutions to the Specimen Examination Paper}
+	  \end{tabular}
+	\else % @bigfontneeded is false
+	  \begin{tabular}{@{}p{\titletablewidth}@{}p{4.5cm}@{}}
+	  \raggedright\textbf{\@faculty}\newline
+             \textbf{\@modulecode\ \@moduletitle}
+	&
+	  \vspace{-0.5cm}
+	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}\\
+	  \LARGE\raggedright \textbf{\@modulecode\ Solutions to the Specimen Examination Paper}
+	  \end{tabular}
+	\fi
+	\end{adjustwidth}
+	\vspace{30pt}	
 }
 
 %%
@@ -246,14 +288,17 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{\dimexpr\marginparsep+2cm} % lines up number with marks column
-    %\fancyhead[RE, RO]{\textbf\thepage}%
-   \fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
-    \fancyfoot[LE,RO]{\bfseries\thepage}
-\if@bigfontneeded
-    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
-\else
-    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
-\fi
+  \fancyfoot[LE,RO]{\bfseries\thepage}
+  \if@specimensolutions %only show page numbers for specimen solutions
+	\relax
+  \else %not specimen solutions
+	\fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
+	\if@bigfontneeded %suppress module code on LO to avoid text clashes
+	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+	\else
+	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+	\fi
+  \fi
 }
 \pagestyle{internalpages}
 
@@ -420,7 +465,7 @@
 \@solutionstrue
 \setcounter{question}{0}
 \def\questiontext{Solution to Question}
-\par\bigskip\centering \textbf{[END OF QUESTION PAPER]}
+\par\bigskip\centering \textbf{\@endtext}
 \newpage
 \raggedright
 {\Huge\bfseries Solutions}\par
@@ -441,25 +486,33 @@
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
 \par\bigskip\centering \bfseries%
-\if@solutions
-	 [END OF SOLUTIONS]
+\if@specimensolutions
+	\relax
 \else
-	\@endtext	
+	\if@solutions
+		 [END OF SOLUTIONS]
+	\else
+		\@endtext	
+	\fi
 \fi
 \@oldenddochook}
 %%
 
 %%%%%%%%%%%%%%%%%%
-% EVERYTHING ABOVE HERE AS IN OUEXAM CLASS
+% Solutions environment: need to pull out solutions for spec papers and present differently.
 \newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
-\if@showsolutions
-  \newenvironment{solution}
-  {\def\marks{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
-  {\end{solutionbox}\end{adjustwidth}\def\marks{\bracketedmarks}}
+\if@specimensolutions
+  \newenvironment{solution}{}{}
 \else
-  \newenvironment{solution}
-  {\comment}
-  {\endcomment}
+  \if@showsolutions
+    \newenvironment{solution}
+    {\def\marks{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
+    {\end{solutionbox}\end{adjustwidth}\def\marks{\bracketedmarks}}
+  \else
+    \newenvironment{solution}
+    {\comment}
+    {\endcomment}
+  \fi
 \fi
 
 
