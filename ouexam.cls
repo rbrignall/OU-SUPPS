@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2016/08/10 v1.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2016/08/24 v1.21 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -46,7 +46,11 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\LoadClass[fleqn,12pt,onecolumn,twoside,a4paper]{article}
+\if@specimensolutions
+  \LoadClass[fleqn,11pt,onecolumn,twoside,a4paper]{article}
+\else
+  \LoadClass[fleqn,12pt,onecolumn,twoside,a4paper]{article}
+\fi
 \if@bigfontneeded
 	\RequirePackage[\@txtsize]{extsizes}
 \fi
@@ -191,56 +195,56 @@
 \def\@makestandardtitle{%
      \begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
      \if@bigfontneeded
-	  \fontsize{14.4}{18}\selectfont % equivalent to \large in 12pt for most of the title page
-	  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-	  \vspace{1.5cm}
-	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
-	&
-	  \vspace{1.5cm}{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
-	&
-	\raggedright\bfseries Module Examination \@examyear \newline
-	
-	\vspace*{-10pt}
-	\@moduletitle\newline
-	
-	\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
-	\rule{\titletablewidth}{1pt}
-	
-	\nointerlineskip\vspace{12pt}
-	{\if@showsolutions
-	{\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill}
-	\else
-	{\hfill Time allowed:\ \@timeallowed\hfill}
-	\fi}
-	
-	\nointerlineskip\vspace{12pt}
-	\rule{\titletablewidth}{1pt}
-	\end{tabular}
+    	  \fontsize{14.4}{18}\selectfont % equivalent to \large in 12pt for most of the title page
+    	  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
+    	  \vspace{1.5cm}
+    	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+    	&
+    	  \vspace{1.5cm}{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
+    	&
+    	\raggedright\bfseries Module Examination \@examyear \newline
+    	
+    	\vspace*{-10pt}
+    	\@moduletitle\newline
+    	
+    	\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
+    	\rule{\titletablewidth}{1pt}
+    	
+    	\nointerlineskip\vspace{12pt}
+    	{\if@showsolutions
+    	{\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill}
+    	\else
+    	{\hfill Time allowed:\ \@timeallowed\hfill}
+    	\fi}
+    	
+    	\nointerlineskip\vspace{12pt}
+    	\rule{\titletablewidth}{1pt}
+    	\end{tabular}
      \else % @bigfontneeded is false
-	  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-	  \vspace{1.5cm}
-	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
-	&
-	  \vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
-	&
-	\raggedright\bfseries Module Examination \@examyear \newline
-	
-	\vspace*{-10pt}
-	\@moduletitle\newline
-	
-	\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
-	\rule{\titletablewidth}{1pt}
-	
-	\nointerlineskip\vspace{12pt}
-	{\if@showsolutions
-	{\hfill \textbf{\Large ***SOLUTIONS***}\hfill}
-	\else
-	{\hfill Time allowed:\ \@timeallowed\hfill}
-	\fi}
-	
-	\nointerlineskip\vspace{12pt}
-	\rule{\titletablewidth}{1pt}
-	\end{tabular}
+    	\begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
+    	  \vspace{1.5cm}
+    	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+    	&
+    	  \vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
+    	&
+    	  \raggedright\bfseries Module Examination \@examyear \newline
+    	
+    	  \vspace*{-10pt}
+    	  \@moduletitle\newline
+    	
+    	  \@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
+    	  \rule{\titletablewidth}{1pt}
+    	
+    	  \nointerlineskip\vspace{12pt}
+    	  {\if@showsolutions
+    	  {\hfill \textbf{\Large ***SOLUTIONS***}\hfill}
+    	  \else
+    	  {\hfill Time allowed:\ \@timeallowed\hfill}
+    	  \fi}
+    	
+    	  \nointerlineskip\vspace{12pt}
+    	  \rule{\titletablewidth}{1pt}
+    	\end{tabular}
     \fi
 	\end{adjustwidth}
 	\vspace{30pt}
@@ -254,22 +258,24 @@
 \def\@makespecimensolutionstitle{%
 	\begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
 	\if@bigfontneeded
-	  \begin{tabular}{@{}p{\titletablewidth}@{}p{4.5cm}@{}}
-	  \fontsize{14.4}{18}\selectfont\raggedright\textbf{\@faculty}\newline
-             \textbf{\@modulecode\ \@moduletitle}
-	&
-	  \vspace{-0.5cm}
-	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}\\
-	  \fontsize{24.88}{30}\selectfont \raggedright \textbf{\@modulecode\ Solutions to the Specimen Examination Paper}
+	   \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
+    	\vspace{-0.3cm}
+    	\includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+      &
+	    \fontsize{14.4}{18}\selectfont\raggedright\textbf{\@faculty}\newline
+        \textbf{\@modulecode\ \@moduletitle}\\
+	  &
+	    \fontsize{24.88}{30}\selectfont \raggedright \textbf{\@modulecode\ Solutions to the Specimen Examination Paper}
 	  \end{tabular}
 	\else % @bigfontneeded is false
-	  \begin{tabular}{@{}p{\titletablewidth}@{}p{4.5cm}@{}}
-	  \raggedright\textbf{\@faculty}\newline
-             \textbf{\@modulecode\ \@moduletitle}
-	&
-	  \vspace{-0.5cm}
-	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}\\
-	  \LARGE\raggedright \textbf{\@modulecode\ Solutions to the Specimen Examination Paper}
+      \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
+    	  \vspace{-0.3cm}
+    	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+      &
+	  	  \raggedright\textbf{\@faculty}\newline
+           \textbf{\@modulecode\ \@moduletitle}\newline
+
+	       \LARGE\raggedright \textbf{\@modulecode\ Solutions to the Specimen Examination Paper}
 	  \end{tabular}
 	\fi
 	\end{adjustwidth}
@@ -288,10 +294,10 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{\dimexpr\marginparsep+2cm} % lines up number with marks column
-  \fancyfoot[LE,RO]{\bfseries\thepage}
   \if@specimensolutions %only show page numbers for specimen solutions
-	\relax
+	\fancyfoot[C]{page~\thepage~of~\pageref{LastPage}}
   \else %not specimen solutions
+    \fancyfoot[LE,RO]{\bfseries\thepage}
 	\fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
 	\if@bigfontneeded %suppress module code on LO to avoid text clashes
 	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
@@ -308,9 +314,13 @@
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
 \raggedbottom                
-\setlength{\mathindent}{40pt}\relax
 \parindent 0pt
-\parskip 4pt
+\parskip 6pt
+\setlength{\mathindent}{20pt}\relax
+\g@addto@macro{\normalsize}{%
+	\setlength\abovedisplayskip{8pt plus 1 pt minus 1pt}%
+	\setlength\belowdisplayskip{8pt plus 1pt minus 1pt}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question headers
