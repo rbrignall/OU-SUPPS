@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/04/25 v0.4 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/08/26 v0.5 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
@@ -28,7 +28,9 @@
 \RequirePackage{ifthen}
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
+\RequirePackage{xcolor}
 %\RequirePackage[xcolor]{mdframed}
+\RequirePackage{framed}
 \RequirePackage{environ}
 \if@studenttex
   \RequirePackage{l3regex,l3tl-analysis,l3str}
@@ -63,6 +65,13 @@
 %
 \newcommand\tntitle[1]{\renewcommand\@tntitle{#1}}
 \newcommand\@tntitle{\@latex@error{No \noexpand\tntitle specified}\@ehc}
+
+\definecolor{ougreen}{RGB}{0,128,0}
+\def\@specsolnscolor{ougreen}
+\newcommand\specsolnscolor[1]{\def\@specsolnscolor{#1}}
+\if@specsolns
+  \AtBeginDocument{\color{\@specsolnscolor}}
+\fi
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,10 +82,32 @@
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   %\renewcommand{\footrulewidth}{2pt}%
-    \fancyfoot[L]{\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}}%
+    \fancyfoot[L]{%
+    	\if@specsolns\color{\@specsolnscolor}\fi
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}%
+	}%
 }
 \renewcommand{\maketitle}{
   \thispagestyle{frontpage}
+\if@specsolns
+%
+%
+\begin{adjustwidth}{0cm}{-4cm}
+  \begin{tabular}{@{}p{17cm}@{}}
+\parbox{12cm}{
+	\textbf{\@faculty\newline
+	\@modulecode\ \@moduletitle}
+}
+\hfill{\fboxsep=5mm\fboxrule=1.5mm\fbox{\large\sf Specimen Solutions}}\par
+	\medskip
+	\textbf{\Large \@tntitle\ \@tnyear}
+\end{tabular}
+\end{adjustwidth}
+%
+%
+\else % not specimen solutions
+%
+%
   %\vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
   \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
@@ -93,6 +124,9 @@
 	\textbf{\Large \@tntitle\ \@tnyear}
 \end{tabular}
 \end{adjustwidth}
+%
+%
+\fi
 }
 
 %%
@@ -103,7 +137,10 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{4cm} % lines up number with marks column
-    \fancyfoot[C]{page~\thepage~of~\pageref{LastPage}} % internal right hand pages only
+    \fancyfoot[C]{%
+    	\if@specsolns\color{\@specsolnscolor}\fi
+    	page~\thepage~of~\pageref{LastPage}%
+	} % centre bottom of every page except first
 }
 \pagestyle{internalpages}
 
@@ -113,44 +150,71 @@
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
 \raggedbottom                
-\setlength{\mathindent}{40pt}\relax
 \parindent 0pt
-\parskip 4pt
+\parskip 6pt
+\setlength{\mathindent}{20pt}\relax
+\g@addto@macro{\normalsize}{%
+	\setlength\abovedisplayskip{8pt plus 1 pt minus 1pt}%
+	\setlength\belowdisplayskip{8pt plus 1pt minus 1pt}%
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% TMA/CMA initiators
 % Usage syntax: \assignment{name}[cut off]{number}[subtitle]
+%
 \newif\iffirstassignment
 \firstassignmenttrue
+
 \def\assignment#1{%
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	  \setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
-  	\iffirstassignment\firstassignmentfalse\else\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\bigskip\bigskip\fi
+  	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
+	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
+}
+
+% Version that doesn't add a new page
+\def\samepageassignment#1{%
+	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
+	  \setcounter{question}{0}
+	% Draw a rule under end of previous assignment (if not first assignment)
+  	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\par\bigskip\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 
 \def\@assignmentwithcutoff[#1]#2{%
-	\def\@cutoff{Cut-off date #1}
-	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{Cut-off date}\ \ #1}\par
-	\@ifnextchar[{\@assignmentsubtitle}{\relax}
+	\def\@cutoff{\@cutofftext\ #1}
+	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}#1}
+	\@ifnextchar[{\@assignmentsubtitle}{
+		\par\addvspace{\bigskipamount}
+	}
 }
 
 \def\@assignmentnocutoff#1{%
 	\def\@cutoff{\relax}
-	{\large \textbf{\@assignmentname\ #1}}\par
-	\@ifnextchar[{\@assignmentsubtitle}{\relax}
+	{\large \textbf{\@assignmentname\ #1}}%
+	\@ifnextchar[{\@assignmentsubtitle}{\par\addvspace{\bigskipamount}}
 }
 
-% This does nothing, but means syntax can be identical to AB if desired.
+% This does nothing except add some space, 
+% but means structure is identical to ouab.cls.
 \def\@assignmentsubtitle[#1]{%
-	\relax
+	\par\addvspace{\bigskipamount}
 }
 
-% Set up the two most common types of assignment
+% Allows cut-off text to be suppressed
+\def\@cutofftext{Cut-off date\ \ }
+\def\nocutoffdate{\def\@cutofftext{See module website for the cut-off date.}}
+
+% Set up the two most common types of assignment, and starred versions (which add no new page)
 % usage e.g. \tma[cut off]{number}[subtitle]
-\def\tma{\assignment{TMA}}
-\def\cma{\assignment{CMA}}
+\def\tma{\@ifstar\@tma\@@tma}
+\def\@tma{\samepageassignment{TMA}}
+\def\@@tma{\assignment{TMA}}
+% And for CMAs
+\def\cma{\@ifstar\@cma\@@cma}
+\def\@cma{\samepageassignment{CMA}}
+\def\@@cma{\assignment{CMA}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question headers
 \newcounter{question}
@@ -178,8 +242,8 @@
   \newcommand{\solnmarks}[1]{\relax}
   \newcommand{\solnmarksplus}[2]{\relax}
   \newcommand{\remark}[1]{\relax}
-  \newcommand{\total}[1]{\relax}
-  \newcommand{\subtotal}[1]{\relax}
+  \newcommand{\total}[2][\unskip]{\relax}
+  \newcommand{\subtotal}[2][\unskip]{\relax}
   \newenvironment{longremark}{\comment}{\endcomment}
 \else
   \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{4cm}}}
@@ -195,6 +259,18 @@
 \def\mk{\solnmarks}
 \def\mkplus{\solnmarksplus}
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
+\newcommand{\longtextref}[1]{\hfill\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}{\emph{\textbf{#1}}}}}
+%\newcommand{\textref}[1]{\hfill\begin{framed}\emph{\textbf{#1}}\end{framed}}
+%\newcommand{\textref}[1]{%
+ % \setlength{\@tempdima}{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}%
+ % \sbox{\@tempboxa}{#1}%
+ % \ifdim\wd\@tempboxa>\@tempdima
+ %   \hfill\fbox{\parbox{\@tempdima}{\raggedleft{\em\bfseries#1}}}%
+ % \else
+ %   \hfill\fbox{\em\bfseries#1}%
+%\fi
+%}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 

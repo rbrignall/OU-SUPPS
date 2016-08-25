@@ -1,8 +1,7 @@
 \documentclass{outn}
 % Options:
 %   specsolns    - mode that produces output with marks, solnmarksplus,
-%                  and remarks suppressed.
-%                  ABs containing only one assignment.
+%                  and remarks suppressed, and text in green.
 %   studenttex   - outputs to tex file \jobname-student.tex the plain
 %                  LaTeX solutions for distribution to ALs with marks
 %                  remarks, etc removed. [EXPERIMENTAL]
@@ -16,6 +15,7 @@
 \tntitle{Title of TN}
 \tnyear{2015B}
 \copyrightyear{2012} % If different from \abyear
+%\specsolnscolor{blue} % can be used to change text colour in specsolns mode
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -61,6 +61,7 @@
 
 % The syntax for defining assignments and questions 
 % is identical to that used in the ouab class.
+% Starred versions don't add a new page.
 \tma[12 November 2014]{01}[Covers units A and B]
 
 \question[(essay question)]{25}\label{myqnnum}
@@ -123,7 +124,7 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
 \total{3}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\cma{41}[Covers Units C and D]
+\cma*{41}[Covers Units C and D]
 
 \question[(inline multi-choice)]{25}
 \remark{Inline options work in the Tutornote class file in exactly the same way as in the assignment booklet.}
@@ -179,7 +180,7 @@ Choose an option.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\assignment{QUIZ}[1 April 2015]{01}[Custom assessment type]
+\assignment*{QUIZ}[1 April 2015]{01}[Custom assessment type]
 
 \question[(changing subquestion labels)]{8}
 \begin{enumerate}[(i)]
