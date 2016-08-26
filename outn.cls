@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/08/26 v0.5 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/08/26 v0.51 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
@@ -429,10 +429,11 @@
     }
     \ExplSyntaxOff
 \else %matches \if@studenttex
-  \NewEnviron{solution}
-  {
-    \BODY
-  }
+  \newenvironment{solution}{}{}
+  %\NewEnviron{solution}
+  %{
+   % \BODY % This doesn't work if verbatim is contained inside too.
+  %}
 \fi
 
 %
