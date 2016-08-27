@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2016/08/24 v1.21 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2016/08/27 v1.22 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -125,6 +125,8 @@
 	\fi
 \fi
 
+\def\@specimensolutionstitle{Solutions to the Specimen Examination Paper}
+\newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
 
 \newcommand\conflation[1]{\renewcommand\@session{#1}} % backwards compatibility
 \newcommand\session[1]{\renewcommand\@session{#1}}
@@ -265,7 +267,7 @@
 	    \fontsize{14.4}{18}\selectfont\raggedright\textbf{\@faculty}\newline
         \textbf{\@modulecode\ \@moduletitle}\\
 	  &
-	    \fontsize{24.88}{30}\selectfont \raggedright \textbf{\@modulecode\ Solutions to the Specimen Examination Paper}
+	    \fontsize{24.88}{30}\selectfont \raggedright \textbf{\@modulecode\ \@specimensolutionstitle}
 	  \end{tabular}
 	\else % @bigfontneeded is false
       \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
@@ -275,7 +277,7 @@
 	  	  \raggedright\textbf{\@faculty}\newline
            \textbf{\@modulecode\ \@moduletitle}\newline
 
-	       \LARGE\raggedright \textbf{\@modulecode\ Solutions to the Specimen Examination Paper}
+	       \LARGE\raggedright \textbf{\@modulecode\ \@specimensolutionstitle}
 	  \end{tabular}
 	\fi
 	\end{adjustwidth}
