@@ -44,7 +44,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 1.2\\2016-08-05}
+\date{Version 1.3\\2016-08-27}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -347,7 +347,253 @@ This section can be omitted unless you need/want to know a bit more about the cl
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Using \texttt{outn.cls}}
-Not yet written!
+
+
+This section covers the features available in |outn.cls|, for writing Tutor Notes and Specimen Solutions for assignments. |outn.cls| is based on the standard |article| class file, so any commands used there can be used in |outn|. Note also that the syntax is as close as possible to that created in |ouab.cls|, so, in theory, the two types of SUPP could be generated from a common source at a reasonably advanced stage of development. 
+
+\subsection{Preamble}
+
+\subsubsection{Options}
+As well as the default version to produce tutor notes, there are two options available. These options do not affect the syntax you use for the rest of your file.
+
+\begin{desc}
+|\documentclass{outn}|
+\end{desc}
+
+This is the default operation for using |outn.cls|. It produces a Tutor Notes booklet.
+
+\begin{desc}
+|\documentclass[specsolns]{outn}|
+\end{desc}
+
+This version is designed to create a specimen solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\marks| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
+
+\begin{desc}
+|\documentclass[studenttex]{outn}|
+\end{desc}
+
+(EXPERIMENTAL) The idea is that on compilation, as well as producing Tutor Notes (or specimen solutions if |specsolns| is also specified) it produces a compilable |latex| source file called |<filename>-student.tex| that can be compiled by (e.g.) ALs who do not have the |OU-SUPPS| suite of class files on their machine. This system is still under development, and is subject to some limitations in functionality.
+
+
+\subsubsection{Commands to be used in the preamble}
+\begin{desc}
+|\faculty{...}|
+\end{desc}
+The name of the faculty (optional, default is `Faculty of Science, Technology, Engineering and Mathematics')
+\begin{desc}
+|\modulecode{...}|
+\end{desc}
+Sets the code of the module (required).
+\begin{desc}
+|\moduletitle{...}|
+\end{desc}
+Sets the title (i.e./ name) of the module (required).
+
+\begin{desc}
+|\tntitle{...}|
+\end{desc}
+Sets the title for the Tutor Notes/Specimen Solutions (required).
+
+\begin{desc}
+|\tnyear{...}|
+\end{desc}
+Sets the year/presentation for this TN (required).
+
+\begin{desc}
+|\copyrightyear{...}|
+\end{desc}
+Sets the date for copyright, used in the footer on the front page (optional, default is same as |\tnyear|).
+
+
+\begin{desc}
+|\specsolnscolor{<color>}|
+\end{desc}
+Command to change the font color used in Specimen Solutions to |<color>| (e.g. |blue| or |red|). The class file loads the package |xcolor.sty| so you can use this to specify your own colors. This command is optional, the default color is |ougreen|, which is defined in |outn.cls| by |\definecolor{ougreen}{RGB}{0,128,0}|.
+
+
+\begin{desc}
+|\optiontext{...}|
+\end{desc}
+Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
+
+
+\subsection{Creating assignments}
+Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type. These commands have the same syntax as in |ouab|, but the behaviour is slightly different (since |outn| does not produce a table of contents).
+
+\begin{desc}
+|\tma[<date>]{<number>}[<subtitle>]|\\
+|\tma*[<date>]{<number>}[<subtitle>]|
+\end{desc}
+Creates a TMA with number equal to |<number>|. The |<date>| and |<subtitle>| parts are both optional and can be omitted. The starred version suppresses the |\newpage| command, so does not insert a new page before the assignment.
+
+|<date>| specifies the cut-off date for the TMA.
+
+|<subtitle>| has no effect in |outn|. It is parsed by the system and then ignored, so that the syntax is identical to that used by |ouab|.
+
+\begin{desc}
+|\cma[<date>]{<number>}[<subtitle>]|\\
+|\cma*[<date>]{<number>}[<subtitle>]|
+\end{desc}
+Creates a CMA, usage as per |\tma|. The starred version suppresses the |\newpage| command, so does not insert a new page before the assignment.
+
+\begin{desc}
+|\assignment{<name>}[<date>]{<number>}[<subtitle>]|\\
+|\samepageassignment{<name>}[<date>]{<number>}[<subtitle>]|
+\end{desc}
+
+Creates an assignment type |<name>| (required), numbered with |<number>|. The |<date>| and |<subtitle>| parts are both optional and can be omitted (and |<subtitle>| has no effect in |outn|). The |\samepageassignment| variant creates an assignment without inserting a new page, whereas |\assignment| inserts a new page.
+
+All assignment types reset the |question| counter to 0. 
+\subsection{Creating questions/solutions}
+The internal counter used for generating questions/solutions is |question|.  This gets reset at the start of each assignment.
+
+
+\subsubsection{Question syntax}
+
+\begin{desc}
+|\question[<description>]{<marks>}|
+\end{desc}
+Creates a new question (or solution), with the number of marks available specified by the command |<marks>|. The wording at the top of the question is `Solution to Question |<n>|'.
+
+The parameter |<description>| is optional, and can be used to provide additional information about the question in its header line. 
+
+
+\begin{desc}
+|\question*[<description>]|
+\end{desc}
+Starred variant of |\question| which does not require the number of marks to be specified. The parameter |<description>| is optional.
+
+\begin{desc}
+|\begin{solution}...\end{solution}|
+\end{desc}
+
+An environment to contain the solution to a question. The contents of these environments are precisely what is output to the |latex| source file when using the experimental |studenttex| mode. If not using |studenttex| mode, this environment is merely a semantic feature, and does not need to be used. 
+
+\subsubsection{Subquestions}
+To create subquestions, use the standard \LaTeX\ |enumerate| environment.
+
+\begin{verbatim}
+\begin{enumerate}
+\item ...
+\item ...
+...
+\end{enumerate}
+\end{verbatim}
+
+These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
+
+The class file |outn.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
+
+\begin{itemize}
+\item Changing the numbering: Start the environment using, e.g.\ |\begin{enumerate}[A.]|, to modify the numbering system to |A.,B.,...|.
+\item Resuming numbering after a break: use |\begin{enumerate}[resume]| to continue counting from the previous time an enumerate environment at this level was called.
+\end{itemize} 
+
+For fuller details of the possibilities with |enumitem|, see the documentation on its CTAN entry.
+
+\subsubsection{Marks}
+Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned. In |specsolns| mode, all the commands in this subsubsection are suppressed in the resulting PDF. In |studenttex| mode, all these commands are suppressed in the outputted |latex| source file.
+
+\begin{desc}
+|\marks{<n>}|
+\end{desc}
+Places |<n>| in the right hand margin on the line. 
+
+\emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
+
+\begin{desc}
+|\mk{<n>}|
+\end{desc}
+A synonym for |\marks|, for those moving from OUTeX.
+
+\begin{desc}
+|\solnmarksplus{<description>}{<n>}|
+\end{desc}
+Place |<n>| in the right hand margin, and |<description>| (which could be a short sentence running to several lines) to the right of the mark.
+
+\begin{desc}
+|\subtotal[<description>]{<n>}|\\
+|\total[<description>]{<n>}|
+\end{desc}
+
+Specifies that the subtotal or total for a part-question or question is |<n>|, placing |<n>| in the margin, and the word `Subtotal' or `Total' in large, bold to its right. The optional argument |<description>| can be used to append wording to the word `Total'. Typical usages of the |<description>| parameter are:\\ 
+|\subtotal[for part \theenumi]{<n>]}|\\
+|\total[for Question \thequestion]{<n>]}|.
+
+
+\subsubsection{Multiple choice} 
+
+For CMAs and other assignment types that have multiple choice questions, the following commands are available. It is unlikely that these will be needed in tutornotes, but they have been included for consistency with |ouab.cls|.
+
+The text appearing at the top of each list of options can be changed using the |\optiontext{<title>}| command. This command can be used in the premable, or at any point in the document.
+
+\begin{desc}
+|\begin{options}|\\
+|   \item ...|\\
+|   \item ...|\\
+|\end{options}|
+\end{desc}
+Creates a list of options, with the text of each |\item| starting on a new line. Options are labelled |A.,B.,C.,...|.
+
+\begin{desc}
+|\begin{inlineoptions}[<line spacing>]{<columns>}|\\
+|   \item ...|\\
+|   \item ...|\\
+|\end{inlineoptions}|
+\end{desc}
+Creates a list of options, displayed in |<columns>| number of columns, equally spaced. Each successive |\item| is placed sequentially from left to right, then starting a new line as necessary. Options are labelled |A.,B.,C.,...|.
+
+The optional parameter |<line spacing>| can be used to increase the spacing between each line. However, note that this also affect spacing within options, which can have undesired effect if your options include, e.g., a |matrix| environment.
+
+\begin{desc}
+|\noitem|
+\end{desc}
+This command can be used within  |inlineoptions| to leave a `blank' in the list of options. This is particularly useful on the final line if you have fewer |\item|s left than the specified number of |<columns>|.
+
+\subsection{Comments for tutors or students}
+
+Since the same |latex| source is expected to produce both tutor notes and (using |specsolns| mode) specimen solutions, commands are provided for comments to appear to tutors and/or students.
+
+\emph{Warning: These commands are still under development and syntax/appearance is still liable to change in future.}
+
+\begin{desc}
+|\textref{<description>}|
+\end{desc}
+
+Inserts |<description>| in bold and italics, in a right-aligned box. Primarily expected to be used for references to texts or handbooks.
+
+
+\begin{desc}
+|\remark{<text>}|
+|\begin{longremark}<text>\end{longremark}|
+\end{desc}
+
+Provides a command and environment in which to write text that is visible only in the tutornotes (i.e.\ it is suppressed in |specsolns| mode). The |longremark| environment is designed for longer paragraphs of explanation.
+
+\emph{Warning: Do not use the |longremark| environment inside the |solutions| environment! In certain modes this will cause errors relating to verbatim mode.}
+
+\subsection{Technical info}
+This section can be omitted unless you need/want to know a bit more about the class file.
+
+\subsubsection{Packages loaded}
+|outn.cls| loads the following packages automatically, so you do not need to call |\usepackage{...}| to use the features provided by these.
+
+\begin{itemize}
+\item |geometry| to set page margins, sizes, etc
+\item |fancyhdr| for formatting headings
+\item |graphicx| for handling images, etc
+\item |changepage| to adjust page widths automatically
+\item |array| extends the |array| and |tabular| environments.
+\item |amsmath| loaded with the |fleqn| option to left-align displayed mathematics.
+\item |amssymb| extra mathematical symbols
+\item |lastpage| for knowing how many pages the document contains
+\item |ifthen| for internal latex coding
+\item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
+\item |marginnote| for handling marks, etc in the margin.
+\item |caption| with option |labelsep=quad| to improve formatting for figures.
+\end{itemize}
+
+
 
 %
 %
