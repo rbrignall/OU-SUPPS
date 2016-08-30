@@ -75,10 +75,10 @@
 \item Sub sub\marks 2
 \item Sub sub\marks 2
 \end{enumerate}
-\subtotal{4}
+\subtotal[for part \theenumi]{4}
 \end{enumerate}
 \textref{Unit A, pages 1--2}% Reference to course material
-\total[for Question \ref{myqnnum}]{5} % Total marks for a question
+\total[for Question \thequestion]{5} % Total marks for a question
 
 
 \begin{longremark}
@@ -99,7 +99,7 @@ You can place longer remarks inside the longremark environment.
 
 \item The final part.\marks{3}
 
-\subtotal[for part (a)]{1}
+\subtotal[for part~\theenumi]{1}
 \end{enumerate}
 \textref{Unit B, Theorem 1.1}\total[for Question \ref{myqnnum-a}]{5}
 \end{solution}
@@ -180,7 +180,8 @@ Choose an option.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\assignment*{QUIZ}[1 April 2015]{01}[Custom assessment type]
+\assignment{QUIZ}[1 April 2015]{01}[Custom assessment type]
+\samepageassignment{QUIZB}[1 April 2015]{01}[Custom assessment type]
 
 \question[(changing subquestion labels)]{8}
 \begin{enumerate}[(i)]
