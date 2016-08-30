@@ -1,0 +1,982 @@
+%
+% Configure tikz to OU Figure Specifications, and provide "useful" commands
+%
+
+
+% 25/08/16: Version 2.0
+%           ... changed to a style file
+%           ... general tidying
+%           ... renamed colours to be module specific
+%           ... incorporated additions by others
+%           ... improved environment for figure backgrounds
+%
+% 08/03/13: protected definition of \fullwidth for people using with sc-ou-tex
+% 01/03/13: updated following MST124 proofs
+% 14/11/12: Initial version: Tim Lowe
+
+
+
+%
+% NOTE ON THE PRODUCTION OF EPS FILES:
+%
+% Files must to processed to eps using:
+% latex (file)
+% dvips -E  (file) -0 tmp.eps
+% gswin32 -dNOPAUSE -dNOCACHE -dBATCH -sDEVICE=epswrite -sOutputFile=(file).eps tmp.eps 
+%
+% ** The last command is needed to replace any fonts within the eps file with
+%    drawings of the font, which avoids LTS font-replacement issues
+% ** If the option "epswrite" is not recognised, try "eps2write" instead.
+%
+
+
+
+% Examples of some commands aimed at users are included with the 
+% definitions below.
+
+
+
+
+% A reminder about tikz coordinates:
+% 
+% cartesian: (1,2)      "one times current x-vector, two times current y-vector"
+%            (10pt,2cm) which use units, but gets affected by "scale" settings
+%
+% polar:     (angle : distance)
+%            where angle is  in degrees, from x-axis, anti-clockwise 
+%
+% Incremental:
+% ++(1,2)    move by (1,2) from previous position, and make new position current
+% ++(30: 5)  move a distance 5 at an angle of 30 degrees.
+
+
+
+% Latex packages that are needed
+\usepackage{tikz}
+\usepackage{tikz-3dplot}
+\usepackage{ifthen}   
+
+
+% Tikz libraries that are needed
+\usetikzlibrary{arrows}               % needed to define arrows
+\usetikzlibrary{decorations.markings} % need to place arrow at line midpoints
+\usetikzlibrary{calc}                 % often used by figures
+\usetikzlibrary{shapes}               % useful for shapes, eg the cloud
+\usetikzlibrary{decorations.pathmorphing}%for spring diagrams
+
+
+
+% ***************************
+% * Define standard colours *
+% ***************************
+
+% ** Module-specific line colours **
+%
+% To make figure coding for a particular module easier, 
+% and for backward compatibility, module-specific colours can be assigned an
+% easier-to-use name in the figure code using, for example
+%
+% \colorlet{red}{MST124red}
+%
+
+
+
+% MU123 colours 
+\definecolor{MU123blue}{cmyk}{   1.00, 0.60, 0.00 ,0.00}  % blue
+\definecolor{MU123red}{cmyk}{    0.00, 0.20, 0.15 ,0.00}  % red: use at 60% %checked
+
+
+% MST124 colours (also used by MST125)
+\definecolor{MST124blue}{cmyk}{  0.93, 0.75, 0.00, 0.00}  %checked  RGB: 18,64,255
+\definecolor{MST124red}{cmyk}{   0.16, 1.00, 0.73, 0.05}  %checked  RGB: 203,0,65
+\definecolor{MST124green}{cmyk}{ 1.00, 0.14, 0.61, 0.01}  %checked  RGB: 0. 217,98
+\definecolor{MST124purple}{cmyk}{0.30, 1.00, 0.09, 0.00}  %checked  RGB: 179,9,232
+\definecolor{MST124brown}{cmyk}{0.45,0.60,1.00, 0.35   } % Capital RGB for 0->255
+
+
+% MST210 colours
+\definecolor{MST210blue}{cmyk}{1,0.44,0,0.35}
+\definecolor{MST210red}{cmyk}{0,0.84,0.69,0.22}
+\definecolor{MST210green}{cmyk}{1,0,0.12,0.42}
+\definecolor{MST210purple}{cmyk}{0,0.83,0.27,0.29}
+
+% M337 colours 
+\definecolor{M337blue}{cmyk}  {0.93, 0.75, 0.00, 0.00}
+\definecolor{M337red}{cmyk}   {0.20, 1.00, 1.00, 0.00}
+\definecolor{M337green}{cmyk} {1.00, 0.00, 1.00, 0.50}
+\definecolor{M337purple}{cmyk}{0.30, 1.00, 0.09, 0.00}
+\definecolor{M337orange}{cmyk}{0.00, 0.50, 1.00, 0.00}
+
+\colorlet{M337bluefill}{M337blue!40} % 40% of colour for fills
+\colorlet{M337redfill}{M337red!40} 
+\colorlet{M337greenfill}{M337green!40} 
+\colorlet{M337purplefill}{M337purple!40} 
+\colorlet{M337orangefill}{M337orange!40} 
+
+
+% ** Structure content template colours ** 
+%
+% In figure code, you might want to rename these to their assigned purpose,
+% for example
+%
+% \colorlet{history}{bluebox}
+%
+\definecolor{pantone2945C}{cmyk}{1.00, 0.45, 0.00, 0.14}  % Blue   %checked
+\definecolor{pantone326C}{cmyk}{ 0.87, 0.00, 0.38, 0.00}  % Green  %checked
+\definecolor{pantone7413C}{cmyk}{0.00, 0.53, 1.00 ,0.04}  % Buff   %checked
+
+% Structured content box background colours
+\colorlet{bluebox}{pantone2945C!20}
+\colorlet{greenbox}{pantone326C!20}
+\colorlet{buffbox}{pantone7413C!20}
+
+
+% ** Figure background colour **
+
+% Figure background colour (used by MST125 and others)
+\definecolor{figureFull}{cmyk}{  0.02, 0.11, 0.19, 0.00}  
+\colorlet{figurebox}{figureFull!25} % 25% of full colour for 125. 
+%                                     (MST124 used 10%)
+
+
+
+% Set the default background colour
+% .. avoids problems when style used without \begin{outikzfig} etc
+\colorlet{@outikzbackground}{white} 
+
+
+
+
+
+
+% *************************************
+% * Define the standard figure widths *
+% *************************************
+
+% Set the standard figure sizes for SC-wide-margin-reduced-A4. 
+
+% NB  1 pc (pica) = 12 pt
+%\setlength{\fboxsep}{0pt} % turn off automatic latex box borders 
+\newlength{\@outikzFigWidth}
+\setlength{\@outikzFigWidth}{360pt}    %  ?? 30pc = 360pt    + 1.32pt correction
+\newlength{\@outikzMarginWidth}
+\setlength{\@outikzMarginWidth}{144pt} % ?? 12pc = 144pt + 0.48pt correction
+\newlength{\@outikzSolnWidth}
+\setlength{\@outikzSolnWidth}{240pt}   % ?? 20pc = 240 pt +0.84pt correction
+\newlength{\@outikzFullWidth}
+\setlength{\@outikzFullWidth}{516pt}   % ?? 43pc = 516 pt + 1.92pt correction
+
+
+
+
+
+
+% ***********************************************************************
+% * Define an environment to place figures on coloured background.      *
+% ***********************************************************************
+
+% Usage:
+%
+% First argument (optional) is colour: figurebox/bluebox/buffbox/greenbox       
+% Second argument (mandatory) is width: figure / margin / solution / fullwidth  
+%
+% Example:
+%
+%      \begin{outikzfig}[figurebox]{figure}                         
+%      \begin{tikzpicture}                                             
+%      ....                                                            
+%      \end{tikzpicture}                                               
+%      \end{outikzfig}                                                 
+%                                                                      
+
+
+\newlength{\@outhisfigwidth}
+\newbox \@boxedtextbox
+
+\newenvironment{outikzfig}[2][@outikzbackground]{%
+% Argument 1 (optional): background colour
+% Argument 2 (manatory): figurewidth code or number
+%
+% set the background colour
+\colorlet{@outikzbackground}{#1}%
+% set the figure width based on second argument flag
+\ifthenelse{\equal{#2}{figure}}{\setlength{\@outhisfigwidth}{\@outikzFigWidth}}%
+{\ifthenelse{\equal{#2}{margin}}{\setlength{\@outhisfigwidth}{\@outikzMarginWidth}}%
+{\ifthenelse{\equal{#2}{solution}}{\setlength{\@outhisfigwidth}{\@outikzSolnWidth}}%
+{\ifthenelse{\equal{#2}{fullwidth}}{\setlength{\@outhisfigwidth}{\@outikzFullWidth}}%
+{\setlength{\@outhisfigwidth}{#2}}}}}%
+% Draw the figure in the proper coloured box
+\setbox\@boxedtextbox\hbox\bgroup} % End of begin environment
+{\egroup\colorbox{@outikzbackground}{\parbox{\@outhisfigwidth}{\centering\vspace*{1em}\unhbox\@boxedtextbox\vspace*{1em}}}}% end of End environment
+
+
+
+
+% ***************************************************************************
+% * Define an environment to place multiple figures on coloured background. *
+% ***************************************************************************
+
+% Usage:
+%
+% First argument (optional) is colour: figurebox/bluebox/buffbox/greenbox       
+% Second argument (mandatory) is width: figure / margin / solution / fullwidth  
+% Third argument (mandatory) is the number of figures columns
+%
+% Example:
+%
+%      \begin{outikzmultifig}[figurebox]{figure}{3}
+%       
+%      \ousubfig
+%      \begin{tikzpicture}                                             
+%      ....                                                            
+%      \end{tikzpicture}   
+%
+%      \ousubfig
+%      \begin{tikzpicture}                                             
+%      ....                                                            
+%      \end{tikzpicture} 
+%
+%      .....
+%                                           
+%      \end{outikzfig}                                                 
+%                                                                      
+
+
+
+% widths needed for subfigures
+\newlength{\@ousubfigwidth}
+\newlength{\@ousubfiguremargin}
+\setlength{\@ousubfiguremargin}{1em}
+
+% subfigure counter, and its default rendering
+\newcounter{@ousubfignum}
+\newcommand{\ousubfiglabel}[1]{(\alph{#1})}
+
+% Command to add subfigures
+\newcommand{\ousubfig}{%
+\egroup\penalty100 % End previous box and force line break if needed
+% include between-row spacing, and start a box of width \@ousubfigwidth
+\leavevmode \vspace*{1em}\hbox to \@ousubfigwidth \bgroup   
+% leave the margin gap
+\hbox to \@ousubfiguremargin \bgroup \egroup 
+}%
+
+
+% Similar command to add subfigures and number them!
+\newcommand{\ousubfignum}{%
+\egroup\penalty100 % End previous box and force line break if needed
+\refstepcounter{@ousubfignum}% increase subfigure counter
+% include between-row spacing, and start a box of width \@ousubfigwidth
+\leavevmode \vspace*{1em}\hbox to \@ousubfigwidth \bgroup 
+% leave the margin gap
+\hbox to \@ousubfiguremargin \bgroup \egroup 
+% add the figure label
+\protect\raisebox{-1ex}{\makebox[20pt][r]{\ousubfiglabel{@ousubfignum}}\hskip -20pt}%
+}%
+
+
+\newenvironment{outikzmultifig}[3][@outikzbackground]{%
+% Argument 1 (optional): background colour
+% Argument 2 (manatory): figurewidth code or number
+% Argument 3 (manatory): number of figure columns
+%
+% set the background colour
+\colorlet{@outikzbackground}{#1}%
+% set the figure width based on second argument
+\ifthenelse{\equal{#2}{figure}}{\setlength{\@outhisfigwidth}{\@outikzFigWidth}}%
+{\ifthenelse{\equal{#2}{margin}}{\setlength{\@outhisfigwidth}{\@outikzMarginWidth}}%
+{\ifthenelse{\equal{#2}{solution}}{\setlength{\@outhisfigwidth}{\@outikzSolnWidth}}%
+{\ifthenelse{\equal{#2}{fullwidth}}{\setlength{\@outhisfigwidth}{\@outikzFullWidth}}%
+{\setlength{\@outhisfigwidth}{#2}}}}}%
+
+% Calculate the subfigurewidth = thisfigwidth/number of columns
+\setlength{\@ousubfigwidth}{\@outhisfigwidth}% space for end marin
+\advance \@ousubfigwidth by -\@ousubfiguremargin% space for end margin
+\divide\@ousubfigwidth by #3\relax% divide by number of figures
+
+% Start the environment proper:
+
+% Zero the figure counter
+\setcounter{@ousubfignum}{0}%
+
+% .. start saving code in box
+\setbox\@boxedtextbox\hbox\bgroup\par
+  
+% .. start a dummy opening group
+\leavevmode \hbox to 0pt  \bgroup % 
+}
+% At the close of the environment .....
+{\egroup\penalty100 % Close last \subfigure grouping 
+\egroup \colorbox{@outikzbackground}{ \parbox{\@outhisfigwidth}{\vspace*{1em} \unhbox\@boxedtextbox}} % Draw in a coloured box. Includes space at top
+} % End environment
+
+
+
+
+
+
+
+% ***********************************************************************
+% * Define lots of different arrow types used by line definitions later *
+% ***********************************************************************
+
+%
+% Define the ou axis arrow type 
+% 
+\newdimen\@ouAxisArrowLengtha
+\newdimen\@ouAxisArrowLengthb
+\newdimen\@ouAxisArrowWidth
+\@ouAxisArrowLengtha=4.13pt % length from tip to tail
+\@ouAxisArrowLengthb=3.13pt % length from tip to tail indent
+\@ouAxisArrowWidth=1.68pt
+
+\pgfarrowsdeclare{ouaxisarrow}{ouaxisarrow}
+{
+\pgfarrowsrightextend{0pt}
+\pgfarrowsleftextend{\@ouAxisArrowLengtha}
+}
+{
+\advance\@ouAxisArrowLengtha by -\pgflinewidth
+\advance\@ouAxisArrowLengthb by -\pgflinewidth
+\pgfsetdash{}{0pt} % do not dash
+%\pgfsetroundjoin % fix join
+%\pgfsetroundcap % fix cap
+\pgfpathmoveto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouAxisArrowLengtha}{\@ouAxisArrowWidth}}
+\pgfpathlineto{\pgfpoint{-\@ouAxisArrowLengthb}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouAxisArrowLengtha}{-\@ouAxisArrowWidth}}
+\pgfpathlineto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfusepathqfill
+}
+
+
+
+
+%
+% Define the ou axis *thick* arrow type : for use in screencasts etc
+% (standard axis times 3.2)
+%
+\newdimen\@ouThickAxisArrowLengtha  
+\newdimen\@ouThickAxisArrowLengthb
+\newdimen\@ouThickAxisArrowWidth
+
+\@ouThickAxisArrowLengtha=3.2\@ouAxisArrowLengtha % length from tip to tail
+\@ouThickAxisArrowLengthb=3.2\@ouAxisArrowLengthb % length from tip to tail indent
+\@ouThickAxisArrowWidth=3.2\@ouAxisArrowWidth
+
+\pgfarrowsdeclare{outhickaxisarrow}{outhickaxisarrow}
+{
+\pgfarrowsrightextend{0pt}
+\pgfarrowsleftextend{\@ouThickAxisArrowLengtha}
+}
+{
+\advance\@ouThickAxisArrowLengtha by -\pgflinewidth
+\advance\@ouThickAxisArrowLengthb by -\pgflinewidth
+\pgfsetdash{}{0pt} % do not dash
+%\pgfsetroundjoin % fix join
+%\pgfsetroundcap % fix cap
+\pgfpathmoveto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouThickAxisArrowLengtha}{\@ouThickAxisArrowWidth}}
+\pgfpathlineto{\pgfpoint{-\@ouThickAxisArrowLengthb}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouThickAxisArrowLengtha}{-\@ouThickAxisArrowWidth}}
+\pgfpathlineto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfusepathqfill
+}
+
+
+
+
+
+
+
+%
+% Define the ou vector arrow type 
+% 
+\newdimen\@ouVecArrowWidth
+\newdimen\@ouVecArrowLength
+\@ouVecArrowLength=5.4pt % length from tip to tail
+\@ouVecArrowWidth =3.1pt
+
+\pgfarrowsdeclare{ouvectorarrow}{ouvectorarrow}
+{
+\pgfarrowsrightextend{0.5\@ouVecArrowLength}
+\pgfarrowsleftextend{0.5\@ouVecArrowLength}
+}
+{
+%\advance\arrowlengtha by -\pgflinewidth
+%\advance\arrowlengthb by -\pgflinewidth
+\pgfsetdash{}{0pt} % do not dash
+%\pgfsetroundjoin % fix join
+%\pgfsetroundcap % fix cap
+\pgfpathmoveto{\pgfpoint{\@ouVecArrowLength}{0pt}}
+\pgfpathlineto{\pgfpoint{0\@ouVecArrowLength}{\@ouVecArrowWidth}}
+\pgfpathlineto{\pgfpoint{0\@ouVecArrowLength}{-\@ouVecArrowWidth}}
+\pgfpathlineto{\pgfpoint{\@ouVecArrowLength}{0pt}}
+\pgfusepathqfill
+}
+
+
+%
+% Define an double headed acceleration arrow using the vector arrow
+% ...Compose two vector arrows
+%
+% The first argument should be \@ouVecArrowLength, but that gives error so inserted value!
+\pgfarrowsdeclarecombine[5.4pt]{ouaccelarrow}{ouaccelarrow}{ouvectorarrow}{ouvectorarrow}{ouvectorarrow}{ouvectorarrow}
+
+
+
+%
+% Define the ou compass North arrow type 
+% 
+\newdimen\@ouCompassArrowWidth
+\newdimen\@ouCompassArrowLength
+\@ouCompassArrowLength=7pt % length from tip to tail
+\@ouCompassArrowWidth=2pt
+
+
+\pgfarrowsdeclare{compassarrow}{compassarrow}
+{
+\pgfarrowsrightextend{\@ouCompassArrowLength}
+\pgfarrowsleftextend{0pt}
+}
+{
+\pgfsetdash{}{0pt} % do not dash
+%\pgfsetroundjoin % fix join
+%\pgfsetroundcap % fix cap
+\pgfpathmoveto{\pgfpoint{\@ouCompassArrowLength}{0pt}}
+\pgfpathlineto{\pgfpoint{0\@ouCompassArrowLength}{\@ouCompassArrowWidth}}
+\pgfpathlineto{\pgfpoint{0\@ouCompassArrowLength}{-\@ouCompassArrowWidth}}
+\pgfpathlineto{\pgfpoint{\@ouCompassArrowLength}{0pt}}
+\pgfusepathqfill
+}
+
+
+
+%
+% define the ou mapping arrow type 
+% 
+\newdimen\@ouMapArrowWidth
+\newdimen\@ouMapArrowLength
+\@ouMapArrowLength=4.76pt % length from tip to tail
+\@ouMapArrowWidth=2.75pt  % width from line to tail
+
+\pgfarrowsdeclare{oumappingarrow}{oumappingarrow}
+{
+\pgfarrowsrightextend{0.5\@ouMapArrowLength}
+\pgfarrowsleftextend{0.5\@ouMapArrowLength}
+}
+{
+%\advance\arrowlengtha by -\pgflinewidth
+%\advance\arrowlengthb by -\pgflinewidth
+\pgfsetdash{}{0pt} % do not dash
+%\pgfsetroundjoin % fix join
+\pgfsetroundcap % fix cap
+\pgfsetlinewidth{0.5pt}
+\pgfpathmoveto{\pgfpoint{0\@ouMapArrowLength}{\@ouMapArrowWidth}}
+\pgfpathlineto{\pgfpoint{\@ouMapArrowLength}{0pt}}
+\pgfpathlineto{\pgfpoint{0\@ouMapArrowLength}{-\@ouMapArrowWidth}}
+\pgfusepathqstroke
+}
+
+
+%
+% Define the ou dimension arrow type 
+% 
+\newdimen\@ouDimArrowWidth
+\newdimen\@ouDimArrowLength
+\@ouDimArrowLength=2.5pt % length from tip to tail
+\@ouDimArrowWidth=1.5pt  % width from line to tail
+
+\pgfarrowsdeclare{oudimensionarrow}{oudimensionarrow}
+{
+\pgfarrowsrightextend{0pt}
+\pgfarrowsleftextend{\@ouDimArrowLength} %?? 1.5pt * 1.35 scaling
+}
+{
+%\advance\arrowlengtha by -\pgflinewidth
+%\advance\arrowlengthb by -\pgflinewidth
+\pgfsetdash{}{0pt} % do not dash
+%\pgfsetroundjoin % fix join
+\pgfsetroundcap % fix cap
+\pgfsetlinewidth{0.25pt}
+\pgfpathmoveto{\pgfpoint{-\@ouDimArrowLength}{\@ouDimArrowWidth}}
+\pgfpathlineto{\pgfpoint{0\@ouDimArrowLength}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouDimArrowLength}{-\@ouDimArrowWidth}}
+\pgfusepathqstroke
+}
+
+
+%
+% Define the ou arc arrow type 
+% 
+\newdimen\@ouArcArrowLengtha
+\newdimen\@ouArcArrowLengthb
+\newdimen\@ouArcArrowWidth
+
+\@ouArcArrowLengtha=3.6pt %2.4pt % length from tip to tail
+\@ouArcArrowLengthb=2.7pt %1.8pt % length from tip to tail indent
+\@ouArcArrowWidth=1.5pt % 1pt
+
+\pgfarrowsdeclare{arcarrow}{arcarrow}
+{
+\pgfarrowsrightextend{0pt}
+\pgfarrowsleftextend{\@ouArcArrowLengtha}
+}
+{
+\advance\@ouArcArrowLengtha by -\pgflinewidth
+\advance\@ouArcArrowLengthb by -\pgflinewidth
+\pgfsetdash{}{0pt} % do not dash
+%\pgfsetroundjoin % fix join
+%\pgfsetroundcap % fix cap
+\pgfpathmoveto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouArcArrowLengtha}{\@ouArcArrowWidth}}
+\pgfpathlineto{\pgfpoint{-\@ouArcArrowLengthb}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouArcArrowLengtha}{-\@ouArcArrowWidth}}
+\pgfpathlineto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfusepathqfill
+}
+
+
+
+
+
+%
+% Define the ou network diagram arrow type 
+% 
+\newdimen\@ouNetworkArrowLengtha
+\newdimen\@ouNetworkArrowLengthb
+\newdimen\@ouNetworkArrowWidth
+
+\@ouNetworkArrowLengtha=6.4pt % length from tip to tail
+\@ouNetworkArrowLengthb=5pt % length from tip to tail indent
+\@ouNetworkArrowWidth=2.2pt
+
+
+\pgfarrowsdeclare{ounetarrow}{ounetarrow}
+{
+\pgfarrowsrightextend{0pt}
+\pgfarrowsleftextend{\@ouNetworkArrowLengtha}
+}
+{
+\advance\@ouNetworkArrowLengtha by -\pgflinewidth
+\advance\@ouNetworkArrowLengthb by -\pgflinewidth
+\pgfsetdash{}{0pt} % do not dash
+%\pgfsetroundjoin % fix join
+%\pgfsetroundcap % fix cap
+\pgfpathmoveto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouNetworkArrowLengtha}{\@ouNetworkArrowWidth}}
+\pgfpathlineto{\pgfpoint{-\@ouNetworkArrowLengthb}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouNetworkArrowLengtha}{-\@ouNetworkArrowWidth}}
+\pgfpathlineto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfusepathqfill
+}
+
+
+
+
+% ******************************** 
+% * Define line types to be used *
+% ********************************
+% Note: line end cap is rounded, to avoid problems with mitring.
+
+%
+% Examples
+%
+% Default:           \draw (0,0) -- (1,0);
+% Thick:             \draw[thick] (0,0) -- (1,0);
+% Thin:              \draw[thin] (0,0) -- (1,0);
+% Default, dashed:   \draw[dashed] (0,0) -- (1,0);
+% Default, coloured: \draw[MST124red] (0,0) -- (1,1);
+% Combine types:     \draw[MST124red, thick, dashed] (0,0) -- (1,1);
+%
+% Grid lines:        \draw[grid] (0,0) grid (5,5);
+%                    (lower left and top right corners given)
+%
+% Arc:   \draw[arc] (1,1) arc [start angle=-180, end angle=60, radius=2];
+%  or:   \draw[arc] (1,1) arc(-180:60:2);
+%
+%
+% Coordinate axes:
+%
+% Draw a x-axis:    \draw[axis] (0,0)--(5,0) node[xlab] {$x$};
+% Draw a y-axis:    \draw[axis] (0,0)--(0,5) node[ylab] {$y$};
+%
+% Draw a tick mark. Note: need REAL length, so mark start and reset coordinates
+%   \coordinate (XX) at (1,0):
+%   \draw[ticks, reset cm] (xx)  -- ++(0,-\ticklength) node[yshift=-5.5pt]($1$);
+%
+% 
+% Other arrow types:
+%
+% Arc arrow : \draw[arc, -arcarrow] (1,1) arc [start angle=-180, end angle=60,radius=2];
+%         or: \draw[arc, -arcarrow] (1,1) arc(-180:60:2);
+%
+%
+% Vector:              \draw[vector] (0,0) -- (1,1);
+% Force:               \draw[force] (0,0) -- (1,1);
+% Acceleration:        \draw[acceleration] (0,0) -- (1,1);
+% Mapping:             \draw[mapping] (0,0) -- (1,1);
+% Network:             \draw[network] (0,0) -- (1,1);
+% Dimension:           \draw[dimension] (0,0) -- (1,1);
+% Dimension with mark: \draw[dimensionmark] (0,0) -- (1,1);
+% Compass North:       \draw[-compassarrow] (0,0) -- (0,1);
+
+% Basic styles
+\tikzset{every picture/.style={line width=1pt, line cap=round}}
+\tikzstyle{thick}=[line width=1.6pt]
+\tikzstyle{thin}= [line width=0.25pt]
+
+% Set the OU dashed line style
+\tikzset{dashed/.style={/tikz/dash pattern={on 6.2pt off 3.1pt}}}
+
+% Special line types
+\tikzstyle{grid}=[line width=0.5pt, color=black!20]
+\tikzstyle{arc}=[line width=0.25pt]
+
+
+% Coordinate axes
+\tikzstyle{axis}=[line width=0.5pt, -ouaxisarrow]  
+\tikzstyle{thickaxis}=[line width=.83pt, -outhickaxisarrow]  
+\tikzstyle{ticks}=[line width=0.5pt]
+\newlength{\ticklength}
+\setlength{\ticklength}{3pt} 
+
+% styles for axes labels 
+\tikzset{xlab/.style={below left,inner xsep=0mm,outer xsep=0mm}}
+\tikzset{ylab/.style={below left,inner ysep=0mm,outer ysep=0mm}}
+
+
+
+% A vector with the arrow half way along the line
+\tikzset{vector/.style={decoration={
+  markings,
+  mark=at position .5 with {\arrow{ouvectorarrow}}},postaction={decorate}}}
+
+% A force with the arrow at the end of the line
+\tikzset{force/.style={decoration={
+  markings,
+  mark=at position 1 with {\arrow{ouvectorarrow}}},postaction={decorate}}}
+
+
+% An acceleration arrow with double head in middle
+% a double arrowed vector
+\tikzset{acceleration/.style={decoration={
+  markings,
+  mark=at position .5*\pgfdecoratedpathlength + 0.5\@ouVecArrowLength with {\arrow{ouaccelarrow}},
+    },
+    postaction={decorate}}
+}
+
+
+
+% A mapping line with the arrow half way along the line
+\tikzset{mapping/.style={decoration={
+  markings,
+  mark=at position .5 with {\arrow{oumappingarrow}}},postaction={decorate}}}
+
+% A network line with the arrow half way along the line
+\tikzset{network/.style={decoration={
+  markings,
+  mark=at position .5 with {\arrow{ounetarrow}}},postaction={decorate}}}
+
+
+
+% A dimensioning arrow
+\tikzstyle{dimension}=[help, oudimensionarrow-oudimensionarrow]
+
+% A dimensioning arrow with vertical marks too,
+% ..define a composite style that composes the dimension arrow with a marker line
+\pgfarrowsdeclarecombine[0pt]{|oudimensionarrow}{oudimensionarrow|}{oudimensionarrow}{oudimensionarrow} {|}{|}
+%..and use it!
+\tikzstyle{dimensionmark}=[help, |oudimensionarrow-oudimensionarrow|]
+
+
+
+% ******************
+% *  Miscellaneous *
+% ******************
+%
+
+% Examples:
+%
+% Closed/open points:  \draw (1,2) node[point, label=right:{$P$}]{}; 
+%                      \draw (0,0) node[closed]{} -- (0,1) node[open]{};
+%
+% Tag/Label:    \draw[thin] (0,0) -- (1,0) node[tag, anchor=west]{Label};
+% Cloud:        \draw (1,0) node[oucloud](cloudname){Label};
+%               \draw (cloudname) edge (0,0);
+
+
+     
+
+% Define point markers. 
+% ... closed
+\tikzset{point/.style={circle, draw, fill,  inner sep=0, minimum size=4pt }}
+\tikzset{closed/.style={circle, draw, fill,  inner sep=0, minimum size=4pt }}
+% ... open. Inside of circle is coloured "background", defined in figure file.
+\tikzset{open/.style={circle, draw, fill=@outikzbackground, inner sep=0, minimum size=4pt }}
+
+%
+% Springs and dampers for mechanics diagrams
+%
+\tikzstyle{MST210spring}=[decorate, decoration={coil,aspect=0.5,segment length=2mm,amplitude=2mm, pre length =2mm, post length= 2mm}]
+
+\tikzstyle{MST210damper}=[decoration={markings,mark=at position 0.5 with {\path[fill=white] (-2mm,-2mm) rectangle ( (2mm,2mm);\draw (4mm,2mm) -- (-2mm,2mm) -- (-2mm,-2mm) -- (4mm,-2mm);\draw (2mm,-1.4mm) -- (2mm,1.4mm);}},postaction=decorate]
+
+%
+% A cloud marker
+%
+\tikzstyle{oucloud}=[draw=black, line width=0.25pt, fill=white, align=center, 
+                    shape=cloud, cloud puffs=12, aspect=2, inner sep=-2pt,
+                    minimum height=0.5ex]
+
+
+
+%
+% Nearly the end of the file. :-)
+%
+
+
+% A long piece of code follows to define a rounded corner rectangle with 
+% node correct anchors
+% (http://tex.stackexchange.com/questions/32867/tikz-rectangular-node-with-different-rounded-corners)
+%
+%  This is then followed by a tag/label node definition that uses it.
+%
+\tikzset{
+  rectangle with rounded corners north west/.initial=3pt,
+  rectangle with rounded corners south west/.initial=3pt,
+  rectangle with rounded corners north east/.initial=3pt,
+  rectangle with rounded corners south east/.initial=3pt,
+}
+
+\pgfdeclareshape{rectangle with rounded corners}{
+  \inheritanchorborder[from=rectangle]
+  \savedmacro{\neoffset}{
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners north east}{\pgf@rectc}
+    \let\neoffset\pgf@rectc
+  }
+  \savedmacro{\nwoffset}{
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners north west}{\pgf@rectc}
+    \let\nwoffset\pgf@rectc
+  }
+  \savedmacro{\seoffset}{
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners south east}{\pgf@rectc}
+    \let\seoffset\pgf@rectc
+  }
+  \savedmacro{\swoffset}{
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners south west}{\pgf@rectc}
+    \let\swoffset\pgf@rectc
+  }
+  \savedanchor{\north}{
+    \pgf@y=.5\ht\pgfnodeparttextbox
+    \pgf@x=0pt
+    \setlength{\pgf@ya}{\pgfshapeminheight}
+    \ifdim\pgf@y<.5\pgf@ya
+      \pgf@y=.5\pgf@ya
+    \fi
+  }
+  \savedanchor{\south}{
+    \pgf@y=-.5\ht\pgfnodeparttextbox
+    \pgf@x=0pt
+    \setlength{\pgf@ya}{\pgfshapeminheight}
+    \ifdim\pgf@y>-.5\pgf@ya
+      \pgf@y=-.5\pgf@ya
+    \fi
+  }
+  \savedanchor{\east}{
+    \pgf@y=0pt
+    \pgf@x=.5\wd\pgfnodeparttextbox
+    \addtolength{\pgf@x}{2ex}
+    \setlength{\pgf@xa}{\pgfshapeminwidth}
+    \ifdim\pgf@x<.5\pgf@xa
+      \pgf@x=.5\pgf@xa
+    \fi
+  }
+  \savedanchor{\west}{
+    \pgf@y=0pt
+    \pgf@x=-.5\wd\pgfnodeparttextbox
+    \addtolength{\pgf@x}{-2ex}
+    \setlength{\pgf@xa}{\pgfshapeminwidth}
+    \ifdim\pgf@x>-.5\pgf@xa
+      \pgf@x=-.5\pgf@xa
+    \fi
+  }
+  \savedanchor{\northeast}{
+    \pgf@y=.5\ht\pgfnodeparttextbox % height of the box
+    \pgf@x=.5\wd\pgfnodeparttextbox % width of the box
+    \addtolength{\pgf@x}{2ex}
+    \setlength{\pgf@xa}{\pgfshapeminwidth}
+    \ifdim\pgf@x<.5\pgf@xa
+      \pgf@x=.5\pgf@xa
+    \fi
+    \setlength{\pgf@ya}{\pgfshapeminheight}
+    \ifdim\pgf@y<.5\pgf@ya
+      \pgf@y=.5\pgf@ya
+    \fi
+  }
+  \savedanchor{\southwest}{
+    \pgf@y=-.5\ht\pgfnodeparttextbox
+    \pgf@x=-.5\wd\pgfnodeparttextbox
+    \addtolength{\pgf@x}{-2ex}
+%     \pgf@x=0pt
+    \setlength{\pgf@xa}{\pgfshapeminwidth}
+    \ifdim\pgf@x>-.5\pgf@xa
+      \pgf@x=-.5\pgf@xa
+    \fi
+    \setlength{\pgf@ya}{\pgfshapeminheight}
+    \ifdim\pgf@y>-.5\pgf@ya
+      \pgf@y=-.5\pgf@ya
+    \fi
+  }
+  \anchor{text}{%
+    \northeast%
+    \pgf@x=-.5\wd\pgfnodeparttextbox%
+    \pgfmathsetlength{\pgf@y}{-.5ex}
+  }
+  \anchor{north east}{
+    \northeast
+    \pgfmathsetmacro{\nw}{(1-sin(45))*\neoffset}
+    \addtolength{\pgf@x}{-\nw pt}
+    \addtolength{\pgf@y}{-\nw pt}
+  }
+  \anchor{center}{
+    \pgf@x=0pt
+    \pgf@y=0pt
+  }
+  \anchor{south west}{
+    \southwest
+    \pgfmathsetmacro{\nw}{(1-sin(45))*\swoffset}
+    \addtolength{\pgf@x}{\nw pt}
+    \addtolength{\pgf@y}{\nw pt}
+  }
+  \anchor{north west}{
+    \northeast
+    \pgfmathsetmacro{\temp@x}{\pgf@x}
+    \southwest
+    \pgfmathsetmacro{\temp@xtwo}{\pgf@x}
+    \northeast
+    \pgfmathsetmacro{\xdiff}{\temp@x-\temp@xtwo}
+    \def\pgf@xa{\pgf@x-\xdiff}
+    \
+    \pgfmathsetmacro{\nw}{(1-sin(45))*\nwoffset}
+    \def\pgf@xaa{\pgf@xa+\nw}
+    \def\pgf@yaa{\pgf@y-\nw}
+    \pgfpoint{\pgf@xaa}{\pgf@yaa}
+  }
+  \anchor{south east}{
+    \southwest
+    \pgfmathsetmacro{\temp@x}{\pgf@x}
+    \northeast
+    \pgfmathsetmacro{\temp@xtwo}{\pgf@x}
+    \southwest
+    \pgfmathsetmacro{\xdiff}{\temp@x-\temp@xtwo}
+    \def\pgf@xa{\pgf@x-\xdiff}
+    \pgfmathsetmacro{\nw}{(1-sin(45))*\seoffset}
+    \def\pgf@xaa{\pgf@xa-\nw}
+    \def\pgf@yaa{\pgf@y+\nw}
+    \pgfpoint{\pgf@xaa}{\pgf@yaa}
+  }
+  \anchor{south}{\south}
+  \anchor{north}{\north}
+  \anchor{east}{\east}
+  \anchor{west}{\west}
+  \backgroundpath{% this is new
+    % store lower right in xa/ya and upper right in xb/yb
+    \southwest \pgf@xa=\pgf@x \pgf@ya=\pgf@y
+    \northeast \pgf@xb=\pgf@x \pgf@yb=\pgf@y
+    % construct main path
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners north west}{\pgf@rectc}
+    \pgfsetcornersarced{\pgfpoint{\pgf@rectc}{\pgf@rectc}}
+    \pgfpathmoveto{\pgfpoint{\pgf@xa}{\pgf@ya}}
+    \pgfpathlineto{\pgfpoint{\pgf@xa}{\pgf@yb}}
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners north east}{\pgf@rectc}
+    \pgfsetcornersarced{\pgfpoint{\pgf@rectc}{\pgf@rectc}}
+    \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@yb}}
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners south east}{\pgf@rectc}
+    \pgfsetcornersarced{\pgfpoint{\pgf@rectc}{\pgf@rectc}}
+    \pgfpathlineto{\pgfpoint{\pgf@xb}{\pgf@ya}}
+    \pgfkeysgetvalue{/tikz/rectangle with rounded corners south west}{\pgf@rectc}
+    \pgfsetcornersarced{\pgfpoint{\pgf@rectc}{\pgf@rectc}}
+    \pgfpathclose
+ }
+}
+
+
+% label box
+\tikzstyle{tag}=[draw=black, line width=0.25pt, 
+                    shape=rectangle with rounded corners, inner sep=3pt,
+                    minimum height=4ex]
+
+
+
+
+
+
+
+% #############################################################
+% #                                                           #
+% #  Items below are left for backwards compatibility only    #
+% #  Please do not use                                        #
+% #                                                           #
+% #############################################################
+
+
+
+% alternative colour names for MST124/5 backwards compatibility
+\colorlet{MST124history}{bluebox}
+\colorlet{MST124highlight}{greenbox}
+\colorlet{figure}{figurebox}
+\colorlet{none}{white}
+
+% alternate style names
+\tikzstyle{thinks}=[tag]
+\tikzstyle{help}=[thin]
+\tikzstyle{help1}=[help, blue]  
+\tikzstyle{help2}=[help, red, dashed]  
+      
+
+% pivot for MST125 statics problems
+\tikzset{pivot/.style={
+        draw,
+        shape border rotate=0,
+        regular polygon,
+        regular polygon sides=3,
+        fill=none,
+       % node distance=0cm
+       % minimum height=0.5em,
+        yshift=-1em
+    }
+}
+
+
+
+
+% ***************************************************************************
+% * Define a command {\oufig) to centre a figure on a coloured background   *
+% * of specified width                                                      *
+% *                                                                         *
+% * THIS HAS BEEN REPLACED BY ENVIRONMENT NOW. KEPT FOR COMPATIBILITY       *
+% *                                                                         *
+% * First argument is colour: figurebox/bluebox/buffbox/greenbox            *
+% * Second argument is width: \figwidth / \marginwidth /  \solnwidth        *
+% * Example:                                                                *
+% *     \oufig{figurebox}{\figwidth}                                        *
+% *     {                                                                   *
+% *     \begin{tikzpicture}                                                 *
+% *     ....                                                                *
+% *     \end{tikzpicture}                                                   *
+% *     }                                                                   *
+% *                                                                         *    
+% *                                                                         *
+% ***************************************************************************
+
+
+\newcommand{\oufig}[3]{%
+\colorlet{@outikzbackground}{#1}%        
+\colorbox{@outikzbackground}{%
+\parbox{#2}{%
+\centering
+#3
+}}}
+

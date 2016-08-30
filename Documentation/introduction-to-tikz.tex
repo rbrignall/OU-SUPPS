@@ -1,0 +1,540 @@
+%
+% OU Tikz instructions
+%
+% 26/08/2016: Version 2
+% 29/10/2012: Version 1, Tim Lowe
+
+\documentclass[11pt]{article}
+
+\newcommand{\version}{2.1}
+\usepackage{../style/outikz}
+
+
+% page formatting
+\setlength{\textwidth}   {150mm}
+\setlength{\textheight}  {240mm}
+\setlength{\topmargin}     {0mm}
+\setlength{\oddsidemargin} {6mm}
+\setlength{\evensidemargin}{6mm}
+
+\setlength{\parskip}{2.5ex}   % space between paragraphs  was 10pt
+\setlength{\parindent}{0em}
+\raggedright
+
+% headers/footers: update for first page
+\usepackage{fancyhdr}
+\setlength{\headheight}    {0mm}
+\setlength{\headsep}       {-10mm}
+\fancyhead{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}%
+\pagestyle{fancy}
+
+
+
+\fancypagestyle{firstpagestyle}{
+\renewcommand{\headrulewidth}{0pt}%
+\fancyhead{}
+\fancyfoot[C]{Version \version \hfill TWL, \today}
+}
+% Compress table of contents spacing
+\usepackage{tocloft}
+\renewcommand\cftsecafterpnum{\vskip 0pt}
+
+
+
+% Define a simpler title format
+\makeatletter
+\def\@maketitle{%
+  \newpage
+  \begin{center}%
+    {\LARGE \textbf{\@title} \par}%
+    \vskip 3em%
+  \end{center}%
+  \par
+}
+\makeatother
+
+
+% tighten up itemize spacing
+\usepackage{enumitem}
+\setlist[itemize]{topsep=0.5em,itemsep=0.5em}
+
+
+
+% tighten up the spacing around sections, subsections etc
+\usepackage{titlesec}
+% options are {left spacing}{before spacing}{after spacing}
+\titlespacing\section{0pt}{10pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\subsection{0pt}{5pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\subsubsection{0pt}{9pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+
+
+% configure hyper references
+\usepackage[colorlinks=true, linktoc=none, urlcolor=blue, linkcolor=black]{hyperref}
+
+
+
+\begin{document}
+
+\title{Introduction to using the \LaTeX\ TikZ package}
+\maketitle
+
+\hrule
+\tableofcontents
+\vspace*{2em}\hrule
+
+\thispagestyle{firstpagestyle}
+
+
+\section{Introduction}
+
+
+This is a brief introduction to using the \LaTeX\ TikZ package to draw figures. The basic commands are described first, and the use of the OU styles described in Section~\ref{oustyles}. 
+
+More comprehensive descriptions include:
+
+\vspace{-\baselineskip}
+\begin{itemize}
+\item Jacques Cremer's ``A very minimal introduction to TikZ'', (but not that minimal !)
+
+\url{http://cremeronline.com/LaTeX/minimaltikz.pdf}
+\item The full manual, available at, for example,\\
+\null\hspace*{-10ex}\mbox{\url{http://mirror.ox.ac.uk/sites/ctan.org/graphics/pgf/base/doc/generic/pgf/pgfmanual.pdf}}
+\end{itemize}
+
+
+\newpage
+\section{Getting started}
+\subsection{A minimal file}
+
+A very simple tikz file is as follows.
+\begin{verbatim}
+\documentclass[11pt]{article}
+\usepackage{tikz}
+
+\begin{document}
+
+\begin{tikzpicture}
+\draw (0,0) -- (1,1);
+\end{tikzpicture}
+
+\end{document}
+\end{verbatim}
+
+\subsubsection*{Notes}
+\begin{itemize}
+\item \verb|\usepackage{tikz}| includes the standard tikz package. Replace this with \verb|\usepackage{outikz}| to use the OU styles, as described in Section~\ref{oustyles}.
+
+\item Tikz drawing commands are contained within
+\verb|\begin{tikzpicture}| and \verb|\end{tikzpicture}|
+
+Figures can be scaled using optional arguments to \verb|\begin{tikzpicture}|, for example:
+\begin{itemize}
+\item  \verb|\begin{tikzpicture}[scale=2]| to make the figure twice the normal size
+\item \verb|\begin{tikzpicture}[xscale=2,yscale=3]| to scale differently in the horizontal ($x$) and vertical ($y$) directions,
+% comment to help auctex environment matching: \end{tikzpicture}\end{tikzpicture}
+\end{itemize}
+  Line widths and text sizes are not affected by such scaling.
+
+\end{itemize}
+
+
+\textbf{Important} All tikz drawing commands end with a semi-colon (\verb|;|). If this is forgotten, processing the file will hang, for ever unless interrupted!
+
+
+
+
+\subsection{Processing the file}
+
+TikZ code can be processed by both \texttt{pdflatex} (to produce a pdf file) and \texttt{latex} to produce a dvi file. 
+
+When developing figures, it is often conveient to use \texttt{pdflatex} and view the output in a pdf viewer that does not ``lock'' the file (which would then  prevent \texttt{pdflatex} from updating the pdf when it is next run). Ghostview (\texttt{gsview}) allows the pdf to be updated, and automatcially refreshes to show the updated file.
+
+To view a tikz dvi file using \texttt{yap} (which comes as part of MiKTeX), ensure that from the \texttt{View menu}, in the \texttt{Render method} submenu, \texttt{Dvips} is selected.
+
+To produce a final eps of a figure for inclusion in a module unit, run \texttt{latex} to produce a \texttt{.dvi} file, then process this to an \texttt{eps} file. This \texttt{eps} file then needs to be further processed to remove any fonts embedded within the file (which may be replaced with different characters if the diagram is interactively edited by LTS) with drawings of the characters.
+
+On a command line, the file \texttt{file.tex} would be processed with
+\begin{verbatim}
+latex file
+dvips -E file.dvi -o tmp.eps
+gswin32 -dNOPAUSE -dNOCACHE -dBATCH -sDEVICE=epswrite -sOutputFile=(file).eps tmp.eps 
+\end{verbatim}
+(If the option \texttt{epswrite} is not recognised, use \texttt{eps2write} instead.)
+
+This final processing of figures to eps files could be done on a whole batch of files using a script.
+
+
+
+
+
+\section{Basic drawing}
+
+\subsection{Coordinates}
+
+Points can be specfied using either Cartesian coordinates, eg \verb|(2,3|), or polar coordinates, eg \verb|(30: 5)|.
+
+\hfill
+\begin{tikzpicture}[scale=0.5]
+\newcommand{\xmin}{-4}
+\newcommand{\xmax}{4}
+\newcommand{\ymin}{-4}
+\newcommand{\ymax}{4}
+
+
+%grid
+\draw[grid] (\xmin,\ymin) grid (\xmax,\ymax);
+
+% draw some axes
+\draw[axis] ( \xmin ,0) -- ( \xmax+1,0) node[xlab] {$x$};
+\draw[axis] (0,\ymin) -- (0, \ymax+1 ) node[ylab] {$y$};
+
+% with scale (skipping 0)
+\foreach \x in {\xmin, ..., \xmax}
+{
+  \ifthenelse{\x=0}{}{
+   \coordinate (XX) at (\x,0);
+   \draw[ticks, reset cm] (XX) -- ++(0,-\ticklength) node[below left, xshift=6.5pt, yshift=1.2pt] {$\x$}; 
+   }
+}
+
+\foreach \y in {\ymin, ..., \ymax}
+{
+  \ifthenelse{\y=0}{}{
+     \coordinate (XX) at (0,\y,0);
+     \draw[ticks, reset cm] (XX) --  ++(-\ticklength, 0) node[left, xshift=2pt]{$\y$};    
+   }
+}
+
+%\draw (4*\ltick,4*\ltick) node {$O$};
+
+
+% Add the points, and coordinate markers
+\draw[thin,red, dashed] (0,3) --(2,3);
+\draw[thin,red, dashed] (2,0)--(2,3);
+\draw (2,3) node[point, label=right:{$(2,3)$}]{}; 
+\end{tikzpicture}
+\hfill
+\begin{tikzpicture}[scale=0.5]
+\newcommand{\xmin}{-4}
+\newcommand{\xmax}{4}
+\newcommand{\ymin}{-4}
+\newcommand{\ymax}{4}
+
+
+%grid
+%\draw[grid] (\xmin,\ymin) grid (\xmax,\ymax);
+
+% draw some axes
+\draw[axis] ( \xmin ,0) -- ( \xmax+1,0) node[xlab] {$x$};
+\draw[axis] (0,\ymin) -- (0, \ymax+1 ) node[ylab] {$y$};
+
+% % with scale (skipping 0)
+% \foreach \x in {\xmin, ..., \xmax}
+% {
+%   \ifthenelse{\x=0}{}{
+%    \coordinate (XX) at (\x,0);
+%    \draw[ticks, reset cm] (XX) -- ++(0,-\ticklength) node[below left, xshift=6.5pt, yshift=1.2pt] {$\x$}; 
+%    }
+% }
+
+% \foreach \y in {\ymin, ..., \ymax}
+% {
+%   \ifthenelse{\y=0}{}{
+%      \coordinate (XX) at (0,\y,0);
+%      \draw[ticks, reset cm] (XX) --  ++(-\ticklength, 0) node[left, xshift=2pt]{$\y$};    
+%    }
+% }
+
+%\draw (4*\ltick,4*\ltick) node {$O$};
+
+
+
+% Add the points, and coordinate markers
+\draw[thin,red, dashed] (0,0) -- ++(30:5) node[black,point]{} node[pos=0.5,above]{$5$};
+\draw (30:5) node[right]{$(30:5)$};
+
+\draw[red, arc,-arcarrow] (2,0) arc(0:30:2) node[pos=0.5,right]{$30^{\circ}$};
+
+\end{tikzpicture}
+\hfill
+
+To give an angle in radians, follow it by ``\texttt{r}'', for example \texttt{0.25*pi r}.
+
+
+
+\subsection{Drawing lines}
+
+
+Draw a line between two coordinates using: \verb|\draw (1,2) -- (3,4);|
+
+More than two points can be included, and a set of straight-line segments is drawn between them: \verb|\draw (1,2) -- (3,4) -- (5,6);|
+
+Ending a line with \verb|-- cycle| joins the last point back to the first.
+
+%Omitting \verb|--| between two points omitts the line segment between them.
+
+Incremental coordinates can be used. For example
+\verb|\draw (1,2) -- ++(3,4);|
+starts at $(1,2)$, moves 3 units in the $x$-direction and 4 units in the $y$-direction and joins the two points.
+
+
+Line properties are set with optional arguments, for example \\
+\verb|\draw[red] (1,2) -- (3,4);| draws a red line.
+
+Multiple options can be given, separated by commas.
+
+
+\subsection{Naming points}
+
+
+
+Points can be given a name and then used later. For example,
+
+\verb|\coordinate (A) at (1,2);| 
+
+defines \texttt{A} to be the point \texttt{(1,2)}. This can then be used to draw: \verb|\draw (A) -- (3,4);|
+
+Names can be assigned to points as a line is drawn:
+\verb|\draw (1,2) coordinate (A) -- (3,4) coordinate (B);|
+
+
+Names can also be defined incrementally without drawing a line: \verb|\path (1,2) -- ++(30: 2) coordinate (C);|\\
+defines $C$ to be 2 units at an angle of 30$^o$ from $(1,2)$.
+
+
+\subsection{Drawing shapes}
+
+There are various commands to draw shapes, including:
+
+\begin{itemize}
+\item Rectangle, with the point $A$ at the lower left corner, and $B$ the upper right.
+
+\verb|\draw (A) rectangle (B);|  
+
+\item A grid of lines, again with $A$ at the lower left corner and $B$ the upper right.
+
+\verb|\draw (A) grid (B);|  
+
+\item Circle
+
+\verb|\draw (A) circle (3);|  Gives a circle, centre $A$, radius 3.
+
+\verb|\node[draw, circle through=(B)] at (A) {};| This gives a circle centre $A$ passing though $B$. This requires the use of the additional \texttt{through} tikz library which is included using the command  \verb|\usetikzlibrary{through}|.
+
+\item Arc, beginning at the point $A$ and starting by making an angle of $10^o$ (relative to the positive $x$-axis), measured from the centre of the circle of which the arc is part, and ends when the angle subtended is $80^o$. The radius of the arc is 2.
+
+\verb|\draw (A) arc [start angle=10, end angle=80, radius=2];|  
+
+Alternatively,
+
+\verb|\draw (A) arc (10:80:2);|
+\end{itemize}
+
+\begin{center}
+\begin{tikzpicture}[scale=1.3]
+\coordinate (A) at (0,0);
+\draw (A) node[point]{} node[right]{A} arc (10:80:2);
+
+\draw[red,thin] (A)--++(-170:2) coordinate (O);
+\draw[red,thin] (O)--++(2,0);
+\draw[red,thin] (O)--++(80:2);
+
+\path (O) --++(1.5,0) coordinate (B);
+\draw[red,thin] (B) arc (0:10:1.5) node[pos=0.5,right]{$10^o$};
+
+
+\path (O) --++(0.5,0) coordinate (C);
+\draw[red,thin] (C) arc (0:80:0.5) node[pos=0.5, above right]{$80^o$};
+
+
+\end{tikzpicture}
+\end{center}
+
+
+The colour filling a closed object can be given using the \texttt{fill} option to \verb|\draw|, for example \verb|\draw[fill=blue]|.
+
+
+
+\subsection{Adding text}
+
+Text (or other \LaTeX) can be added at a point on a diagram using the \texttt{node} command. For example,
+
+\verb|\node at (3,4) {text};|  
+
+or
+\verb| \draw  (3,4) node {text};|
+
+
+Nodes can be included whilst drawing:
+
+\verb|\draw (0,0) -- (3,4) node{A};|  draws a line from $(0,0)$ to $(3,4)$ and add the text ``A'' at the final point.
+
+\verb|\draw (0,0) -- (3,4) node {A} node[pos=0.5]{B};|  draws a line from $(0,0)$ to $(3,4)$ and add the text ``A'' at the final point, and ``B'' at the point halfway along the line.
+
+By default, the node  text is centred on the point given.
+Alternatively, text can be placed near the point, rather than on it, by specifying the optional arguments \verb|left, right, above, below, below left| etc, for example
+
+ \verb|\node[above right] at (3,4) {text};|
+
+A colour for the text can also be given with the arguments of \texttt{node}.
+
+
+
+
+
+\subsection{Colours}
+
+As well as the usual colour names \texttt{red}, \texttt{green}, \texttt{blue} etc, shades of colours can be used: \texttt{red!20} is 20\% of red. \texttt{red!20!blue} is 20\% of red, the remaining 80\% being of blue.
+
+
+
+
+\subsection{Plotting functions}
+
+A simple function $y=-x^2+4x+8$ can be plotted using\\
+\verb|\draw[domain=-2:6, samples=100] plot (\x, {-\x*\x+4*\x+8}); |
+
+This plots the function over the domain $-2\le x \le 6$, using 100 points.
+
+The functions \texttt{sin}, \texttt{cos}, \texttt{sqrt} etc can be used in specifying the function to plot.
+
+
+To restrict the line plotted to a certain region, for example, ensuring it does not go beyond the  coordinate axis, a clipping region can be set. Since the clipping should only apply to the curve, it is contained in a \texttt{scope} block.
+
+\begin{verbatim}
+\begin{scope}
+  \clip (-2, -1) rectangle (6, 5);
+  \draw[domain=-2:6, samples=100] plot (\x, {-\x*\x+4*\x+8}); 
+\end{scope}
+\end{verbatim}
+
+\emph{\textbf{Note}: In practice, this can lead to the lines forming the boundary of the clipping window being seen, possibly due to rounding errors. It is better to restrict the domain of the function instead.}
+
+
+Alternatively, TikZ can generate GNUPLOT code and then import the data produced by GNUPLOT. (To use this, you will obviously need GNUPLOT installed on your computer). For example
+
+\verb|\draw[parametric, domain=-2:2, samples=50] plot[id=1] function{t,t*t};|
+
+plots the (trivial) parametric curve $(x,y)=(t,t^2)$ for $-2\le t\le2$ using 50 sampling points. A file \texttt{filename.1.gnuplot} (the name includes the \texttt{id} specified in the TikZ command, which could be text) is generated the first time \LaTeX\ is run. Clicking on that file runs GNUPLOT which creates a \texttt{.table} data file. Running \LaTeX\ again uses the \texttt{.table} file to create the plot. Some \LaTeX\ systems might automate all this!
+
+
+
+
+
+
+\subsection{Calculating points.}
+
+In a complicated diagram, it is possible to calculate the position of points based on others. This requires the use of the 
+\texttt{calc} tikz library which 
+can be included using the command \verb|\usetikzlibrary{calc}|. This
+is automatically included when using the OU styles.
+
+\begin{itemize}
+\item \verb|($ (A) ! 0.25 ! (B) $)| is the point on the line $AB$, one quarter of the way from $A$ to $B$.
+\item  \verb|($ (A) ! 2cm ! (B) $)| is the point on the line $AB$, 2\,cm  from $A$ towards $B$. Note: distances are affected by figure scaling commands.
+\item  \verb|($ (A) ! 2cm !30:  (B) $)| start at $A$, move 2\,cm towards $B$, then rotate 30$^o$ about $A$.
+\item   \verb|($ (A) ! (C)! (B) $)| the projection of the point $C$ onto the line $AB$. Note there is no space after \texttt{(C)}.
+\end{itemize}
+
+It is also possible to find the points of intersection of two objects, which requires the \texttt{intesections} library which can be included using
+\verb|\usetikzlibrary{intersections}|.
+
+For example
+\begin{verbatim}
+\draw[name path = mycircle] (0,1) circle (1);% Plot a circle, giving it the name mycircle
+\draw[name path = myline]  (-1,-1) -- (2,2); % Plot a line, giving it the name myline
+\path[name intersections={of=mycircle and myline}]; % Calculate the intersections
+
+% Draw a red line between the intersection points
+\draw[red] (intersection-1) -- (intersection-2); 
+\end{verbatim}
+
+
+
+
+
+
+\newpage
+\section{OU tikz styles}
+\label{oustyles}
+
+To produce tikz figures to the OU styles, a \LaTeX\ style has been developed:
+\texttt{outikz.sty}.
+
+The use of the this style should be specified in the preamble of the \LaTeX\ file, using \verb|\usepackage{outikz}|, to replace  \verb|\usepackage{tikz}|.
+
+The styles defined are listed and demonstrated in the files \texttt{outikz-styles-demo.tex} and \texttt{outikz-styles-demo.pdf}.
+
+\subsection{Installing \texttt{outikz.sty}}
+
+The style file is available from the GitHub respository: 
+\url{https://github.com/rbrignall/OU-SUPPS}.
+
+To use the styles, there are two possible options.
+
+\begin{enumerate}
+\item Place a copy of \texttt{outikz.sty} in the folder you are working in, with your figure \LaTeX\ files. This is the simplest approach, but will need a copy of \texttt{outikz.sty} in each folder you work in.
+
+\item Add \texttt{outikz.sty} to your \LaTeX\ installation. Assuming you keep your local installation files in \verb|C:\Local_TeX_Files|, copy \texttt{outikz.sty} to \verb|C:\Local_TeX_Files\tex\latex\outikz\outikz.sty|, creating subfolders as needed.
+
+If you did not initially have a local files location, such as \verb|C:\Local_TeX_Files| above, you need to tell \LaTeX\ to look there. 
+Assuming you are using MikTeX, open
+\verb|Start->MikTex 2.9 ->Maintenance (Admin) -> Settings (Admin)|, select the
+\texttt{Roots} tab and add \verb|C:\Local_TeX_Files| (or what-ever you called it) as a root path.
+
+In any case,
+you then need to refresh the \LaTeX\ internal database. Assuming you are using MikTeX, open
+\verb|Start->MikTex 2.9 ->Maintenance (Admin) -> Settings (Admin)|, and on the \texttt{General} tab press \texttt{refresh FNDB}.
+\end{enumerate}
+
+
+\subsection{Using \texttt{outikz.sty} for the first time}
+
+
+The first time you process a \LaTeX\ file using  \texttt{outikz.sty} you may
+need to install some (standard) packages that it uses.
+
+If you are using a recent version of MiKTeX, the system should download and install all the required packages when you first process a file using them. If you are within the OU firewall, you need to ensure your proxy settings are correct 
+(\texttt{wwwcache.open.ac.uk}, port 80) to permit this. These settings can be changed at:
+
+\verb|Start->MikTex 2.9 ->Maintenance (Admin) -> Update (Admin)| and
+click \texttt{connection settings}.
+
+
+
+
+\section{OU figure guidelines}
+
+When producing OU figures, please bear in mind the following.
+
+\begin{itemize}
+\item Text on diagrams should be 11pt Computer Modern. (Hence including the \texttt{[11pt]} option to \verb|\documentclass|.)
+
+\item Make sure you use the correct colour for the correct module. The available colours are defined towards the start of  \texttt{outikz.sty}.
+
+For ease of use, you might like to rename, for example \texttt{MST124red}, to be \texttt{red} by include the line \verb|\colorlet{red}{MST124red}| in your figure file.
+
+
+\item Generally, the predefined colours should be used with the following priority:
+black, blue, red, green, purple. 
+
+%Do not use red and purple on the same figure (they are indistinguishable to the colour blind).
+
+\item When a graph contains one curve/line it should be black. When a graph contains two curves/lines of equal importance, different colours can be used (eg, blue, red).
+
+\item Points and coordinates marked on a graph should be in the same colour as the line itself.
+
+\item When using (coloured) construction lines, and a main graph or curve, it is usually best to draw the main graph last, so it hides the ends of the construction lines.
+
+\item When shading an area, use 20\% of one of the standard colours.
+Eg, to shade a rectangle green:\\
+\verb|\draw[fill=green!20] (0,0) rectangle (2,2);|
+
+\end{itemize}
+
+
+
+
+\end{document}
