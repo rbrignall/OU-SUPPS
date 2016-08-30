@@ -44,7 +44,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 1.31\\2016-08-27}
+\date{Version 1.32\\2016-08-30}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -906,21 +906,38 @@ Not yet written!
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%
+\pagebreak
 \section{Moving from OUTeX}
 
 Some features in OUTeX have not been carried over. Here is some help to help you adjust to standard \LaTeX.
 
-\begin{tabular}{p{0.3\textwidth}p{0.6\textwidth}}
+\begin{tabular}{@{}p{0.3\textwidth}@{\hspace{0.05\textwidth}}p{0.65\textwidth}@{}}
 OUTeX& \LaTeX\\\hline
+Figures & Use the standard LaTeX figure environment. e.g.\newline
+|\begin{figure}\label{<label>}|\newline
+|\centering|\newline
+|\includegraphics{<image>}|\newline
+|\caption{<caption>}|\newline
+|\end{figure}|\newline
+See sources online for options to float figures, etc.
+\\\hline
+Compiling: |latex|, |dvips| + |ps2pdf| with |eps| files & You can use |pdflatex| with |eps| files, but to do so you need to add this to the preamble:\newline
+|\usepackage{epstopdf}|\newline
+The alternative is to use the old route |latex|, |dvips| + |ps2pdf|.
+\\\hline
 |\intertext|&|\end{enumerate}...\begin{enumerate}[resume]|\\\hline
 |\|\texttt{\textless ...\&...}|\|\texttt{\textgreater}&|\begin{align*}...&...\end{align*}|\newline
 You can recover the OUTeX command by inserting the following into your preamble:\newline
 |\def\|\texttt{\textless}|#1\|\texttt{\textgreater}|{\begin{align*}#1\end{align*}}|\newline
-However, we do not recommend you use this, as it will not be understood by anyone not previously familiar with OUTeX (e.g. ALs).
+However, we do not recommend you use this, as it will not be understood by anyone not previously familiar with OUTeX (e.g. ALs), and will mean snippets of your code won't work out of the context of the file it's in.
 \\\hline
-Matrix alignment & Load the |mathtools| package, or use the |array| environment instead, with |\left(| and |right)| as appropriate.
+|\[ ... \\ ... \]|&
+|\beglin{gather*}...\\...\end{gather*}|
 \\\hline
-Figures & Use the standard LaTeX figure environment. If embedding |eps| files, you will need to compile using latex, dvips and ps2pdf, rather than pdflatex.
+Matrix alignment & Load the |mathtools| package, so you can write e.g. |\begin{pmatrix}[l]|\newline |<matrix>|\newline |\end{pmatrix}|\newline to left-align all columns. Alternatively (and to specify different column alignments) use the |array| environment instead, e.g.:\newline |\left(\begin{array}{lrcl}|\newline |<matrix>|\newline|\end{array}\right)|.
+\\\hline
+Binomials (column vector format)& |\binom{n}{k}|\\\hline
+|\setright{\text{<text>}}|&|\tag{<text>}|\\\hline
 \end{tabular}
 
 \end{document}
