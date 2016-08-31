@@ -11,6 +11,7 @@
 \DeclareOption{specsolns}{%
   \@specsolnstrue
 }
+
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
@@ -246,14 +247,31 @@
   \newcommand{\subtotal}[2][\unskip]{\relax}
   \newenvironment{longremark}{\comment}{\endcomment}
 \else
-  \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{4cm}}}
-  \newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{4cm}}}
-  \newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[1cm][r]{#1}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #2}}}}
+  \newcounter{total}[question]
+  \newcounter{subtotal}[question]
+  \newcommand{\@update@totals}[1]{%
+     \addtocounter{subtotal}{#1}%
+     \addtocounter{total}{#1}%
+  }
+  \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{4cm}}\@update@totals{#1}}
+  \newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{4cm}}\@update@totals{#1}}
+  \newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[1cm][r]{#1}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #2}}}\@update@totals{#1}}
+  \def\total{\@ifstar\@total\@@total}
+  \def\subtotal{\@ifstar\@subtotal\@@subtotal}
   \newcommand{\remark}[1]{\emph{Remark:} #1}
-  \newcommand{\total}[2][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{#2}\ Total\ #1}}
-  \newcommand{\subtotal}[2][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}}
   \newenvironment{longremark}{\emph{Remarks:}\par}{}
 \fi
+
+% \total*
+\newcommand{\@total}[1][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}}
+% \total[]{}
+\newcommand{\@@total}[2][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{#2}\ Total\ #1}}
+% \subtotal*
+\newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}}
+% \subtotal[]{}
+\newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}}
+
+
 %
 \def\marks{\solnmarks}
 \def\mk{\solnmarks}
