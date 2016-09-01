@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/08/26 v0.51 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/08/26 v0.52 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
