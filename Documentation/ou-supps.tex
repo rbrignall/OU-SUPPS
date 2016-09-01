@@ -520,6 +520,17 @@ Specifies that the subtotal or total for a part-question or question is |<n>|, p
 |\subtotal[for part \theenumi]{<n>]}|\\
 |\total[for Question \thequestion]{<n>]}|.
 
+\begin{desc}
+|\subtotal*[<description>]|\\
+|\total*[<description>]|
+\end{desc}
+
+Calculates the subtotal or total for a part-question or question, placing 
+the calculated value in the margin, and the word `Subtotal' or `Total' in large, 
+bold to its right; the calculated value accounts for all marks given in 
+any of the following commands: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
+|marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
+as with the |\subtotal| and |\total| commands. 
 
 \subsubsection{Multiple choice} 
 
