@@ -532,6 +532,48 @@ any of the following commands: |bracketedmarks|, |solnmarks|, |solnmarksplus|,
 |marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
 as with the |\subtotal| and |\total| commands. 
 
+\begin{desc}
+|\setSubtotalHline[<options>]|
+\end{desc}
+
+Sets options (including turning off) for horizontal lines after |\subtotal| and
+|\subtotal*| command. Supported options, in any order, are:
+\begin{itemize}
+  \item |moveleft=<length>|, default is |.1\textwidth|: specifies the horizontal offset of the line;
+  \item |width=<length>|, default is |1.5\textwidth|: specifies the horizontal width of the line;
+  \item |height=<length>|, default is |2pt|: specifies the height of the line;
+  \item |color=<color>|, default is |black|: specifies the colour of the line;
+  \item |draw line=<true/false>|, default is |true|: specifies if the line is to be drawn or not.
+\end{itemize}
+
+Simply calling |\setSubtotalHline| without options, resets all of the options
+to their default values.
+
+Sample uses include, for example:
+
+|\setSubtotalHline[moveleft=0pt]|
+
+|\setSubtotalHline[moveleft=0pt,height=5pt,color=orange]|
+
+This command is just a short cut to the |\pgfkeys| command, and 
+users familiar with the syntax of |\pgfkeys| might prefer to use, 
+for example:
+
+|\pgfkeys{/subtotalhline,default,moveleft=-3cm,color=red!40!white}|
+
+\begin{desc}
+|\setTotalHline[<options>]|
+\end{desc}
+This is analogous to the |\setSubtotalHline| command, and customises the lines
+drawn (if any) after the |\total| and |\total*| commands. It takes exactly 
+the same options as |\setSubtotalHline|, and they perform the analogous
+tasks; the default |height| for the |subtotal| horizontal lines is |1pt|, 
+but all other defaults are the same as those for the  |total| horizontal lines.
+
+Users who prefer to use |\pgfkeys| directly may use, for example,
+
+|\pgfkeys{/totalhline,default,moveleft=-3cm,color=red!40!white}|
+
 \subsubsection{Multiple choice} 
 
 For CMAs and other assignment types that have multiple choice questions, the following commands are available. It is unlikely that these will be needed in tutornotes, but they have been included for consistency with |ouab.cls|.

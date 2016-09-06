@@ -131,8 +131,73 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
     or \verb!\total*[comment]! \mk 3
 \end{enumerate}
 \subtotal*
+
 \bigskip
 \total*
+
+\question{3}
+\begin{enumerate}
+  \item The lines after a \verb!subtotal! command can be customized using
+    the \verb!\setSubtotalHline[<options>]! command, the \verb!<options>! 
+    are \verb!moveleft!, \verb!width!, \verb!height!, \verb!color!, 
+    and \verb!draw line!. 
+    These options can be used in any combination (and should probably be set once in the preamble); for example, 
+    \begin{itemize}
+      \item default behaviour
+
+        \subtotal*
+      \item \verb!\setSubtotalHline[moveleft=0pt]!
+        \setSubtotalHline[moveleft=0pt]
+
+        \subtotal*
+      \item \verb!\setSubtotalHline[moveleft=-2cm,width=.5\textwidth]!
+        \setSubtotalHline[moveleft=-2cm,width=.5\textwidth]
+
+        \subtotal*
+      \item \verb!\setSubtotalHline[color=green]!
+        \setSubtotalHline[color=green] \mk{2}
+
+        \subtotal{3}
+      \item \verb!\setSubtotalHline[moveleft=0pt,height=5pt,color=orange]!
+        \setSubtotalHline[moveleft=0pt,height=5pt,color=orange]
+
+        \subtotal*
+      \item turn off: \verb!\setSubtotalHline[draw line=false]! \mk{1}
+            \setSubtotalHline[draw line=false]
+        
+        \subtotal*
+    \end{itemize}
+  \item The lines after a \verb!total! command can be customised 
+    using the \verb!\setTotalHline[<options>]! command, and have
+    exactly the same options as its \verb!\setSubtotalHline! counterpart.
+
+    For example,
+    \begin{itemize}
+      \item default behaviour
+        
+        \total{1}
+      \item \verb!\setTotalHline[moveleft=10pt]!
+        \setTotalHline[moveleft=10pt]
+
+        \total*
+      \item \verb!\setTotalHline[moveleft=2cm,width=.75\textwidth]!
+        \setTotalHline[moveleft=2cm,width=.75\textwidth]
+
+        \total*
+      \item \verb!\setTotalHline[color=purple]!
+        \setTotalHline[color=purple] 
+
+        \total{3}
+      \item \verb!\setTotalHline[moveleft=0pt,height=.5pt,color=yellow]!
+        \setTotalHline[moveleft=0pt,height=.5pt,color=yellow]
+
+        \total*
+      \item turn off: \verb!\setTotalHline[draw line=false]!
+            \setTotalHline[draw line=false]
+        
+        \total*
+    \end{itemize}
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \cma*{41}[Covers Units C and D]
