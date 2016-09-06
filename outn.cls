@@ -229,7 +229,7 @@
  default/.style =
   {moveleft=.1\textwidth,
    width=1.5\textwidth,
-   height=3pt,
+   height=2pt,
    color=black},
    moveleft/.estore in=\@outn@total@hline@move@left,
    width/.estore in=\@outn@total@hline@width,
@@ -240,7 +240,7 @@
  default/.style =
   {moveleft=.1\textwidth,
    width=1.5\textwidth,
-   height=3pt,
+   height=1pt,
    color=black},
    moveleft/.estore in=\@outn@subtotal@hline@move@left,
    width/.estore in=\@outn@subtotal@hline@width,

@@ -541,7 +541,7 @@ Sets options (including turning off) for horizontal lines after |\subtotal| and
 \begin{itemize}
   \item |moveleft=<length>|, default is |.1\textwidth|: specifies the horizontal offset of the line;
   \item |width=<length>|, default is |1.5\textwidth|: specifies the horizontal width of the line;
-  \item |height=<length>|, default is |3pt|: specifies the height of the line;
+  \item |height=<length>|, default is |2pt|: specifies the height of the line;
   \item |color=<color>|, default is |black|: specifies the colour of the line;
   \item |draw line=<true/false>|, default is |true|: specifies if the line is to be drawn or not.
 \end{itemize}
@@ -567,7 +567,8 @@ for example:
 This is analogous to the |\setSubtotalHline| command, and customises the lines
 drawn (if any) after the |\total| and |\total*| commands. It takes exactly 
 the same options as |\setSubtotalHline|, and they perform the analogous
-tasks. 
+tasks; the default |height| for the |subtotal| horizontal lines is |1pt|, 
+but all other defaults are the same as those for the  |total| horizontal lines.
 
 Users who prefer to use |\pgfkeys| directly may use, for example,
 
