@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/08/26 v0.52 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/09/06 v0.53 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
@@ -32,6 +32,7 @@
 \RequirePackage{xcolor}
 %\RequirePackage[xcolor]{mdframed}
 \RequirePackage{framed}
+\RequirePackage{pgfkeys}
 \RequirePackage{environ}
 \if@studenttex
   \RequirePackage{l3regex,l3tl-analysis,l3str}
@@ -216,6 +217,68 @@
 \def\cma{\@ifstar\@cma\@@cma}
 \def\@cma{\samepageassignment{CMA}}
 \def\@@cma{\assignment{CMA}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Horizontal lines after subtotals and totals
+\newif\ifdraw@total@line
+\newif\ifdraw@subtotal@line
+
+% reference: http://tex.stackexchange.com/questions/34312/how-to-create-a-command-with-key-values
+\pgfkeys{
+ /totalhline/.is family, /totalhline,
+ default/.style =
+  {moveleft=.1\textwidth,
+   width=1.5\textwidth,
+   height=3pt,
+   color=black},
+   moveleft/.estore in=\@outn@total@hline@move@left,
+   width/.estore in=\@outn@total@hline@width,
+   height/.estore in=\@outn@total@hline@height,
+   color/.estore in=\@outn@total@hline@color,
+   draw line/.is if=draw@total@line,
+ /subtotalhline/.is family, /subtotalhline,
+ default/.style =
+  {moveleft=.1\textwidth,
+   width=1.5\textwidth,
+   height=3pt,
+   color=black},
+   moveleft/.estore in=\@outn@subtotal@hline@move@left,
+   width/.estore in=\@outn@subtotal@hline@width,
+   height/.estore in=\@outn@subtotal@hline@height,
+   color/.estore in=\@outn@subtotal@hline@color,
+   draw line/.is if=draw@subtotal@line,
+}
+
+% command to customise the line after totals
+\newcommand{\setTotalHline}[1][]{%
+    \pgfkeys{/totalhline,default,#1}%
+}
+% by default, turn subtotal lines on
+\setTotalHline[draw line]
+
+% command to customise the line after subtotals
+\newcommand{\setSubtotalHline}[1][]{%
+    \pgfkeys{/subtotalhline,default,#1}%
+}
+% by default, turn subtotal lines on
+\setSubtotalHline[draw line]
+ 
+% reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
+\newcommand{\outn@draw@rule}[4]{%
+        % #1: moveleft
+        % #2: width
+        % #3: color
+        % #4: height
+    \par\bigskip\nobreak % don't break a page here
+    \moveleft#1\vbox{% we want the rule to protrude on the left
+    \hsize=#2% correct the length
+    \kern\the\prevdepth % don't take into account the depth of the preceding line
+    \kern\baselineskip % space before the rule
+    \color{#3}\hrule height #4 width\hsize % the rule
+    \kern3pt % space after the rule
+  }\nointerlineskip % no additional space after the rule
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question headers
 \newcounter{question}
@@ -263,13 +326,35 @@
 \fi
 
 % \total*
-\newcommand{\@total}[1][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}}
+\newcommand{\@total}[1][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
 % \total[]{}
-\newcommand{\@@total}[2][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{#2}\ Total\ #1}}
+\newcommand{\@@total}[2][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+
 % \subtotal*
-\newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}}
+\newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+
 % \subtotal[]{}
-\newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}}
+\newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+
+% total horizontal rule
+\newcommand{\outn@draw@total@rule}{%
+\ifdraw@total@line
+        \outn@draw@rule{\@outn@total@hline@move@left}%
+                       {\@outn@total@hline@width}%
+                       {\@outn@total@hline@color}%
+                       {\@outn@total@hline@height}%
+\fi%
+}
+
+% subtotal horizontal rule
+\newcommand{\outn@draw@subtotal@rule}{%
+\ifdraw@subtotal@line
+        \outn@draw@rule{\@outn@subtotal@hline@move@left}%
+                       {\@outn@subtotal@hline@width}%
+                       {\@outn@subtotal@hline@color}%
+                       {\@outn@subtotal@hline@height}%
+\fi%
+}
 
 
 %
