@@ -44,7 +44,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 1.32\\2016-08-30}
+\date{Version 1.33\\2016-09-14}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -707,6 +707,12 @@ The |showsolutions| option can be used alongside the |specimen| option to provid
 \end{desc}
 
 This provides a large-print version for visually impaired students. Also available are |17pt| and |20pt|, and these all work with other options. These options should only be used in response to specific requests made by students, and should not be used to produce the standard exam.
+
+\begin{desc}
+|\documentclass[nobarcode]{ouexam}|
+\end{desc}
+
+This option is available for drafting exams, on machines where the package containing |barcodes.sty| does not work properly. In most cases, the DPU can insert the requisite barcode later.
 
 \subsubsection{Commands to be used in the preamble}
 \begin{desc}

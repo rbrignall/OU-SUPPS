@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2016/08/27 v1.22 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2016/09/14 v1.23 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -42,6 +42,11 @@
  \@bigfontneededtrue
  \def\@txtsize{20pt}
 }
+\newif\if@nobarcode
+\@nobarcodefalse
+\DeclareOption{nobarcode}{%
+	\@nobarcodetrue
+}
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
@@ -68,7 +73,11 @@
 \RequirePackage{marginnote}
 \RequirePackage[xcolor]{mdframed}
 \RequirePackage{verbatim}
-\RequirePackage{barcodes}
+\if@nobarcode
+	\relax
+\else
+	\RequirePackage{barcodes}
+\fi
 
 %%
 
@@ -149,12 +158,16 @@
 \@barcodefalse
 %
 \def\@examcode{\relax} % default blank
-\newcommand\examcode[1]{%
-  \@barcodetrue
-  \DeclareRobustCommand\@examcode{#1}
-  \def\bar@examcode{\barcodefont @#1@}
-  \settowidth{\barcodewidth}{\bar@examcode}
-}
+\if@nobarcode % Set by nobarcode option to class as override
+	\newcommand\examcode[1]{\relax}
+\else
+	\newcommand\examcode[1]{%
+	  \@barcodetrue
+	  \DeclareRobustCommand\@examcode{#1}
+	  \def\bar@examcode{\barcodefont @#1@}
+	  \settowidth{\barcodewidth}{\bar@examcode}
+	}
+\fi
 %
 % Makes parbox of correct width and inserts barcode
  \def\setbarcode
