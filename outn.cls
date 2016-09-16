@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/09/06 v0.53 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/09/16 v0.6 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
@@ -302,8 +302,9 @@
 %% Marks and remarks
 
 \if@specsolns
-  \newcommand{\bracketedmarks}[1]{\relax}
-  \newcommand{\solnmarks}[1]{\relax}
+  % suppress everything
+  \newcommand{\bracketedmarks}[2][]{\relax}
+  \newcommand{\solnmarks}[2][]{\relax}
   \newcommand{\solnmarksplus}[2]{\relax}
   \newcommand{\remark}[1]{\relax}
   \newcommand{\total}[2][\unskip]{\relax}
@@ -312,13 +313,19 @@
 \else
   \newcounter{total}[question]
   \newcounter{subtotal}[question]
-  \newcommand{\@update@totals}[1]{%
-     \addtocounter{subtotal}{#1}%
-     \addtocounter{total}{#1}%
-  }
-  \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{4cm}}\@update@totals{#1}}
-  \newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{4cm}}\@update@totals{#1}}
-  \newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[1cm][r]{#1}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #2}}}\@update@totals{#1}}
+\def\@update@totals#1{%
+  \afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
+\def\get@args#1\hfuzz#2\hfuzz{%
+  \if\relax\detokenize{#1}\relax
+     \addtocounter{subtotal}{#2}%
+     \addtocounter{total}{#2}%
+  \else
+    \relax
+  \fi
+}
+  \newcommand{\bracketedmarks}[2][\unskip]{\marginnote{\hfill \makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}}\@update@totals{#2}}
+  \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill\small \makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}}\@update@totals{#2}}
+  \newcommand{\solnmarksplus}[2]{\solnmarks[#2][#1]}
   \def\total{\@ifstar\@total\@@total}
   \def\subtotal{\@ifstar\@subtotal\@@subtotal}
   \newcommand{\remark}[1]{\emph{Remark:} #1}
