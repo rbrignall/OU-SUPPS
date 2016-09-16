@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/09/16 v0.6 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/09/16 v0.61 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
@@ -325,7 +325,7 @@
 }
   \newcommand{\bracketedmarks}[2][\unskip]{\marginnote{\hfill \makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}}\@update@totals{#2}}
   \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill\small \makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}}\@update@totals{#2}}
-  \newcommand{\solnmarksplus}[2]{\solnmarks[#2][#1]}
+  \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
   \def\total{\@ifstar\@total\@@total}
   \def\subtotal{\@ifstar\@subtotal\@@subtotal}
   \newcommand{\remark}[1]{\emph{Remark:} #1}
