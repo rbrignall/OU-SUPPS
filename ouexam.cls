@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2016/09/14 v1.23 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2016/10/05 v1.24 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -151,8 +151,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BARCODE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\font\barcodefont=wlc39 scaled 1300    % Size OK?
-\newlength\barcodewidth
+
 %
 \newif\if@barcode
 \@barcodefalse
@@ -161,6 +160,8 @@
 \if@nobarcode % Set by nobarcode option to class as override
 	\newcommand\examcode[1]{\relax}
 \else
+	\font\barcodefont=wlc39 scaled 1300    % Size OK?
+	\newlength\barcodewidth
 	\newcommand\examcode[1]{%
 	  \@barcodetrue
 	  \DeclareRobustCommand\@examcode{#1}
