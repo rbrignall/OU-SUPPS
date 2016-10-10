@@ -1,13 +1,14 @@
 %
 % OU Tikz instructions
 %
+% 05/10/2016: Version 2.2: Flexing arrows and carc
 % 26/08/2016: Version 2
 % 29/10/2012: Version 1, Tim Lowe
 
 \documentclass[11pt]{article}
 
-\newcommand{\version}{2.1}
-\usepackage{../style/outikz}
+\newcommand{\version}{2.2}
+\usepackage{outikz}
 
 
 % page formatting
@@ -90,7 +91,8 @@
 \section{Introduction}
 
 
-This is a brief introduction to using the \LaTeX\ TikZ package to draw figures. The basic commands are described first, and the use of the OU styles described in Section~\ref{oustyles}. 
+This is a brief introduction to using the \LaTeX\ TikZ package to draw figures. The basic commands are described first, including a few useful additions provided by the OU style file \texttt{outikz.sty}. The use and installation of the 
+OU style file is more fully described in Section~\ref{oustyles}. 
 
 More comprehensive descriptions include:
 
@@ -149,7 +151,7 @@ Figures can be scaled using optional arguments to \verb|\begin{tikzpicture}|, fo
 
 TikZ code can be processed by both \texttt{pdflatex} (to produce a pdf file) and \texttt{latex} to produce a dvi file. 
 
-When developing figures, it is often conveient to use \texttt{pdflatex} and view the output in a pdf viewer that does not ``lock'' the file (which would then  prevent \texttt{pdflatex} from updating the pdf when it is next run). Ghostview (\texttt{gsview}) allows the pdf to be updated, and automatcially refreshes to show the updated file.
+When developing figures, it is often convenient to use \texttt{pdflatex} and view the output in a pdf viewer that does not ``lock'' the file (which would then  prevent \texttt{pdflatex} from updating the pdf when it is next run). Ghostview (\texttt{gsview}) allows the pdf to be updated, and automatically refreshes to show the updated file.
 
 To view a tikz dvi file using \texttt{yap} (which comes as part of MiKTeX), ensure that from the \texttt{View menu}, in the \texttt{Render method} submenu, \texttt{Dvips} is selected.
 
@@ -161,6 +163,7 @@ latex file
 dvips -E file.dvi -o tmp.eps
 gswin32 -dNOPAUSE -dNOCACHE -dBATCH -sDEVICE=epswrite -sOutputFile=(file).eps tmp.eps 
 \end{verbatim}
+\vspace{-\baselineskip}
 (If the option \texttt{epswrite} is not recognised, use \texttt{eps2write} instead.)
 
 This final processing of figures to eps files could be done on a whole batch of files using a script.
@@ -173,9 +176,9 @@ This final processing of figures to eps files could be done on a whole batch of 
 
 \subsection{Coordinates}
 
-Points can be specfied using either Cartesian coordinates, eg \verb|(2,3|), or polar coordinates, eg \verb|(30: 5)|.
+Points can be specified using either Cartesian coordinates, eg \verb|(2,3|), or polar coordinates, eg \verb|(30: 5)|.
 
-\hfill
+\vspace{-\baselineskip}\hfill
 \begin{tikzpicture}[scale=0.5]
 \newcommand{\xmin}{-4}
 \newcommand{\xmax}{4}
@@ -255,11 +258,12 @@ Points can be specfied using either Cartesian coordinates, eg \verb|(2,3|), or p
 \draw[thin,red, dashed] (0,0) -- ++(30:5) node[black,point]{} node[pos=0.5,above]{$5$};
 \draw (30:5) node[right]{$(30:5)$};
 
-\draw[red, arc,-arcarrow] (2,0) arc(0:30:2) node[pos=0.5,right]{$30^{\circ}$};
+\draw[red, arc, -arcarrow] (2,0) arc(0:30:2) node[pos=0.5,right]{$30^{\circ}$};
 
 \end{tikzpicture}
 \hfill
 
+\vspace{-\baselineskip}
 To give an angle in radians, follow it by ``\texttt{r}'', for example \texttt{0.25*pi r}.
 
 
@@ -286,6 +290,11 @@ Line properties are set with optional arguments, for example \\
 Multiple options can be given, separated by commas.
 
 
+
+
+
+
+
 \subsection{Naming points}
 
 
@@ -301,7 +310,7 @@ Names can be assigned to points as a line is drawn:
 
 
 Names can also be defined incrementally without drawing a line: \verb|\path (1,2) -- ++(30: 2) coordinate (C);|\\
-defines $C$ to be 2 units at an angle of 30$^o$ from $(1,2)$.
+defines $C$ to be 2 units at an angle of 30$^{\circ}$ from $(1,2)$.
 
 
 \subsection{Drawing shapes}
@@ -323,14 +332,13 @@ There are various commands to draw shapes, including:
 
 \verb|\node[draw, circle through=(B)] at (A) {};| This gives a circle centre $A$ passing though $B$. This requires the use of the additional \texttt{through} tikz library which is included using the command  \verb|\usetikzlibrary{through}|.
 
-\item Arc, beginning at the point $A$ and starting by making an angle of $10^o$ (relative to the positive $x$-axis), measured from the centre of the circle of which the arc is part, and ends when the angle subtended is $80^o$. The radius of the arc is 2.
+\item Arc, beginning at the point $A$ and starting by making an angle of $10^{\circ}$ (relative to the positive $x$-axis), measured from the centre of the circle of which the arc is part, and ends when the angle subtended is $80^{\circ}$. The radius of the arc is 2.
 
 \verb|\draw (A) arc [start angle=10, end angle=80, radius=2];|  
 
 Alternatively,
 
 \verb|\draw (A) arc (10:80:2);|
-\end{itemize}
 
 \begin{center}
 \begin{tikzpicture}[scale=1.3]
@@ -342,19 +350,88 @@ Alternatively,
 \draw[red,thin] (O)--++(80:2);
 
 \path (O) --++(1.5,0) coordinate (B);
-\draw[red,thin] (B) arc (0:10:1.5) node[pos=0.5,right]{$10^o$};
+\draw[red,thin] (B) arc (0:10:1.5) node[pos=0.5,right]{$10^{\circ}$};
 
 
 \path (O) --++(0.5,0) coordinate (C);
-\draw[red,thin] (C) arc (0:80:0.5) node[pos=0.5, above right]{$80^o$};
+\draw[red,thin] (C) arc (0:80:0.5) node[pos=0.5, above right]{$80^{\circ}$};
 
 
 \end{tikzpicture}
 \end{center}
 
+See Subsection~\ref{ssec:ouShapes} for an alternative way of drawing arcs provided by \texttt{outikz.sty}.
+\end{itemize}
+
 
 The colour filling a closed object can be given using the \texttt{fill} option to \verb|\draw|, for example \verb|\draw[fill=blue]|.
 
+
+\subsection{Arrows}
+
+\emph{Note: The arrowheads referred to here are standard tikz arrows. 
+For OU diagrams please use the appropriate designed arrowheads described in} \texttt{outikz-styles-demo.pdf}.
+
+Arrows can be added to the end of a line (or curve etc) using options to \verb|\draw|, for example\\
+\verb|\draw[->]| \hfill \tikz{\draw[->] (0,0)--++(1,0);} \hfill \hfill
+
+and to the start of a line using\\
+\verb|\draw[<-]| \hfill \tikz{\draw[<-] (0,0)--++(1,0);} \hfill \hfill
+
+In addition to the arrows named \texttt{<,>} other standard tikz arrow types include the following.
+
+\begin{tabbing}
+\verb|\draw[-triangle 90]| \hspace*{2cm} \=  \tikz{\draw[-triangle 90] (0,0)--++(1,0);} \\
+
+\verb|\draw[-latex]| \> \tikz{\draw[-latex] (0,0)--++(1,0);} \\
+
+\verb|\draw[-stealth]| \> \tikz{\draw[-stealth] (0,0)--++(1,0);} 
+\end{tabbing}
+
+Arrowheads added to tightly curving lines sometimes don't well match the curvature of the line, as demonstrated below.
+
+\verb|\draw[->] (0,0) arc (180:120:1);| \hfill 
+\tikz{ \draw[->] (0,0) arc (180:120:0.5);}
+\hfill \hfill
+
+This can be improved by 'flexing' the arrowhead as follows.
+
+\verb|\draw[-{>[flex=0.5]}] (0,0) arc (180:120:0.5);| \hfill 
+\tikz{ \draw[-{>[flex=0.5]}] (0,0) arc (180:120:1);}
+\hfill \hfill
+
+The 'flex' value can range from 1 (the default) to 0.
+
+\subsection{Additional OU shapes}
+\label{ssec:ouShapes}
+
+The \texttt{outikz.sty} package defines an additional method of drawing arcs which are centred on a given point rather than starting at a point.
+
+
+\verb|\draw (1,1) carc (10:80:2);|
+\begin{center}
+\begin{tikzpicture}[scale=1.3]
+\coordinate (O) at (1,1);
+\draw (O) carc (10:80:2);
+
+
+\draw[red,thin] (O)--++(2,0);
+\draw[red,thin] (O)--++(10:2);
+\draw[red,thin] (O)--++(80:2);
+
+\draw[red,thin] (O) carc (0:10:1.5) node[pos=0.5,right]{$10^{\circ}$};
+\draw[red,thin] (O) carc (0:80:0.5) node[pos=0.5, above right]{$80^{\circ}$};
+
+\draw (O)  node[point,label=below:{$(1,1)$}]{};
+
+
+\end{tikzpicture}
+\end{center}
+
+which draws an arc centred on $(1,1)$, with radius $2$ from $10^{\circ}$ to  $80^{\circ}$.
+
+Note: Since the \texttt{carc} path starts at the centre point, not at the start of the arc, arrows can only be added to the \emph{end} of the arc (the point at 
+{$80^{\circ}$} in the above example.
 
 
 \subsection{Adding text}
@@ -434,11 +511,11 @@ is automatically included when using the OU styles.
 \begin{itemize}
 \item \verb|($ (A) ! 0.25 ! (B) $)| is the point on the line $AB$, one quarter of the way from $A$ to $B$.
 \item  \verb|($ (A) ! 2cm ! (B) $)| is the point on the line $AB$, 2\,cm  from $A$ towards $B$. Note: distances are affected by figure scaling commands.
-\item  \verb|($ (A) ! 2cm !30:  (B) $)| start at $A$, move 2\,cm towards $B$, then rotate 30$^o$ about $A$.
+\item  \verb|($ (A) ! 2cm !30:  (B) $)| start at $A$, move 2\,cm towards $B$, then rotate 30$^{\circ}$ about $A$.
 \item   \verb|($ (A) ! (C)! (B) $)| the projection of the point $C$ onto the line $AB$. Note there is no space after \texttt{(C)}.
 \end{itemize}
 
-It is also possible to find the points of intersection of two objects, which requires the \texttt{intesections} library which can be included using
+It is also possible to find the points of intersection of two objects, which requires the \texttt{intersections} library which can be included using
 \verb|\usetikzlibrary{intersections}|.
 
 For example
@@ -469,7 +546,7 @@ The styles defined are listed and demonstrated in the files \texttt{outikz-style
 
 \subsection{Installing \texttt{outikz.sty}}
 
-The style file is available from the GitHub respository: 
+The style file is available from the GitHub repository: 
 \url{https://github.com/rbrignall/OU-SUPPS}.
 
 To use the styles, there are two possible options.

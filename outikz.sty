@@ -2,7 +2,10 @@
 % Configure tikz to OU Figure Specifications, and provide "useful" commands
 %
 
-
+% 06/10/16: Version 2.1
+%           ... added \usetikzlibrary{arrows.meta,bending} to "flex" arrows
+%           ... added carc command for centred arcs.
+%           ... improved arrow definitions, consistent with above
 % 25/08/16: Version 2.0
 %           ... changed to a style file
 %           ... general tidying
@@ -10,8 +13,7 @@
 %           ... incorporated additions by others
 %           ... improved environment for figure backgrounds
 %
-% 08/03/13: protected definition of \fullwidth for people using with sc-ou-tex
-% 01/03/13: updated following MST124 proofs
+% 01/03/13: Updated following MST124 proofs
 % 14/11/12: Initial version: Tim Lowe
 
 
@@ -58,7 +60,8 @@
 
 
 % Tikz libraries that are needed
-\usetikzlibrary{arrows}               % needed to define arrows
+\usetikzlibrary{arrows.meta}          % needed to define arrows
+\usetikzlibrary{bending}              % to "flex" curves entering arrowheads
 \usetikzlibrary{decorations.markings} % need to place arrow at line midpoints
 \usetikzlibrary{calc}                 % often used by figures
 \usetikzlibrary{shapes}               % useful for shapes, eg the cloud
@@ -330,22 +333,23 @@
 \@ouAxisArrowLengthb=3.13pt % length from tip to tail indent
 \@ouAxisArrowWidth=1.68pt
 
+\advance\@ouAxisArrowLengtha by -4\pgflinewidth
+\advance\@ouAxisArrowLengthb by -4\pgflinewidth
+
 \pgfarrowsdeclare{ouaxisarrow}{ouaxisarrow}
 {
-\pgfarrowsrightextend{0pt}
-\pgfarrowsleftextend{\@ouAxisArrowLengtha}
+\pgfarrowsrightextend{4\pgflinewidth}
+\pgfarrowsleftextend{-\@ouAxisArrowLengtha}
 }
 {
-\advance\@ouAxisArrowLengtha by -\pgflinewidth
-\advance\@ouAxisArrowLengthb by -\pgflinewidth
 \pgfsetdash{}{0pt} % do not dash
 %\pgfsetroundjoin % fix join
 %\pgfsetroundcap % fix cap
-\pgfpathmoveto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfpathmoveto{\pgfpoint{4\pgflinewidth}{0pt}}
 \pgfpathlineto{\pgfpoint{-\@ouAxisArrowLengtha}{\@ouAxisArrowWidth}}
 \pgfpathlineto{\pgfpoint{-\@ouAxisArrowLengthb}{0pt}}
 \pgfpathlineto{\pgfpoint{-\@ouAxisArrowLengtha}{-\@ouAxisArrowWidth}}
-\pgfpathlineto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfpathlineto{\pgfpoint{4\pgflinewidth}{0pt}}
 \pgfusepathqfill
 }
 
@@ -364,22 +368,24 @@
 \@ouThickAxisArrowLengthb=3.2\@ouAxisArrowLengthb % length from tip to tail indent
 \@ouThickAxisArrowWidth=3.2\@ouAxisArrowWidth
 
+\advance\@ouThickAxisArrowLengtha by -4\pgflinewidth
+\advance\@ouThickAxisArrowLengthb by -4\pgflinewidth
+
+
 \pgfarrowsdeclare{outhickaxisarrow}{outhickaxisarrow}
 {
-\pgfarrowsrightextend{0pt}
-\pgfarrowsleftextend{\@ouThickAxisArrowLengtha}
+\pgfarrowsrightextend{4\pgflinewidth}
+\pgfarrowsleftextend{-\@ouThickAxisArrowLengtha}
 }
 {
-\advance\@ouThickAxisArrowLengtha by -\pgflinewidth
-\advance\@ouThickAxisArrowLengthb by -\pgflinewidth
 \pgfsetdash{}{0pt} % do not dash
 %\pgfsetroundjoin % fix join
 %\pgfsetroundcap % fix cap
-\pgfpathmoveto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfpathmoveto{\pgfpoint{4\pgflinewidth}{0pt}}
 \pgfpathlineto{\pgfpoint{-\@ouThickAxisArrowLengtha}{\@ouThickAxisArrowWidth}}
 \pgfpathlineto{\pgfpoint{-\@ouThickAxisArrowLengthb}{0pt}}
 \pgfpathlineto{\pgfpoint{-\@ouThickAxisArrowLengtha}{-\@ouThickAxisArrowWidth}}
-\pgfpathlineto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfpathlineto{\pgfpoint{4\pgflinewidth}{0pt}}
 \pgfusepathqfill
 }
 
@@ -400,18 +406,16 @@
 \pgfarrowsdeclare{ouvectorarrow}{ouvectorarrow}
 {
 \pgfarrowsrightextend{0.5\@ouVecArrowLength}
-\pgfarrowsleftextend{0.5\@ouVecArrowLength}
+\pgfarrowsleftextend{-0.5\@ouVecArrowLength}
 }
 {
-%\advance\arrowlengtha by -\pgflinewidth
-%\advance\arrowlengthb by -\pgflinewidth
 \pgfsetdash{}{0pt} % do not dash
 %\pgfsetroundjoin % fix join
 %\pgfsetroundcap % fix cap
-\pgfpathmoveto{\pgfpoint{\@ouVecArrowLength}{0pt}}
-\pgfpathlineto{\pgfpoint{0\@ouVecArrowLength}{\@ouVecArrowWidth}}
-\pgfpathlineto{\pgfpoint{0\@ouVecArrowLength}{-\@ouVecArrowWidth}}
-\pgfpathlineto{\pgfpoint{\@ouVecArrowLength}{0pt}}
+\pgfpathmoveto{\pgfpoint{0.5\@ouVecArrowLength}{0pt}}
+\pgfpathlineto{\pgfpoint{-0.5\@ouVecArrowLength}{\@ouVecArrowWidth}}
+\pgfpathlineto{\pgfpoint{-0.5\@ouVecArrowLength}{-\@ouVecArrowWidth}}
+\pgfpathlineto{\pgfpoint{0.5\@ouVecArrowLength}{0pt}}
 \pgfusepathqfill
 }
 
@@ -421,7 +425,7 @@
 % ...Compose two vector arrows
 %
 % The first argument should be \@ouVecArrowLength, but that gives error so inserted value!
-\pgfarrowsdeclarecombine[5.4pt]{ouaccelarrow}{ouaccelarrow}{ouvectorarrow}{ouvectorarrow}{ouvectorarrow}{ouvectorarrow}
+\pgfarrowsdeclarecombine[-0.5pt]{ouaccelarrow}{ouaccelarrow}{ouvectorarrow}{ouvectorarrow}{ouvectorarrow}{ouvectorarrow}
 
 
 
@@ -462,8 +466,8 @@
 
 \pgfarrowsdeclare{oumappingarrow}{oumappingarrow}
 {
-\pgfarrowsrightextend{0.5\@ouMapArrowLength}
-\pgfarrowsleftextend{0.5\@ouMapArrowLength}
+\pgfarrowsrightextend{0\@ouMapArrowLength}
+\pgfarrowsleftextend{-\@ouMapArrowLength}
 }
 {
 %\advance\arrowlengtha by -\pgflinewidth
@@ -472,9 +476,9 @@
 %\pgfsetroundjoin % fix join
 \pgfsetroundcap % fix cap
 \pgfsetlinewidth{0.5pt}
-\pgfpathmoveto{\pgfpoint{0\@ouMapArrowLength}{\@ouMapArrowWidth}}
-\pgfpathlineto{\pgfpoint{\@ouMapArrowLength}{0pt}}
-\pgfpathlineto{\pgfpoint{0\@ouMapArrowLength}{-\@ouMapArrowWidth}}
+\pgfpathmoveto{\pgfpoint{-\@ouMapArrowLength}{\@ouMapArrowWidth}}
+\pgfpathlineto{\pgfpoint{0\@ouMapArrowLength}{0pt}}
+\pgfpathlineto{\pgfpoint{-\@ouMapArrowLength}{-\@ouMapArrowWidth}}
 \pgfusepathqstroke
 }
 
@@ -490,7 +494,7 @@
 \pgfarrowsdeclare{oudimensionarrow}{oudimensionarrow}
 {
 \pgfarrowsrightextend{0pt}
-\pgfarrowsleftextend{\@ouDimArrowLength} %?? 1.5pt * 1.35 scaling
+\pgfarrowsleftextend{-\@ouDimArrowLength} %?? 1.5pt * 1.35 scaling
 }
 {
 %\advance\arrowlengtha by -\pgflinewidth
@@ -517,24 +521,30 @@
 \@ouArcArrowLengthb=2.7pt %1.8pt % length from tip to tail indent
 \@ouArcArrowWidth=1.5pt % 1pt
 
+\advance\@ouArcArrowLengtha by -2\pgflinewidth
+\advance\@ouArcArrowLengthb by -2\pgflinewidth
+
+
 \pgfarrowsdeclare{arcarrow}{arcarrow}
 {
-\pgfarrowsrightextend{0pt}
-\pgfarrowsleftextend{\@ouArcArrowLengtha}
+\pgfarrowsrightextend{2\pgflinewidth}
+\pgfarrowsleftextend{-\@ouArcArrowLengtha}
 }
 {
-\advance\@ouArcArrowLengtha by -\pgflinewidth
-\advance\@ouArcArrowLengthb by -\pgflinewidth
 \pgfsetdash{}{0pt} % do not dash
 %\pgfsetroundjoin % fix join
 %\pgfsetroundcap % fix cap
-\pgfpathmoveto{\pgfpoint{\pgflinewidth}{0pt}}
-\pgfpathlineto{\pgfpoint{-\@ouArcArrowLengtha}{\@ouArcArrowWidth}}
-\pgfpathlineto{\pgfpoint{-\@ouArcArrowLengthb}{0pt}}
-\pgfpathlineto{\pgfpoint{-\@ouArcArrowLengtha}{-\@ouArcArrowWidth}}
-\pgfpathlineto{\pgfpoint{\pgflinewidth}{0pt}}
+\pgfpathmoveto{\pgfpoint{2\pgflinewidth}{0pt}} %A
+\pgfpathlineto{\pgfpoint{-\@ouArcArrowLengtha}{\@ouArcArrowWidth}} %B
+\pgfpathlineto{\pgfpoint{-\@ouArcArrowLengthb}{0pt}} %C
+\pgfpathlineto{\pgfpoint{-\@ouArcArrowLengtha}{-\@ouArcArrowWidth}} %D
+\pgfpathlineto{\pgfpoint{2\pgflinewidth}{0pt}}%A
 \pgfusepathqfill
 }
+
+
+
+
 
 
 
@@ -555,7 +565,7 @@
 \pgfarrowsdeclare{ounetarrow}{ounetarrow}
 {
 \pgfarrowsrightextend{0pt}
-\pgfarrowsleftextend{\@ouNetworkArrowLengtha}
+\pgfarrowsleftextend{-\@ouNetworkArrowLengtha}
 }
 {
 \advance\@ouNetworkArrowLengtha by -\pgflinewidth
@@ -650,19 +660,17 @@
 % A vector with the arrow half way along the line
 \tikzset{vector/.style={decoration={
   markings,
-  mark=at position .5 with {\arrow{ouvectorarrow}}},postaction={decorate}}}
+  mark=at position .5*\pgfdecoratedpathlength+ 0.5\@ouVecArrowLength with {\arrow{ouvectorarrow}}},postaction={decorate}}}
 
 % A force with the arrow at the end of the line
-\tikzset{force/.style={decoration={
-  markings,
-  mark=at position 1 with {\arrow{ouvectorarrow}}},postaction={decorate}}}
+\tikzstyle{force}=[-ouvectorarrow]  
 
 
 % An acceleration arrow with double head in middle
 % a double arrowed vector
 \tikzset{acceleration/.style={decoration={
   markings,
-  mark=at position .5*\pgfdecoratedpathlength + 0.5\@ouVecArrowLength with {\arrow{ouaccelarrow}},
+  mark=at position .5*\pgfdecoratedpathlength + \@ouVecArrowLength with {\arrow{ouaccelarrow}},
     },
     postaction={decorate}}
 }
@@ -672,12 +680,12 @@
 % A mapping line with the arrow half way along the line
 \tikzset{mapping/.style={decoration={
   markings,
-  mark=at position .5 with {\arrow{oumappingarrow}}},postaction={decorate}}}
+  mark=at position .5*\pgfdecoratedpathlength+ 0.5\@ouMapArrowLength with {\arrow{oumappingarrow}}},postaction={decorate}}}
 
 % A network line with the arrow half way along the line
 \tikzset{network/.style={decoration={
   markings,
-  mark=at position .5 with {\arrow{ounetarrow}}},postaction={decorate}}}
+  mark=at position .5*\pgfdecoratedpathlength+ 0.5\@ouNetworkArrowLengtha with {\arrow{ounetarrow}}},postaction={decorate}}}
 
 
 
@@ -689,6 +697,32 @@
 \pgfarrowsdeclarecombine[0pt]{|oudimensionarrow}{oudimensionarrow|}{oudimensionarrow}{oudimensionarrow} {|}{|}
 %..and use it!
 \tikzstyle{dimensionmark}=[help, |oudimensionarrow-oudimensionarrow|]
+
+
+% Define the carc command for drawings arcs with given centre
+% From: http://tex.stackexchange.com/questions/34973/how-to-extend-tikz-drawing-commands
+%
+\def\tikz@cchar{% If keyword starts with "c..."
+    \pgfutil@ifnextchar i %... starts with "ci..."
+        {\tikz@circle}%
+        {\pgfutil@ifnextchar h% ... starts with "ch..."
+            {\tikz@children}
+            {\pgfutil@ifnextchar a % ... starts with "ca..."
+                {\carc}
+                \tikz@cochar
+            }
+        }
+}%
+
+\def\carc arc (#1:#2:#3){% The macro will get called after the initial "c" of "carc" is already gobbled up, and only "arc" is left
+    \tikzset{insert path={++(#1:#3) arc(#1:#2:#3) }}% Inject the TikZ commands
+    % Note: adding  ++(#2+180:#3 ) after arc moved the correct point back
+    % to the starting point, but omitted here to permit addition of arrows
+    \tikz@scan@next@command% Return control to the parser
+}
+
+
+
 
 
 
