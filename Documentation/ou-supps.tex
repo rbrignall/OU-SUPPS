@@ -44,7 +44,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 1.4\\2016-09-16}
+\date{Version 1.41\\2016-11-01}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -785,6 +785,11 @@ Changes the text that appears at the top of multi-choice questions (optional, de
 |\examinstructions{...}|
 \end{desc}
 Command for the instructions/rubric on the front page of the exam (optional, but defaults to `No special instructions specified.')
+
+\begin{desc}
+|\setlength\toppadding{<x>}|
+\end{desc}
+Adjusts the padding at the top of the title page to |<x>|. Default is |1cm|, and this should only be changed if you know what you're doing.
 
 \subsection{Creating questions}
 The internal counter used for generating questions is |question|. 
