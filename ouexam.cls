@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2016/10/05 v1.24 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2016/11/01 v1.25 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -197,9 +197,11 @@
 }
 \newlength\titletablewidth
 \setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
+\newlength\toppadding
+\setlength\toppadding{1cm} % allows users to adjust space at top if desired
 \renewcommand{\maketitle}{
   \thispagestyle{frontpage}
-  \vspace*{1cm}
+  \vspace*{\toppadding}
 \if@specimensolutions
   \@makespecimensolutionstitle
 \else
@@ -350,7 +352,7 @@
 \setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
 \setlist[itemize]{align=left,leftmargin=8mm,labelsep*=0pt}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
-\setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
+\setlist[enumerate,2]{label=(\roman*), ref=(\roman*),leftmargin=9mm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for multi-choice questions (as per CMAs in ouab.cls)
 
