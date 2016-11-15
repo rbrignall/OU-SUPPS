@@ -44,7 +44,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 1.41\\2016-11-01}
+\date{Version 1.42\\2016-11-15}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -892,18 +892,17 @@ When displayed, the solutions can be formatted in one of two ways:
 
 \subsubsection{Specifying marks within the \texttt{solution} environment}
 
+\begin{desc}
+|\mk[<description>]{<n>}|
+\end{desc}
+This command can be used to specify marks, as per the format for creating questions. Within the |solution| environment in |[showsolutions]| mode, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets. Additionally, the optional |<description>| parameter allows users to enter text in the margin, to the right of the |<n>|. 
 
 \begin{desc}
-|\marks{<n>}|\\
-|\mk{<n>}|
+|\marks[<description>]{<n>}|\\
+|\solnmarksplus{<n>}{<description>}|\\
+|\mkplus{<n>}{<description>}|
 \end{desc}
-These two commands can be used to specify marks, as per the format for creating questions. Within the |solution| environment in |[showsolutions]| mode, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets. 
-
-\begin{desc}
-|\solnmarksplus{<n>}{<comment>}|\\
-|\mkplus{<n>}{<comment>}|
-\end{desc}
-These two commands can be used to enter |<n>| marks in the right hand column (as per |\marks|), but additionally enters |<comment>| in the margin, to the right of |<n>|. 
+Some equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. These exist primarily for backward-compatibility with OUTeX.
 
 
 \subsection{Alternative method to create solutions}

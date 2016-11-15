@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2016/11/01 v1.25 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2016/11/15 v1.3 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -390,10 +390,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
 \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
-\newcommand{\solnmarks}[1]{\marginnote{\hfill\small #1\hspace*{3cm}}}
-\newcommand{\solnmarksplus}[2]{\marginnote{\hfill\small \makebox[2cm][r]{#1}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #2}}}}
-\def\marks{\bracketedmarks}
+ \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill\small \makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}}}
+  \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
+\def\marks{\mk}
 \def\mkplus{\solnmarksplus}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
@@ -534,7 +534,7 @@
 \else
   \if@showsolutions
     \newenvironment{solution}
-    {\def\marks{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
+    {\def\marks{\solnmarks}\def\mk{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
     {\end{solutionbox}\end{adjustwidth}\def\marks{\bracketedmarks}}
   \else
     \newenvironment{solution}
