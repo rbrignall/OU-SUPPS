@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2016/11/15 v1.3 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2016/12/01 v1.31 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -350,7 +350,7 @@
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
 \setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
-\setlist[itemize]{align=left,leftmargin=8mm,labelsep*=0pt}
+\setlist[itemize]{align=left,leftmargin=8mm,labelsep*=-1mm}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*),leftmargin=9mm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
