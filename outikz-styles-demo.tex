@@ -2,6 +2,10 @@
 % OU Tikz figure styles.
 %
 
+% 21/12/16: Updated to reflect outikz v2.2, and improve style
+
+
+
 
 % A reminder about tikz coordinates:
 % 
@@ -49,96 +53,76 @@
 As defined in \texttt{outikz.sty}
 
 \subsection*{Lines}
-\vspace*{-2\baselineskip}
+\vspace*{-\baselineskip}
 
-\begin{tikzpicture}
+{\renewcommand{\arraystretch}{1.4}
+\begin{tabular}{p{0.5\textwidth}p{0.15\textwidth}p{0.25\textwidth}l}
+& & \textbf{Dashed versions} \\
 
-\draw(14,1) node{Dashed versions};
+Default (1pt) \verb|\draw|   &  \tikz \draw (0,0) --++ (2,0); &
+\verb|\draw[dashed]|         &   \tikz \draw[dashed] (0,0) --++ (2,0);\\
 
-\draw (0,0) node[right]{Default (1pt) \verb|\draw|};
-\draw (8,0) -- (10,0);
-\draw (10.5,0)  node[right]{\verb|\draw[dashed]|};
-\draw[dashed] (15,0) -- (17,0);
+Thick (1.6pt) \verb|\draw[thick]| & \tikz \draw[thick] (0,0) --++ (2,0); &
+\verb|\draw[thick,dashed]|   & \tikz \draw[thick,dashed] (0,0) --++ (2,0);\\
 
+Construction lines (0.25pt) \verb|\draw[thin]| 
+        &  \tikz \draw[thin] (0,0) --++ (2,0); &
+\verb|\draw[thin,dashed]| & \tikz \draw[thin,dashed] (0,0) --++ (2,0);\\
 
-\draw (0,-1) node[right]{Thick (1.6pt) \verb|\draw[thick]|};
-\draw[thick] (8,-1) -- (10,-1);
-\draw (10.5,-1)  node[right]{\verb|\draw[thick,dashed]|};
-\draw[thick, dashed] (15,-1) -- ++(2,0);
+Grid lines (0.5pt, 20\% black) \verb|\draw[grid]|
+& \tikz \draw[grid] (0,0) -- ++(2,0);\\[5pt]
 
+Arc (0.25pt) \verb|\draw[arc]| & \tikz \draw[arc] (0,0) arc(90:180:1);
 
-\draw (0,-2) node[right]{Construction lines (0.25pt) \verb|\draw[thin]|};
-\draw[thin] (8,-2) -- (10,-2);
-\draw (10.5,-2)  node[right]{\verb|\draw[thin,dashed]|};
-\draw[thin, dashed] (15,-2) -- (17,-2);
-
-\draw (0,-3) node[right]{Grid lines (0.5pt, 20\% black) \verb|\draw[grid]|};
-\draw[grid] (8,-3) -- (10,-3);
-
-\draw (0,-4) node[right]{Arc (0.25pt) \verb|\draw[arc]|};
-\draw[arc] (8,-3.5) arc(90:180:1);
-
-\end{tikzpicture}
+\end{tabular}
+}
 
 
 
 \subsection*{Lines with arrows}
 
-\begin{tikzpicture}
-\draw (0,0) node[right]{Axis \verb|\draw[axis]|};
-\draw[axis] (9,0) --++ (4,0);
+{\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{p{0.68\textwidth}l}
+Axis \verb|\draw[axis]| & \tikz \draw[axis] (0,0) --++ (4,0);\\
 
-\draw (0,-1) node[right]{Axis with ticks (0.5pt by 3pt)  and label};
-\draw (0,-1.5) node[right] {\verb|\draw[axis] ... node[xlab]{$x$}|};
-\draw (0,-2) node[right] {Tick need to be fixed length, independent of scaling:};
-\draw (0,-2.5) node[right]  {\verb|\coordinate (t1) at (x,y);|};
-\draw (0,-3) node[right]  {\verb|\draw[ticks, reset cm] (t1)--++(0,-\ticklength)|};
-\draw[axis] (9,-1) --++(4,0) node[xlab] {$x$};
-\coordinate (t1) at (9,-1);
-\coordinate (t2) at (10,-1);
-\coordinate (t3) at (11,-1);
-\coordinate (t4) at (12,-1);
+Axis with ticks (0.5pt by 3pt)  and label \newline
+\verb|\draw[axis] ... node[xlab]{$x$}| \newline
+(Ticks need to be fixed length, independent of scaling: \newline
+\verb|  \coordinate (t1) at (x,y);|\newline
+\verb|  \draw[ticks, reset cm] (t1)--++(0,-\ticklength)|)
+& \tikz {
+  \draw[axis] (0,0) --++(4,0) node[xlab] {$x$};
+  \coordinate (t1) at (0,0);
+  \coordinate (t2) at (1,0);
+  \coordinate (t3) at (2,0);
+  \coordinate (t4) at (3,0);
 
-\draw[ticks, reset cm] (t1) --++(0,-\ticklength);
-\draw[ticks, reset cm] (t2) --++(0,-\ticklength);
-\draw[ticks, reset cm] (t3) --++(0,-\ticklength);
-\draw[ticks, reset cm] (t4) --++(0,-\ticklength);
+  \draw[ticks, reset cm] (t1) --++(0,-\ticklength);
+  \draw[ticks, reset cm] (t2) --++(0,-\ticklength);
+  \draw[ticks, reset cm] (t3) --++(0,-\ticklength);
+  \draw[ticks, reset cm] (t4) --++(0,-\ticklength);
+}\\
 
+Thick axis \verb|\draw[thickaxis]| \newline
+(for screencasts etc only)
+& \tikz \draw[thickaxis] (0,0) --++ (4,0);\\
 
-\draw (0,-4) node[right]{Thick axis \verb|\draw[thickaxis]|};
-\draw (0,-4.5) node[right]{(for screencasts etc only)};
-\draw[thickaxis] (9,-4) --++ (4,0);
+Arc \verb|\draw[arc,-arcarrow]| & \tikz \draw[arc,-arcarrow] (0,0) arc(180:90:1);\\
 
-\draw (0,-6) node[right]{Arc \verb|\draw[arc,-arcarrow]|};
-\draw[arc,-arcarrow] (9,-6.5) arc(180:90:1);
+Vector \verb|\draw[vector]| & \tikz \draw[vector] (0,0) --++ (2,0);\\
+Force \verb|\draw[force]|  & \tikz \draw[force] (0,0) --++ (2,0);\\
+Acceleration \verb|\draw[acceleration]| & \tikz \draw[acceleration] (0,0)--++ (2,0);\\
 
-\draw(0,-7)  node[right]{Vector \verb|\draw[vector]|};
-\draw[vector] (9,-7) --++ (2,0);
+Mapping \verb|\draw[mapping]| & \tikz \draw[mapping] (0,0) --++ (2,0);\\
+Network \verb|\draw[network]| & \tikz \draw[network] (0,0) --++ (2,0);\\
+Dimension \verb|\draw[dimension]| & \tikz \draw[dimension] (0,0) --++ (2,0);\\
+Dimension with markers \verb|\draw[dimensionmark]| 
+  & \tikz \draw[dimensionmark] (0,0) --++ (2,0);\\
+Compass North \verb|\draw[-compassarrow]| & 
+\tikz \draw[-compassarrow] (0,0) --++(0,1);
+\end{tabular}
+}
 
-\draw(0,-8)  node[right]{Force \verb|\draw[force]|};
-\draw[force] (9,-8) --++ (2,0);
-
-\draw(0,-9)  node[right]{Acceleration \verb|\draw[acceleration]|};
-\draw[acceleration] (9,-9) --++ (2,0);
-
-
-\draw(0,-10)  node[right]{Mapping \verb|\draw[mapping]|};
-\draw[mapping] (9,-10) --++ (2,0);
-
-\draw(0,-11)  node[right]{Network \verb|\draw[network]|};
-\draw[network] (9,-11) --++ (2,0);
-
-\draw(0,-12)  node[right]{Dimension \verb|\draw[dimension]|};
-\draw[dimension] (9,-12) --++ (2,0);
-
-\draw(0,-13)  node[right]{Dimension with markers \verb|\draw[dimensionmark]|};
-\draw[dimensionmark] (9,-13) --++ (2,0);
-
-
-
-\draw (0,-14) node[right]{Compass North \verb|\draw[-compassarrow]|};
-\draw[-compassarrow] (9,-14.5) --++(0,1);
-\end{tikzpicture}
 
 
 
@@ -146,47 +130,55 @@ As defined in \texttt{outikz.sty}
 \subsection*{Miscellaneous}
 \vspace*{-1em}
 
-\begin{tikzpicture}
+{\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{p{0.9\textwidth}l}
+Point marker  \newline
+\verb|\draw (0,0) node[point, label=right:{$P$}]{};|
+& \tikz \draw (0,0) node[point, label=right:{$P$}]{};\\
 
-\draw(0,0) node[right]{Point marker};
-\draw(0,-0.5) node[right]{\verb|\draw (0,0) node[point, label=right:{$P$}]{};| };
-\draw (14,0) node[point, label=right:{$P$}]{};
-
-
-\draw(0,-1.5) node[right]{Open/closed points};
-\draw(0,-2) node[right]{\verb|\draw (0,0) node[open]{} -- (1,0) node[closed]{};| };
-\draw (14,-1.5) node[open]{} -- ++(1,0) node[closed]{};
-
+Square point \newline
+\verb|\draw (0,0) node[sqrpoint, label=right:{$Q$}]{};|
+& \tikz \draw (0,0) node[sqrpoint, label=right:{$Q$}]{};\\
 
 
-\draw(0,-3) node[right]{Tag/label};
-\draw(0,-3.5) node[right]
-{\verb|\draw[thin] (0,0) -- (1,0) node[tag, fill=M337bluefill, anchor=west]{A label};| };
-\draw[thin] (14,-3) --++ (2,0) node[tag, fill=M337bluefill, anchor=west]{A label};
+Open/closed points \newline
+\verb|\draw (0,0) node[open]{} -- (1,0) node[closed]{};| 
+& \tikz \draw (0,0) node[open]{} -- ++(1,0) node[closed]{};\\
+
+Tag/label \newline
+\verb|\draw[thin] (0,0) -- (1,0) node[tag, fill=M337bluefill, anchor=west]{A label};|  \newline \null
+& \tikz \draw[thin] (0,0) --++ (2,0) node[tag, fill=M337bluefill, anchor=west]{A label};\\
 
 
-\draw(0,-4.5) node[right]{Cloud};
-\draw(0,-5) node[right]
-{\verb|\draw (1,0) node[oucloud, fill=M337bluefill](cloudname){A label};| };
-\draw(0,-5.5) node[right]
-{\verb|\draw[thin] (cloudname) edge (0,0);|};
-\draw (17,-4.5) node[oucloud, fill=M337bluefill](cloudname){A label};
-\draw[thin] (cloudname) edge (14,-4.5);
+
+\vspace{-2\baselineskip}Cloud \newline
+\verb|\draw (1,0) node[oucloud, fill=M337bluefill](cloudname){A label};|\newline
+\verb|\draw[thin] (cloudname) edge (0,0);|
+& \tikz 
+{ \draw (2,0) node[oucloud, fill=M337bluefill](cloudname){A label};
+\draw[thin] (cloudname) edge (0,0);
+}\\
+
+Spring \newline
+\verb|\draw[MST210spring] (0,0) -- (2,0) node[pos=0.5,above=4]{$k,l_0$}  node[point]{\phantom{a}};|
+& 
+\tikz \draw[MST210spring] (0,0) --++(3,0)  node[pos=0.5, above=4] {$k,l_0$} node[point] {\phantom{a}};\\
 
 
-\draw(0,-6.5) node[right]{Spring};
-\draw(0,-7) node[right]
-{\verb|\draw[MST210spring] (0,0) -- node[above=4] {$k,l_0$} (2,0) node[point] {\phantom{a}}|};
-\draw[MST210spring] (14,-6.4) -- node[above=4] {$k,l_0$} (17,-6.4) node[point] {\phantom{a}};
+Damper\newline
+\verb|\draw[MST210damper] (0,0) -- (2,0) node[pos=0.5,above=4]{$r$};|
+& \tikz \draw[MST210damper] (14,-8) --++ (3,0) node[pos=0.5, above=4]{$r$};
+
+\end{tabular}
+}
 
 
-\draw(0,-8) node[right]{Damper};
-\draw(0,-8.5) node[right]
-{\verb|\draw[MST210damper] (0,0) -- node[above=4] {$r$} (2,0)|};
-\draw[MST210damper] (14,-8) -- node[above=4] {$r$} (17,-8);
 
 
-\end{tikzpicture}
+
+
+
+
 
 \subsection*{Colours}
 \vspace*{-1em}
@@ -195,105 +187,107 @@ As defined in \texttt{outikz.sty}
 \subsubsection*{M337 line colours (for example)}
 \vspace*{-1em}
 
-\begin{tikzpicture}
 
-\draw(10,1) node{line};
-\draw(13,1) node{fill 100\%};
-\draw(16,1) node{fill 40\%};
+{\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{p{0.6\textwidth}ccc}
 
-\draw (0,0) node[right]{Blue};
-\draw (0,-0.5) node[right]{\verb|\draw[M337blue]|};
-\draw (0,-1.0) node[right]{\verb|\draw[M337blue,fill=M337blue]|};
-\draw (0,-1.5) node[right]{\verb|\draw[M337bluefill,fill=M337bluefill]|};
+& Line & Fill 100\% & Fill 40\% \\ \\
 
-\draw[M337blue] (9,-.5) --++ (2,0);
-\draw[M337blue, fill=M337blue] (12,0) rectangle ++(2,-1);
-\draw[M337bluefill, fill=M337bluefill] (15,0) rectangle ++(2,-1);
-
-
-
-\draw (0,-2.5) node[right]{Red};
-\draw (0,-3.0) node[right]{\verb|\draw[M337red]|};
-\draw (0,-3.5) node[right]{\verb|\draw[M337red,fill=M337red]|};
-\draw (0,-4.0) node[right]{\verb|\draw[M337redfill,fill=M337redfill]|};
-
-\draw[M337red] (9,-3) --++ (2,0);
-\draw[M337red, fill=M337red] (12,-2.5) rectangle ++(2,-1);
-\draw[M337redfill, fill=M337redfill] (15,-2.5) rectangle ++(2,-1);
+\vspace*{-3\baselineskip}
+Blue\newline
+\verb|\draw[M337blue]|\newline
+\verb|\draw[M337blue,fill=M337blue]|\newline
+\verb|\draw[M337bluefill,fill=M337bluefill]|
+& \tikz \draw[M337blue] (0,0) --++ (2,0);
+&\tikz \draw[M337blue, fill=M337blue] (0,0) rectangle ++(2,1);
+& \tikz \draw[M337bluefill, fill=M337bluefill] (0,0) rectangle ++(2,1);\\ \\
 
 
-\draw (0,-5) node[right]{Green};
-\draw (0,-5.5) node[right]{\verb|\draw[M337green]|};
-\draw (0,-6.0) node[right]{\verb|\draw[M337green,fill=M337green]|};
-\draw (0,-6.5) node[right]{\verb|\draw[M337greenfill,fill=M337greenfill]|};
-
-\draw[M337green] (9,-5.5) --++ (2,0);
-\draw[M337green, fill=M337green] (12,-5) rectangle ++(2,-1);
-\draw[M337greenfill, fill=M337greenfill] (15,-5) rectangle ++(2,-1);
-
-
+\vspace*{-3\baselineskip}
+Red\newline
+\verb|\draw[M337red]|\newline
+\verb|\draw[M337red,fill=M337red]|\newline
+\verb|\draw[M337redfill,fill=M337redfill]|
+& \tikz \draw[M337red] (0,0) --++ (2,0);
+&\tikz \draw[M337red, fill=M337red] (0,0) rectangle ++(2,1);
+& \tikz \draw[M337redfill, fill=M337redfill] (0,0) rectangle ++(2,1);\\ \\
 
 
-\draw (0,-7.5) node[right]{Purple};
-\draw (0,-8) node[right]{\verb|\draw[M337purple]|};
-\draw (0,-8.5) node[right]{\verb|\draw[M337purple,fill=M337purple]|};
-\draw (0,-9) node[right]{\verb|\draw[M337purplefill,fill=M337purplefill]|};
+\vspace*{-3\baselineskip}
+Green\newline
+\verb|\draw[M337green]|\newline
+\verb|\draw[M337green,fill=M337green]|\newline
+\verb|\draw[M337greenfill,fill=M337greenfill]|
+& \tikz \draw[M337green] (0,0) --++ (2,0);
+&\tikz \draw[M337green, fill=M337green] (0,0) rectangle ++(2,1);
+& \tikz \draw[M337greenfill, fill=M337greenfill] (0,0) rectangle ++(2,1);\\ \\
 
-\draw[M337purple] (9,-8) --++ (2,0);
-\draw[M337purple, fill=M337purple] (12,-7.5) rectangle ++(2,-1);
-\draw[M337purplefill, fill=M337purplefill] (15,-7.5) rectangle ++(2,-1);
+\vspace*{-3\baselineskip}
+Purple\newline
+\verb|\draw[M337purple]|\newline
+\verb|\draw[M337purple,fill=M337purple]|\newline
+\verb|\draw[M337purplefill,fill=M337purplefill]|
+& \tikz \draw[M337purple] (0,0) --++ (2,0);
+&\tikz \draw[M337purple, fill=M337purple] (0,0) rectangle ++(2,1);
+& \tikz \draw[M337purplefill, fill=M337purplefill] (0,0) rectangle ++(2,1);\\ \\
+
+\vspace*{-3\baselineskip}
+Orange\newline
+\verb|\draw[M337orange]|\newline
+\verb|\draw[M337orange,fill=M337orange]|\newline
+\verb|\draw[M337orangefill,fill=M337orangefill]|
+& \tikz \draw[M337orange] (0,0) --++ (2,0);
+&\tikz \draw[M337orange, fill=M337orange] (0,0) rectangle ++(2,1);
+& \tikz \draw[M337orangefill, fill=M337orangefill] (0,0) rectangle ++(2,1);\\ \\
 
 
-
-\draw (0,-10) node[right]{Orange};
-\draw (0,-10.5) node[right]{\verb|\draw[M337orange]|};
-\draw (0,-11.0) node[right]{\verb|\draw[M337orange,fill=M337orange]|};
-\draw (0,-11.5) node[right]{\verb|\draw[M337orangefill,fill=M337orangefill]|};
-
-\draw[M337orange] (9,-10.5) --++ (2,0);
-\draw[M337orange, fill=M337orange] (12,-10) rectangle ++(2,-1);
-\draw[M337orangefill, fill=M337orangefill] (15,-10) rectangle ++(2,-1);
+\end{tabular}
+}
 
 
 
-\end{tikzpicture}
 
 
 
 
 \subsubsection*{Structured content colours}
 
-\begin{tikzpicture}
+\begin{tabular}{p{0.3\textwidth}p{0.25\textwidth}p{0.2\textwidth}p{0.25\textwidth}}
 
-\draw(0,0) node[above right]{\texttt{figurebox}:};
-\draw[figurebox, fill=figurebox] (5,0+1) rectangle ++(3,-2);
+\vspace*{-3\baselineskip}
+\texttt{figurebox}:\newline
+(for figure backgrounds)
+& \tikz \draw[figurebox, fill=figurebox] (0,0) rectangle ++(3,1.5);
 
-\draw(0,0) node[below right] {(for figure backgrounds) };
-
-\draw(0,-3) node[right]{\texttt{buffbox} };
-\draw[buffbox, fill=buffbox] (5,-3+1) rectangle ++(3,-2);
-
-\end{tikzpicture}\hspace*{2cm}\begin{tikzpicture}
-
-\draw(0,-6) node[right]{\texttt{greenbox} };
-\draw[greenbox, fill=greenbox] (4,-6+1) rectangle ++(3,-2);
-
-\draw(0,-9) node[right]{\texttt{bluebox} };
-\draw[bluebox, fill=bluebox] (4,-9+1) rectangle ++(3,-2);
+&
+\vspace*{-3\baselineskip}
+\texttt{greenbox} & \tikz \draw[figurebox, fill=greenbox] (0,0) rectangle ++(3,1.5);\\ 
 
 
-\end{tikzpicture}
+\vspace*{-3\baselineskip}
+\texttt{buffbox} & \tikz \draw[figurebox, fill=buffbox] (0,0) rectangle ++(3,1.5);
+&
+\vspace*{-3\baselineskip}
+\texttt{bluebox} & \tikz \draw[figurebox, fill=bluebox] (0,0) rectangle ++(3,1.5);
 
 
+\end{tabular}
 
 
 
+
+
+\vspace*{-2\baselineskip}
 \subsection*{Figure containing boxes}
-
+\vspace*{-\baselineskip}
 (Drawn with buff background to improve visability!)\\
 Of course, individuals may have their own preferred way of achieving the same effects.
 
+\vspace*{-\baselineskip}
 \subsubsection*{Single figures}
+\vspace*{-\baselineskip}
+
+
 \begin{verbatim}
 \begin{outikzfig}[<colour>]{<width>}     <colour> = one of figurebox/bluebox/buffbox/greenbox 
 \begin{tikzpicture}                      <width>  = one of figure/margin/solution/fullwidth
@@ -329,7 +323,7 @@ Of course, individuals may have their own preferred way of achieving the same ef
 \end{outikzfig}
 
 \subsubsection*{Multiple figures}
-
+\vspace*{-\baselineskip}
 \begin{verbatim}
 \begin{outikzmultifig}[<colour>]{<width>}{<number>}  % <colour> = as above
                                                      % <width>  = as above

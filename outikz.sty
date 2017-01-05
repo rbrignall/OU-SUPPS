@@ -2,6 +2,9 @@
 % Configure tikz to OU Figure Specifications, and provide "useful" commands
 %
 
+% 07/12/16: Version 2.2
+%           ... added sqrpoint style
+%           ... added MS327 colours
 % 06/10/16: Version 2.1
 %           ... added \usetikzlibrary{arrows.meta,bending} to "flex" arrows
 %           ... added carc command for centred arcs.
@@ -115,6 +118,13 @@
 \colorlet{M337greenfill}{M337green!40} 
 \colorlet{M337purplefill}{M337purple!40} 
 \colorlet{M337orangefill}{M337orange!40} 
+
+
+% MS327 colours
+\definecolor{MS327blue}{cmyk}{1,0.45,0,0.14}
+\definecolor{MS327red}{cmyk}{0,1,0.63,0.29}
+\definecolor{MS327green}{cmyk}{0.87,0,0.38,0}
+\definecolor{MS327purple}{cmyk}{0.69,0.84,0,0.02}
 
 
 % ** Structure content template colours ** 
@@ -749,6 +759,8 @@
 \tikzset{closed/.style={circle, draw, fill,  inner sep=0, minimum size=4pt }}
 % ... open. Inside of circle is coloured "background", defined in figure file.
 \tikzset{open/.style={circle, draw, fill=@outikzbackground, inner sep=0, minimum size=4pt }}
+% ... closed square
+\tikzset{sqrpoint/.style={rectangle, draw, fill, inner sep=0, minimum size=4pt}}
 
 %
 % Springs and dampers for mechanics diagrams
