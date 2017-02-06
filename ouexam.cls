@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2016/12/01 v1.31 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2017/02/06 v1.4 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -151,7 +151,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BARCODE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %
 \newif\if@barcode
 \@barcodefalse
@@ -185,8 +184,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
 % Footers for title page (copyright, etc)
 \fancypagestyle{frontpage}{%
   \fancyhf{} % clear all header and footer fields
@@ -198,28 +195,32 @@
 \newlength\titletablewidth
 \setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
 \newlength\toppadding
-\setlength\toppadding{1cm} % allows users to adjust space at top if desired
-\renewcommand{\maketitle}{
-  \thispagestyle{frontpage}
-  \vspace*{\toppadding}
-\if@specimensolutions
-  \@makespecimensolutionstitle
-\else
-  \@makestandardtitle
-\fi
+\setlength\toppadding{0.5cm} % allows users to adjust space at top if desired
+%%
+%%
+% Maketitle command %
+\renewcommand{\maketitle}{%
+  \thispagestyle{frontpage}%
+  \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted 
+  \begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
+     \if@specimensolutions%
+  	\@makespecimensolutionstitle
+     \else%
+  	\@makestandardtitle
+     \fi
+  \end{adjustwidth}
 }
-
-
+%%
 \def\@makestandardtitle{%
-     \begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
      \if@bigfontneeded
-    	  \fontsize{14.4}{18}\selectfont % equivalent to \large in 12pt for most of the title page
-    	  \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-    	  \vspace{1.5cm}
-    	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
-    	&
-    	  \vspace{1.5cm}{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
-    	&
+    	\fontsize{14.4}{18}\selectfont % Equates to \large in 12pt for most of the title page
+     \fi
+     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
+        \vspace{-0.7cm}
+    	\includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%
+     &
+    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}} \hfill\ \setbarcode}\\ %Equates to \Huge in 12pt
+     &
     	\raggedright\bfseries Module Examination \@examyear \newline
     	
     	\vspace*{-10pt}
@@ -230,76 +231,42 @@
     	
     	\nointerlineskip\vspace{12pt}
     	{\if@showsolutions
-    	{\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill}
+    	  {\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill} %Equates to \Large in 12pt, \LARGE in 11pt
     	\else
-    	{\hfill Time allowed:\ \@timeallowed\hfill}
+    	  {\hfill Time allowed:\ \@timeallowed\hfill}
     	\fi}
     	
     	\nointerlineskip\vspace{12pt}
     	\rule{\titletablewidth}{1pt}
-    	\end{tabular}
-     \else % @bigfontneeded is false
-    	\begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-    	  \vspace{1.5cm}
-    	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
-    	&
-    	  \vspace{1.5cm}{\textbf{{\Huge \@modulecode\//\@session}} \hfill\ \setbarcode}\\ 
-    	&
-    	  \raggedright\bfseries Module Examination \@examyear \newline
-    	
-    	  \vspace*{-10pt}
-    	  \@moduletitle\newline
-    	
-    	  \@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
-    	  \rule{\titletablewidth}{1pt}
-    	
-    	  \nointerlineskip\vspace{12pt}
-    	  {\if@showsolutions
-    	  {\hfill \textbf{\Large ***SOLUTIONS***}\hfill}
-    	  \else
-    	  {\hfill Time allowed:\ \@timeallowed\hfill}
-    	  \fi}
-    	
-    	  \nointerlineskip\vspace{12pt}
-    	  \rule{\titletablewidth}{1pt}
-    	\end{tabular}
-    \fi
-	\end{adjustwidth}
-	\vspace{30pt}
+    \end{tabular}
+    \vspace{20pt}
 	
-	  \begin{adjustwidth}{2cm}{-2cm}
-	  \raggedright
-	  \@examinstructions
-	  \end{adjustwidth}
-	  \newpage
+    \begin{adjustwidth}{2cm}{1cm}
+	\raggedright
+	\@examinstructions
+    \end{adjustwidth}
+    \newpage
 }
+%%
 \def\@makespecimensolutionstitle{%
-	\begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
+    \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
+        \vspace{-0.3cm}
+        \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%
+    &
 	\if@bigfontneeded
-	   \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-    	\vspace{-0.3cm}
-    	\includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
-      &
-	    \fontsize{14.4}{18}\selectfont\raggedright\textbf{\@faculty}\newline
-        \textbf{\@modulecode\ \@moduletitle}\\
-	  &
-	    \fontsize{24.88}{30}\selectfont \raggedright \textbf{\@modulecode\ \@specimensolutionstitle}
-	  \end{tabular}
-	\else % @bigfontneeded is false
-      \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-    	  \vspace{-0.3cm}
-    	  \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
-      &
-	  	  \raggedright\textbf{\@faculty}\newline
-           \textbf{\@modulecode\ \@moduletitle}\newline
+		\fontsize{14.4}{18}\selectfont\raggedright\textbf{\@faculty}\newline
+		\textbf{\@modulecode\ \@moduletitle}\\
+		\fontsize{24.88}{30}\selectfont \raggedright \textbf{\@modulecode\ \@specimensolutionstitle}
+	\else
+	  	\raggedright\textbf{\@faculty}\newline
+                \textbf{\@modulecode\ \@moduletitle}\newline
 
-	       \LARGE\raggedright \textbf{\@modulecode\ \@specimensolutionstitle}
-	  \end{tabular}
+	        \LARGE\raggedright \textbf{\@modulecode\ \@specimensolutionstitle}
 	\fi
-	\end{adjustwidth}
-	\vspace{30pt}	
+    &
+    \end{tabular}
+    \vspace{30pt}	
 }
-
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Code for "TURN OVER" text to appear on all odd pages (except the last page)
