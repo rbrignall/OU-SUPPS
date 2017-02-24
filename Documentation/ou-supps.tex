@@ -566,14 +566,32 @@ for example:
 \end{desc}
 This is analogous to the |\setSubtotalHline| command, and customises the lines
 drawn (if any) after the |\total| and |\total*| commands. It takes exactly 
-the same options as |\setSubtotalHline|, and they perform the analogous
-tasks; the default |height| for the |subtotal| horizontal lines is |1pt|, 
+the same options as |\setSubtotalHline|, and each option performs the analogous
+task; the default |height| for the |subtotal| horizontal lines is |1pt|, 
 but all other defaults are the same as those for the  |total| horizontal lines.
 
 Users who prefer to use |\pgfkeys| directly may use, for example,
 
 |\pgfkeys{/totalhline,default,moveleft=-3cm,color=red!40!white}|
 
+\begin{desc}
+|\ourule[<options>]|
+\end{desc}
+This command enables users to draw a horizontal rule manually at some point in their tutor notes, 
+not using any of the |\subtotal| and friends commands. It takes exactly the 
+same options as |\setSubtotalHline|, and each option performs the analogous
+task. The default 
+values are copied from the default values of the |\setTotalHline|.
+
+\begin{desc}
+|\setOUrule[<options>]|
+\end{desc}
+Users may specify global options for their |\ourule| command in exactly the same 
+way as in |\setSubtotalHline| and |\setTotalHline|.
+
+Users who prefer to use |\pgfkeys| directly may use, for example,
+
+|\pgfkeys{/ourule,default,moveleft=-3cm,color=red!40!white}|
 \subsubsection{Multiple choice} 
 
 For CMAs and other assignment types that have multiple choice questions, the following commands are available. It is unlikely that these will be needed in tutornotes, but they have been included for consistency with |ouab.cls|.
