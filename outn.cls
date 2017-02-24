@@ -222,6 +222,7 @@
 %% Horizontal lines after subtotals and totals
 \newif\ifdraw@total@line
 \newif\ifdraw@subtotal@line
+\newif\ifdraw@ourule@line
 
 % reference: http://tex.stackexchange.com/questions/34312/how-to-create-a-command-with-key-values
 \pgfkeys{
@@ -247,6 +248,13 @@
    height/.estore in=\@outn@subtotal@hline@height,
    color/.estore in=\@outn@subtotal@hline@color,
    draw line/.is if=draw@subtotal@line,
+ /ourule/.is family, /ourule,
+ default/.style = /totalhline/default,
+   moveleft/.estore in=\@outn@rule@move@left,
+   width/.estore in=\@outn@rule@width,
+   height/.estore in=\@outn@rule@height,
+   color/.estore in=\@outn@rule@color,
+   draw line/.is if=draw@ourule@line,
 }
 
 % command to customise the line after totals
@@ -262,6 +270,24 @@
 }
 % by default, turn subtotal lines on
 \setSubtotalHline[draw line]
+
+% command to customise the ourule
+\newcommand{\setOUrule}[1][]{%
+    \pgfkeys{/ourule,default,#1}%
+}
+% this command sets the default values of \@outn@rule@move@left and friends
+\setOUrule[/ourule/.default,draw line]
+
+% the following command draws a rule manually (not with subtotal and friends) with optional key=values
+\newcommand{\ourule}[1][]{%
+    \ifdraw@ourule@line
+    \pgfkeys{/ourule,#1}%
+    \outn@draw@rule{\@outn@rule@move@left}%
+                   {\@outn@rule@width}%
+                   {\@outn@rule@color}%
+                   {\@outn@rule@height}%
+  \fi
+}
  
 % reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
 \newcommand{\outn@draw@rule}[4]{%
@@ -555,7 +581,7 @@
 % Line at end of AB
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
-\par\bigskip \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}
+\par\ourule
 \@oldenddochook}
 
 %%

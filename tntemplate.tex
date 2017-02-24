@@ -197,6 +197,29 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
         
         \total*
     \end{itemize}
+  \item Horizontal rules can be drawn manually without using the \verb!\total! (and friends) command(s) using 
+    the \verb!\ourule[<options>]! command, where the \verb!<options>! are 
+    exactly the same options as those for \verb!\setSubtotalHline!. For example:
+    \begin{itemize}
+      \item \verb!\ourule!
+    \ourule
+      \item \verb!\ourule[color=orange]!
+    \ourule[color=orange]
+      \item \verb1\ourule[color=black!50!red,height=3pt,moveleft=4cm,width=.5\textwidth]1
+    \ourule[color=black!50!red,height=3pt,moveleft=-4cm,width=.5\textwidth]
+  \item You can specify the style of the \verb!\ourule! command globally using, for example, \verb!\setOUrule[color=red,height=4pt,moveleft=-2cm,width=.75\textwidth]!
+
+\setOUrule[color=red,height=4pt,moveleft=-2cm,width=.75\textwidth]
+
+Now, when using simply \verb!\ourule!, the output is:
+
+\ourule
+
+And then you can overwrite certain aspects as you see fit, for example \verb!\ourule[color=blue]!
+
+\ourule[color=blue]
+
+    \end{itemize}
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
