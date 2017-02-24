@@ -625,6 +625,41 @@ Provides a command and environment in which to write text that is visible only i
 
 \emph{Warning: Do not use the |longremark| environment inside the |solutions| environment! In certain modes this will cause errors relating to verbatim mode.}
 
+\begin{desc}
+|\tutoronly{<commands/text>}|
+\end{desc}
+Commands, text, and anything else (e.g |\pagebreak|) passed to the |\tutoronly| command will only
+output to tutor notes when the |specsolns| is \emph{not} active.
+
+\begin{desc}
+|\begin{tutor}|
+| <content>|
+|\end{tutor}|
+\end{desc}
+Any content within the |\tutor| environment will only
+output to tutor notes when the |specsolns| is \emph{not} active.
+
+\begin{desc}
+|\studentonly{<commands/text>}|
+\end{desc}
+Commands, text, and anything else passed to the |\studentonly| command will only
+output to student notes when the |specsolns| \emph{is} active.
+
+\begin{desc}
+|\begin{student}|
+|<content>|
+|\end{student}|
+\end{desc}
+Any content within the |\student| environment will only
+output to student notes when the |specsolns| \emph{is} active.
+
+\begin{desc}
+|\tutororstudent{<to the tutor>}{<to the student>}|  
+\end{desc}
+The |\tutororstudent| command takes two arguments; the first argument will only
+be output when the |specsolns| is \emph{not} active, and the second argument 
+will only be output when the |specsolns| \emph{is} active.
+
 \subsection{Technical info}
 This section can be omitted unless you need/want to know a bit more about the class file.
 
@@ -644,6 +679,11 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
 \item |marginnote| for handling marks, etc in the margin.
 \item |caption| with option |labelsep=quad| to improve formatting for figures.
+\item |xcolor| for colour
+\item |framed| for framing environment
+\item |pgfkeys| for setting flexible options in commands
+\item |environ|
+\item |verbatim|
 \end{itemize}
 
 

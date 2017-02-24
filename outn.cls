@@ -39,9 +39,7 @@
   \RequirePackage{answers}
   \RequirePackage{xparse}
 \fi
-\if@specsolns
-  \RequirePackage{verbatim}
-\fi
+\RequirePackage{verbatim}
 
 
 %%
@@ -277,6 +275,29 @@
     \color{#3}\hrule height #4 width\hsize % the rule
     \kern3pt % space after the rule
   }\nointerlineskip % no additional space after the rule
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Tutor or Student text
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\tutoronly}[1]{#1}
+\newenvironment{tutor}{{\bfseries For tutors only:}\par}{}
+\newcommand{\studentonly}[1]{}
+\newenvironment{student}{\comment}{\endcomment}
+\if@specsolns
+    \renewcommand{\tutoronly}[1]{}
+    \renewcommand{\studentonly}[1]{#1}
+    \renewenvironment{tutor}{\comment}{\endcomment}
+    \renewenvironment{student}{{\bfseries For students only:}\par}{}
+\fi
+\newcommand{\tutororstudent}[2]{%
+    % #1: for tutors only
+    % #2: for students only
+    \if@specsolns
+        #2
+    \else
+        #1
+    \fi
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
