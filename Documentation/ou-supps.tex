@@ -416,7 +416,6 @@ Command to change the font color used in Specimen Solutions to |<color>| (e.g. |
 \end{desc}
 Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
 
-
 \subsection{Creating assignments}
 Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type. These commands have the same syntax as in |ouab|, but the behaviour is slightly different (since |outn| does not produce a table of contents).
 
@@ -643,6 +642,53 @@ Provides a command and environment in which to write text that is visible only i
 
 \emph{Warning: Do not use the |longremark| environment inside the |solutions| environment! In certain modes this will cause errors relating to verbatim mode.}
 
+\begin{desc}
+|\tutoronly{<commands/text>}|
+\end{desc}
+Commands, text, and anything else (e.g |\pagebreak|) passed to the |\tutoronly| command will only
+output to tutor notes when the |specsolns| option is \emph{not} active.
+
+\begin{desc}
+|\begin{tutor}|
+| <content>|
+|\end{tutor}|
+\end{desc}
+Any content within the |\tutor| environment will only
+output to tutor notes when the |specsolns| option is \emph{not} active.\label{outn:tutoronly}
+
+\begin{desc}
+|\tutoronlytitle{<title for tutor only environment>}|
+\end{desc}
+Sets the title for the |tutor| environment; the title, by default, will output
+|{\bfseries For tutors only:}\par| but this can be changed using |\tutoronlytitle|. 
+
+\begin{desc}
+|\studentonly{<commands/text>}|
+\end{desc}
+Commands, text, and anything else passed to the |\studentonly| command will only
+output to student notes when the |specsolns| option \emph{is} active.\label{outn:studentonly}
+
+\begin{desc}
+|\begin{student}|
+|<content>|
+|\end{student}|
+\end{desc}
+Any content within the |\student| environment will only
+output to student notes when the |specsolns| option \emph{is} active.
+
+\begin{desc}
+|\studentonlytitle{<title for student only environment>}|
+\end{desc}
+Sets the title for the |student| environment; the title, by default, will output
+|{\bfseries For students only:}\par| but this can be changed using |\studentonlytitle|. 
+
+\begin{desc}
+|\tutororstudent{<to the tutor>}{<to the student>}|  
+\end{desc}
+The |\tutororstudent| command takes two arguments; the first argument will only
+be output when the |specsolns| is \emph{not} active, and the second argument 
+will only be output when the |specsolns| \emph{is} active.
+
 \subsection{Technical info}
 This section can be omitted unless you need/want to know a bit more about the class file.
 
@@ -662,6 +708,11 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
 \item |marginnote| for handling marks, etc in the margin.
 \item |caption| with option |labelsep=quad| to improve formatting for figures.
+\item |xcolor| for colour
+\item |framed| for framing environment
+\item |pgfkeys| for setting flexible options in commands
+\item |environ|
+\item |verbatim|
 \end{itemize}
 
 

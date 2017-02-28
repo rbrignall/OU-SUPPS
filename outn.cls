@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/09/16 v0.61 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/09/16 v0.7 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
@@ -39,9 +39,7 @@
   \RequirePackage{answers}
   \RequirePackage{xparse}
 \fi
-\if@specsolns
-  \RequirePackage{verbatim}
-\fi
+\RequirePackage{verbatim}
 
 
 %%
@@ -67,6 +65,12 @@
 %
 \newcommand\tntitle[1]{\renewcommand\@tntitle{#1}}
 \newcommand\@tntitle{\@latex@error{No \noexpand\tntitle specified}\@ehc}
+% title for tutor only environment
+\newcommand\tutoronlytitle[1]{\renewcommand\@tutoronlytitle{#1}}
+\newcommand\@tutoronlytitle{{\bfseries For tutors only:}\par}
+% title for student only environment
+\newcommand\studentonlytitle[1]{\renewcommand\@studentonlytitle{#1}}
+\newcommand\@studentonlytitle{{\bfseries For students only:}\par}
 
 \definecolor{ougreen}{RGB}{0,128,0}
 \def\@specsolnscolor{ougreen}
@@ -303,6 +307,36 @@
     \color{#3}\hrule height #4 width\hsize % the rule
     \kern3pt % space after the rule
   }\nointerlineskip % no additional space after the rule
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Tutor or Student text
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\tutoronly}[1]{#1}
+\newenvironment{tutor}{\@tutoronlytitle}{}
+\newcommand{\studentonly}[1]{}
+\newenvironment{student}{\comment}{\endcomment}
+\if@specsolns
+    \AtBeginDocument{
+        \renewcommand{\tutoronly}[1]{}
+        \renewcommand{\studentonly}[1]{#1}
+        \renewenvironment{tutor}{\comment}{\endcomment}
+        \renewenvironment{student}{\@studentonlytitle}{}
+    }
+\else
+    \AtBeginDocument{
+        \renewcommand{\studentonly}[1]{}
+        \renewenvironment{student}{\comment}{\endcomment}
+    }
+\fi
+\newcommand{\tutororstudent}[2]{%
+    % #1: for tutors only
+    % #2: for students only
+    \if@specsolns
+        #2
+    \else
+        #1
+    \fi
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

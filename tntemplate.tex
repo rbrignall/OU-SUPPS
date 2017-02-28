@@ -15,6 +15,8 @@
 \tntitle{Title of TN}
 \tnyear{2015B}
 \copyrightyear{2012} % If different from \abyear
+%\tutoronlytitle{Title for tutor-only environment\par}      % specifies title for 'Tutor-only' environment
+%\studentonlytitle{Title for student-only environment\par}  % specifies title for 'Student-only' environment
 %\specsolnscolor{blue} % can be used to change text colour in specsolns mode
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -220,6 +222,36 @@ And then you can overwrite certain aspects as you see fit, for example \verb!\ou
 \ourule[color=blue]
 
     \end{itemize}
+\end{enumerate}
+
+\question{4}
+\begin{enumerate}
+  \item The \verb|\tutoronly| command \emph{only} produces output in the tutor version of the tutor notes, 
+    and is ignored when the \verb|specsolns| option is used. For example
+    \tutoronly{ {\color{blue} students will not see this!}}.
+  \item The \verb|tutor| environment is only visible in tutor notes, 
+    and is ignored when the \verb|specsolns| option is used. For example
+
+    \begin{tutor}
+      This environment will only be seen in the tutor notes.
+
+      It will not be seen in the student version.
+    \end{tutor}
+    \tutoronly{\pagebreak}
+  \item The \verb|\studentonly| command \emph{only} produces output in the 
+    special solutions version of tutor notes (so \verb|specsolns| must be active); for example \studentonly{this is only output in student solutions}
+  \item The \verb|student| environment is only visible in student solutions, 
+    \studentonly{\pagebreak}
+    when the \verb|specsolns| option is used. For example
+
+    \begin{student}
+      This environment will only be seen in the student solutions.
+
+      It will not be seen in the tutor notes.
+    \end{student}
+  \item The \verb|\tutororstudent| takes two parameters, the first will only be seen in the tutor version (when \verb|specsolns|
+    is not active), the second will only be seen by students in the student version (when \verb|specsolns| is active).
+    For example: \tutororstudent{for tutors!}{for students!}
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
