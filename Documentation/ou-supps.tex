@@ -416,22 +416,6 @@ Command to change the font color used in Specimen Solutions to |<color>| (e.g. |
 \end{desc}
 Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
 
-\begin{desc}
-|\tutoronlytitle{<title for tutor only environment>}|
-\end{desc}
-Sets the title for the |tutor| environment (optional).
-The |tutor| environment \emph{only} outputs when |specsolns| is \emph{not} active; the title is, by default,
-|{\bfseries For tutors only:}\par| but this can be changed using |\tutoronlytitle|. See page~\pageref{outn:tutoronly}
-for further detail.\label{outn:tutoronlytitle}
-
-\begin{desc}
-|\studentonlytitle{<title for student only environment>}|
-\end{desc}
-Sets the title for the |student| environment (optional).
-The |student| environment \emph{only} outputs when |specsolns| \emph{is} active; the title is, by default,
-|{\bfseries For students only:}\par| but this can be changed using |\studentonlytitle|. See page~\pageref{outn:studentonly}
-for further detail.\label{outn:studentonlytitle}
-
 \subsection{Creating assignments}
 Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type. These commands have the same syntax as in |ouab|, but the behaviour is slightly different (since |outn| does not produce a table of contents).
 
@@ -662,7 +646,7 @@ Provides a command and environment in which to write text that is visible only i
 |\tutoronly{<commands/text>}|
 \end{desc}
 Commands, text, and anything else (e.g |\pagebreak|) passed to the |\tutoronly| command will only
-output to tutor notes when the |specsolns| is \emph{not} active.
+output to tutor notes when the |specsolns| option is \emph{not} active.
 
 \begin{desc}
 |\begin{tutor}|
@@ -670,14 +654,19 @@ output to tutor notes when the |specsolns| is \emph{not} active.
 |\end{tutor}|
 \end{desc}
 Any content within the |\tutor| environment will only
-output to tutor notes when the |specsolns| is \emph{not} active.\label{outn:tutoronly}
-See also |\tutoronlytitle| on page~\pageref{outn:tutoronlytitle} for the title of this environment.
+output to tutor notes when the |specsolns| option is \emph{not} active.\label{outn:tutoronly}
+
+\begin{desc}
+|\tutoronlytitle{<title for tutor only environment>}|
+\end{desc}
+Sets the title for the |tutor| environment; the title, by default, will output
+|{\bfseries For tutors only:}\par| but this can be changed using |\tutoronlytitle|. 
 
 \begin{desc}
 |\studentonly{<commands/text>}|
 \end{desc}
 Commands, text, and anything else passed to the |\studentonly| command will only
-output to student notes when the |specsolns| \emph{is} active.\label{outn:studentonly}
+output to student notes when the |specsolns| option \emph{is} active.\label{outn:studentonly}
 
 \begin{desc}
 |\begin{student}|
@@ -685,8 +674,13 @@ output to student notes when the |specsolns| \emph{is} active.\label{outn:studen
 |\end{student}|
 \end{desc}
 Any content within the |\student| environment will only
-output to student notes when the |specsolns| \emph{is} active.
-See also |\studentonlytitle| on page~\pageref{outn:studentonlytitle} for the title of this environment.
+output to student notes when the |specsolns| option \emph{is} active.
+
+\begin{desc}
+|\studentonlytitle{<title for student only environment>}|
+\end{desc}
+Sets the title for the |student| environment; the title, by default, will output
+|{\bfseries For students only:}\par| but this can be changed using |\studentonlytitle|. 
 
 \begin{desc}
 |\tutororstudent{<to the tutor>}{<to the student>}|  
