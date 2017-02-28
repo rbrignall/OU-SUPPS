@@ -377,8 +377,11 @@
   \afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
 \def\get@args#1\hfuzz#2\hfuzz{%
   \if\relax\detokenize{#1}\relax
-     \addtocounter{subtotal}{#2}%
-     \addtocounter{total}{#2}%
+     \if\relax\detokenize{#2}\relax
+     \else
+        \addtocounter{subtotal}{#2}%
+        \addtocounter{total}{#2}%
+     \fi
   \else
     \relax
   \fi
