@@ -15,6 +15,8 @@
 \tntitle{Title of TN}
 \tnyear{2015B}
 \copyrightyear{2012} % If different from \abyear
+\tutoronlytitle{This title is for tutors only\par}
+\studentonlytitle{This title is for students only\par}
 %\specsolnscolor{blue} % can be used to change text colour in specsolns mode
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -197,6 +199,29 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
         
         \total*
     \end{itemize}
+  \item Horizontal rules can be drawn manually without using the \verb!\total! (and friends) command(s) using 
+    the \verb!\ourule[<options>]! command, where the \verb!<options>! are 
+    exactly the same options as those for \verb!\setSubtotalHline!. For example:
+    \begin{itemize}
+      \item \verb!\ourule!
+    \ourule
+      \item \verb!\ourule[color=orange]!
+    \ourule[color=orange]
+      \item \verb1\ourule[color=black!50!red,height=3pt,moveleft=4cm,width=.5\textwidth]1
+    \ourule[color=black!50!red,height=3pt,moveleft=-4cm,width=.5\textwidth]
+  \item You can specify the style of the \verb!\ourule! command globally using, for example, \verb!\setOUrule[color=red,height=4pt,moveleft=-2cm,width=.75\textwidth]!
+
+\setOUrule[color=red,height=4pt,moveleft=-2cm,width=.75\textwidth]
+
+Now, when using simply \verb!\ourule!, the output is:
+
+\ourule
+
+And then you can overwrite certain aspects as you see fit, for example \verb!\ourule[color=blue]!
+
+\ourule[color=blue]
+
+    \end{itemize}
 \end{enumerate}
 
 \question{4}
@@ -208,20 +233,18 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
     and is ignored when the \verb|specsolns| option is used. For example
 
     \begin{tutor}
-      \color{blue}
       This environment will only be seen in the tutor notes.
 
       It will not be seen in the student version.
     \end{tutor}
     \tutoronly{\pagebreak}
   \item The \verb|\studentonly| command \emph{only} produces output in the 
-    special solutions version of tutor notes (so \verb|specsolns| must be active); for example .\studentonly{ {\color{red} this is only output in student solutions}}
+    special solutions version of tutor notes (so \verb|specsolns| must be active); for example \studentonly{this is only output in student solutions}
   \item The \verb|student| environment is only visible in student solutions, 
     \studentonly{\pagebreak}
     when the \verb|specsolns| option is used. For example
 
     \begin{student}
-      \color{red}
       This environment will only be seen in the student solutions.
 
       It will not be seen in the tutor notes.

@@ -416,6 +416,21 @@ Command to change the font color used in Specimen Solutions to |<color>| (e.g. |
 \end{desc}
 Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
 
+\begin{desc}
+|\tutoronlytitle{<title for tutor only environment>}|
+\end{desc}
+Sets the title for the |tutor| environment (optional).
+The |tutor| environment \emph{only} outputs when |specsolns| is \emph{not} active; the title is, by default,
+|{\bfseries For tutors only:}\par| but this can be changed using |\tutoronlytitle|. See page~\pageref{outn:tutoronly}
+for further detail.\label{outn:tutoronlytitle}
+
+\begin{desc}
+|\studentonlytitle{<title for student only environment>}|
+\end{desc}
+Sets the title for the |student| environment (optional).
+The |student| environment \emph{only} outputs when |specsolns| \emph{is} active; the title is, by default,
+|{\bfseries For students only:}\par| but this can be changed using |\studentonlytitle|. See page~\pageref{outn:studentonly}
+for further detail.\label{outn:studentonlytitle}
 
 \subsection{Creating assignments}
 Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type. These commands have the same syntax as in |ouab|, but the behaviour is slightly different (since |outn| does not produce a table of contents).
@@ -566,14 +581,32 @@ for example:
 \end{desc}
 This is analogous to the |\setSubtotalHline| command, and customises the lines
 drawn (if any) after the |\total| and |\total*| commands. It takes exactly 
-the same options as |\setSubtotalHline|, and they perform the analogous
-tasks; the default |height| for the |subtotal| horizontal lines is |1pt|, 
+the same options as |\setSubtotalHline|, and each option performs the analogous
+task; the default |height| for the |subtotal| horizontal lines is |1pt|, 
 but all other defaults are the same as those for the  |total| horizontal lines.
 
 Users who prefer to use |\pgfkeys| directly may use, for example,
 
 |\pgfkeys{/totalhline,default,moveleft=-3cm,color=red!40!white}|
 
+\begin{desc}
+|\ourule[<options>]|
+\end{desc}
+This command enables users to draw a horizontal rule manually at some point in their tutor notes, 
+not using any of the |\subtotal| and friends commands. It takes exactly the 
+same options as |\setSubtotalHline|, and each option performs the analogous
+task. The default 
+values are copied from the default values of the |\setTotalHline|.
+
+\begin{desc}
+|\setOUrule[<options>]|
+\end{desc}
+Users may specify global options for their |\ourule| command in exactly the same 
+way as in |\setSubtotalHline| and |\setTotalHline|.
+
+Users who prefer to use |\pgfkeys| directly may use, for example,
+
+|\pgfkeys{/ourule,default,moveleft=-3cm,color=red!40!white}|
 \subsubsection{Multiple choice} 
 
 For CMAs and other assignment types that have multiple choice questions, the following commands are available. It is unlikely that these will be needed in tutornotes, but they have been included for consistency with |ouab.cls|.
@@ -637,13 +670,14 @@ output to tutor notes when the |specsolns| is \emph{not} active.
 |\end{tutor}|
 \end{desc}
 Any content within the |\tutor| environment will only
-output to tutor notes when the |specsolns| is \emph{not} active.
+output to tutor notes when the |specsolns| is \emph{not} active.\label{outn:tutoronly}
+See also |\tutoronlytitle| on page~\pageref{outn:tutoronlytitle} for the title of this environment.
 
 \begin{desc}
 |\studentonly{<commands/text>}|
 \end{desc}
 Commands, text, and anything else passed to the |\studentonly| command will only
-output to student notes when the |specsolns| \emph{is} active.
+output to student notes when the |specsolns| \emph{is} active.\label{outn:studentonly}
 
 \begin{desc}
 |\begin{student}|
@@ -652,6 +686,7 @@ output to student notes when the |specsolns| \emph{is} active.
 \end{desc}
 Any content within the |\student| environment will only
 output to student notes when the |specsolns| \emph{is} active.
+See also |\studentonlytitle| on page~\pageref{outn:studentonlytitle} for the title of this environment.
 
 \begin{desc}
 |\tutororstudent{<to the tutor>}{<to the student>}|  

@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/09/16 v0.61 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2016/09/16 v0.7 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
@@ -65,6 +65,12 @@
 %
 \newcommand\tntitle[1]{\renewcommand\@tntitle{#1}}
 \newcommand\@tntitle{\@latex@error{No \noexpand\tntitle specified}\@ehc}
+% title for tutor only environment
+\newcommand\tutoronlytitle[1]{\renewcommand\@tutoronlytitle{#1}}
+\newcommand\@tutoronlytitle{{\bfseries For tutors only:}\par}
+% title for student only environment
+\newcommand\studentonlytitle[1]{\renewcommand\@studentonlytitle{#1}}
+\newcommand\@studentonlytitle{{\bfseries For students only:}\par}
 
 \definecolor{ougreen}{RGB}{0,128,0}
 \def\@specsolnscolor{ougreen}
@@ -220,6 +226,7 @@
 %% Horizontal lines after subtotals and totals
 \newif\ifdraw@total@line
 \newif\ifdraw@subtotal@line
+\newif\ifdraw@ourule@line
 
 % reference: http://tex.stackexchange.com/questions/34312/how-to-create-a-command-with-key-values
 \pgfkeys{
@@ -245,6 +252,13 @@
    height/.estore in=\@outn@subtotal@hline@height,
    color/.estore in=\@outn@subtotal@hline@color,
    draw line/.is if=draw@subtotal@line,
+ /ourule/.is family, /ourule,
+ default/.style = /totalhline/default,
+   moveleft/.estore in=\@outn@rule@move@left,
+   width/.estore in=\@outn@rule@width,
+   height/.estore in=\@outn@rule@height,
+   color/.estore in=\@outn@rule@color,
+   draw line/.is if=draw@ourule@line,
 }
 
 % command to customise the line after totals
@@ -260,6 +274,24 @@
 }
 % by default, turn subtotal lines on
 \setSubtotalHline[draw line]
+
+% command to customise the ourule
+\newcommand{\setOUrule}[1][]{%
+    \pgfkeys{/ourule,default,#1}%
+}
+% this command sets the default values of \@outn@rule@move@left and friends
+\setOUrule[/ourule/.default,draw line]
+
+% the following command draws a rule manually (not with subtotal and friends) with optional key=values
+\newcommand{\ourule}[1][]{%
+    \ifdraw@ourule@line
+    \pgfkeys{/ourule,#1}%
+    \outn@draw@rule{\@outn@rule@move@left}%
+                   {\@outn@rule@width}%
+                   {\@outn@rule@color}%
+                   {\@outn@rule@height}%
+  \fi
+}
  
 % reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
 \newcommand{\outn@draw@rule}[4]{%
@@ -281,14 +313,21 @@
 % Tutor or Student text
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\tutoronly}[1]{#1}
-\newenvironment{tutor}{{\bfseries For tutors only:}\par}{}
+\newenvironment{tutor}{\@tutoronlytitle}{}
 \newcommand{\studentonly}[1]{}
 \newenvironment{student}{\comment}{\endcomment}
 \if@specsolns
-    \renewcommand{\tutoronly}[1]{}
-    \renewcommand{\studentonly}[1]{#1}
-    \renewenvironment{tutor}{\comment}{\endcomment}
-    \renewenvironment{student}{{\bfseries For students only:}\par}{}
+    \AtBeginDocument{
+        \renewcommand{\tutoronly}[1]{}
+        \renewcommand{\studentonly}[1]{#1}
+        \renewenvironment{tutor}{\comment}{\endcomment}
+        \renewenvironment{student}{\@studentonlytitle}{}
+    }
+\else
+    \AtBeginDocument{
+        \renewcommand{\studentonly}[1]{}
+        \renewenvironment{student}{\comment}{\endcomment}
+    }
 \fi
 \newcommand{\tutororstudent}[2]{%
     % #1: for tutors only
@@ -576,7 +615,7 @@
 % Line at end of AB
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
-\par\bigskip \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}
+\par\ourule
 \@oldenddochook}
 
 %%
