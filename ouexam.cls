@@ -77,7 +77,6 @@
 	\relax
 \else
     \RequirePackage[code=Code39,X=.364mm,ratio=2.3,H=0.63cm]{makebarcode}
-	%\RequirePackage{barcodes}
 \fi
 
 %%
@@ -160,13 +159,11 @@
 \if@nobarcode % Set by nobarcode option to class as override
 	\newcommand\examcode[1]{\relax}
 \else
-%	\font\barcodefont=wlc39 scaled 1300    % Size OK?
 	\newlength\barcodewidth
 	\newcommand\examcode[1]{%
 	  \@barcodetrue
 	  \DeclareRobustCommand\@examcode{#1}
 	  \def\bar@examcode{\barcode{#1}}
-%OLD: \def\bar@examcode{\barcodefont @#1@}
 	  \settowidth{\barcodewidth}{\bar@examcode}
 	}
 \fi
@@ -197,14 +194,14 @@
 \newlength\titletablewidth
 \setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
 \newlength\toppadding
-\setlength\toppadding{0.5cm} % allows users to adjust space at top if desired
+\setlength\toppadding{0cm} % allows users to adjust space at top if desired
 %%
 %%
 % Maketitle command %
 \renewcommand{\maketitle}{%
   \thispagestyle{frontpage}%
   \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted 
-  \begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
+  \begin{adjustwidth}{0pt}{-3.5cm} % N.B. positive measurements increase margins!
      \if@specimensolutions%
   	\@makespecimensolutionstitle
      \else%
@@ -217,11 +214,12 @@
      \if@bigfontneeded
     	\fontsize{14.4}{18}\selectfont % Equates to \large in 12pt for most of the title page
      \fi
+     \hfill\ \setbarcode\par\bigskip % New location for longer barcodes
      \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
         \vspace{-0.7cm}
     	\includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%
      &
-    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}} \hfill\ \setbarcode}\\ %Equates to \Huge in 12pt
+    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}}}\\ %Equates to \Huge in 12pt
      &
     	\raggedright\bfseries Module Examination \@examyear \newline
     	
