@@ -76,7 +76,8 @@
 \if@nobarcode
 	\relax
 \else
-	\RequirePackage{barcodes}
+    \RequirePackage[code=Code39,X=.364mm,ratio=2.3,H=0.63cm]{makebarcode}
+	%\RequirePackage{barcodes}
 \fi
 
 %%
@@ -159,12 +160,13 @@
 \if@nobarcode % Set by nobarcode option to class as override
 	\newcommand\examcode[1]{\relax}
 \else
-	\font\barcodefont=wlc39 scaled 1300    % Size OK?
+%	\font\barcodefont=wlc39 scaled 1300    % Size OK?
 	\newlength\barcodewidth
 	\newcommand\examcode[1]{%
 	  \@barcodetrue
 	  \DeclareRobustCommand\@examcode{#1}
-	  \def\bar@examcode{\barcodefont @#1@}
+	  \def\bar@examcode{\barcode{#1}}
+%OLD: \def\bar@examcode{\barcodefont @#1@}
 	  \settowidth{\barcodewidth}{\bar@examcode}
 	}
 \fi
