@@ -781,7 +781,10 @@ This provides a large-print version for visually impaired students. Also availab
 |\documentclass[nobarcode]{ouexam}|
 \end{desc}
 
-This option is available for drafting exams, on machines where the package containing |barcodes.sty| does not work properly. In most cases, the DPU can insert the requisite barcode later.
+This option is available for drafting exams, suppressing the barcode production code (and the |makebarcode| package). In most cases, the DPU can insert the requisite barcode later.
+
+[This was originally created when the system used the old OU\TeX\ code for barcodes, which relied on a specific font that was not always installed correctly in certain \TeX\ distributions. The new approach provided by the |makebarcode| package instead uses the |\rule| command to draw black and white lines of appropriate sizes.]
+
 
 \subsubsection{Commands to be used in the preamble}
 \begin{desc}
@@ -897,16 +900,14 @@ For fuller details of the possibilities with |enumitem|, see the documentation o
 Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned.
 
 \begin{desc}
-|\marks{<n>}|
+|\mk{<n>}|
 \end{desc}
 Places |<n>| in square brackets in the right hand margin on the line. 
 
-\emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
-
 \begin{desc}
-|\mk{<n>}|
+|\marks{<n>}|
 \end{desc}
-A synonym for |\marks|, for those moving from OUTeX.
+A synonym for |\mk|, preserved as part of legacy support from the earliest versions of |ouexam.cls|. Because this synonym currently redefines a \TeX\ primitive, this command has been deprecated and will be removed in a future release.
 
 
 \subsubsection{Multiple choice} 
@@ -971,7 +972,7 @@ This command can be used to specify marks, as per the format for creating questi
 |\solnmarksplus{<n>}{<description>}|\\
 |\mkplus{<n>}{<description>}|
 \end{desc}
-Some equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. These exist primarily for backward-compatibility with OUTeX.
+Some deprecated equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. The |\mark| command currently redefines a \TeX\ primitive and will be removed in a future release.
 
 
 \subsection{Alternative method to create solutions}
@@ -1009,7 +1010,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |marginnote| for handling marks, etc in the margin.
 \item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions.
 \item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.
-\item |barcodes| for creating the barcode on the front page. 
+\item |makebarcode| for creating the barcode on the front page. Not loaded if |nobarcode| option is specified.
 \item |extsizes| when options |14pt|, |17pt| or |20pt| are used, to handle larger font sizes. 
 \end{itemize}
 
