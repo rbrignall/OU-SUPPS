@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouicma}[2015/04/01 v1.0 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouicma}[2017/05/12 v1.1 (Robert Brignall, all rights reserved)]
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
@@ -16,6 +16,7 @@
 \RequirePackage{amssymb}
 \RequirePackage{lastpage}
 \RequirePackage{ifthen}
+\RequirePackage{tikz}
 \RequirePackage{enumitem}
 \RequirePackage{mdframed}
 \RequirePackage{marginnote}
@@ -196,22 +197,8 @@ Personal identifier (PI): \\[20pt]
 \renewcommand{\marks}[1]{\marginnote{\hfill[\textsl{#1}]}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Boxes for people to write their answers in
-\newcommand{\answerbox}{%
-  \marginnote{%
-    \hfill\fbox{
-	\begin{minipage}{20pt}
-		\hfill\vspace{25pt}
-	\end{minipage}
-	}}[-10pt]
-}
-\newcommand{\wideanswerbox}{%
-  \marginnote{%
-    \hfill\fbox{
-	\begin{minipage}{50pt}
-		\hfill\vspace{25pt}
-	\end{minipage}
-  }}[-10pt]
-}
+\newcommand{\answerbox}[1][1]{\marginnote{\hfill\tikz[scale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}
+\newcommand{\wideanswerbox}[1][1]{\marginnote{\hfill\tikz[xscale=2.4,yscale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
