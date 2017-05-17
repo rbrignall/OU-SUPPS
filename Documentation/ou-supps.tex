@@ -30,7 +30,10 @@
 \makeatother
 
 \newcommand\3{\unskip\enspace\fbox{\fontsize{4}{4}\selectfont NEW 3.0}}
+\newcommand{\metakeyavailable}{\textbullet}
 
+\usepackage{longtable}
+\usepackage{booktabs}
 \usepackage{hyperref}
 
 \pagestyle{headings}
@@ -1129,6 +1132,50 @@ command; for example:
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Summary of keys available for \texttt{metadataset}}
+Table~\ref{tab:metadataset} provides a summary of the available keys
+for the |metadataset| command in each of the |OU|-based class files.
+
+\begin{longtable}{lcccc}
+	\caption{Keys available to \texttt{metadataset} in each OU class file.}\label{tab:metadataset}\\
+	\toprule
+	                              & |ouab.cls|        & |ouexam.cls|      & |ouicma.cls|      & |outn.cls|        \\
+	\midrule
+	|faculty|                     & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|module code|                 & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|module title|                & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|multiple choice option text| & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	\cmidrule{2-5}
+	|document title|              & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
+	|presentation|                & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
+	|copy right year|             & \metakeyavailable & \metakeyavailable &                   & \metakeyavailable \\
+	|supp no|                     & \metakeyavailable & \metakeyavailable & \metakeyavailable &                   \\
+	|instructions|                & \metakeyavailable & \metakeyavailable & \metakeyavailable &                   \\
+	\cmidrule{2-5}
+	|version no|                  & \metakeyavailable & \metakeyavailable &                   &                   \\
+	\cmidrule{2-5}
+	|document subtitle|           & \metakeyavailable &                   &                   &                   \\
+	|no cut off date|             & \metakeyavailable &                   &                   &                   \\
+	%\cmidrule{2-5}
+	|session|                     &                   & \metakeyavailable &                   &                   \\
+	|specimen solutions title|    &                   & \metakeyavailable &                   &                   \\
+	|exam code|                   &                   & \metakeyavailable &                   &                   \\
+	|exam time|                   &                   & \metakeyavailable &                   &                   \\
+	|exam day|                    &                   & \metakeyavailable &                   &                   \\
+	|exam month|                  &                   & \metakeyavailable &                   &                   \\
+	|exam year|                   &                   & \metakeyavailable &                   &                   \\
+	|time allowed|                &                   & \metakeyavailable &                   &                   \\
+	%\cmidrule{2-5}
+	|cut off date|                &                   &                   & \metakeyavailable &                   \\
+	|covers material in|          &                   &                   & \metakeyavailable &                   \\
+	|declaration|                 &                   &                   & \metakeyavailable &                   \\
+	%\cmidrule{2-5}
+	|specimen solutions color|    &                   &                   &                   & \metakeyavailable \\
+	|tutor only title|            &                   &                   &                   & \metakeyavailable \\
+	|student only title|          &                   &                   &                   & \metakeyavailable \\
+	\bottomrule
+\end{longtable}
 \pagebreak
 \section{Moving from OUTeX}
 
