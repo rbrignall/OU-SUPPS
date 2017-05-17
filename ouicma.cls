@@ -91,6 +91,26 @@ Personal identifier (PI): \\[20pt]
 }
 \newcommand\declaration[1]{\DeclareRobustCommand\@oudeclaration{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Meta data can be set using \metadataset command, based on pgfkeys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+ /meta data/.is family, /meta data,
+   faculty/.estore in=\@faculty,
+   module code/.estore in =\@modulecode,
+   module title/.estore in=\@moduletitle,
+   presentation/.estore in=\@ouyear,
+   document title/.estore in=\@outitle,
+   supp no/.estore in=\@suppno,
+   cut off date/.estore in=\@cutoffdate,
+   covers material in/.estore in=\@coversmaterialin,
+   multiple choice option text/.code=\optiontext{#1},
+   instructions/.estore in=\@instructions,
+   declaration/.estore in=\@oudeclaration,
+}
+\newcommand{\metadataset}[1]{%
+    \pgfkeys{/meta data,#1}%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \fancypagestyle{frontpage}{%

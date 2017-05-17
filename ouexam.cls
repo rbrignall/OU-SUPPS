@@ -73,6 +73,7 @@
 \RequirePackage{marginnote}
 \RequirePackage[xcolor]{mdframed}
 \RequirePackage{verbatim}
+\RequirePackage{pgfkeys}
 \if@nobarcode
 	\relax
 \else
@@ -179,6 +180,32 @@
     \textsf{\@examcode}%
   }%
   \fi
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Meta data can be set using \metadataset command, based on pgfkeys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+ /meta data/.is family, /meta data,
+   module code/.estore in =\@modulecode,
+   session/.estore in =\@session,
+   module title/.estore in=\@moduletitle,
+   specimen solutions title/.estore in=\@specimensolutionstitle,
+   exam code/.estore in=\@examcode,
+   exam time/.estore in =\@examtime,
+   exam day/.estore in=\@examday,
+   exam month/.estore in=\@exammonth,
+   exam year/.estore in=\@examyear,
+   time allowed/.estore in=\@timeallowed,
+   copy right year/.estore in=\@copyrightyear,
+   supp no/.estore in=\@suppno,
+   version no/.estore in=\@versionno,
+   faculty/.estore in=\@faculty,
+   multiple choice option text/.estore in=\@optiontext,
+   instructions/.estore in=\@examinstructions,
+   top padding/.code=\setlength\toppadding{#1}, 
+}
+\newcommand{\metadataset}[1]{%
+    \pgfkeys{/meta data,#1}%
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page

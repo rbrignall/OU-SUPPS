@@ -28,6 +28,7 @@
 \RequirePackage{ifthen}
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
+\RequirePackage{pgfkeys}
 \RequirePackage[labelsep=quad]{caption} % Fixes figure captions to OU style
 %%
 %%
@@ -66,6 +67,28 @@
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Meta data can be set using \metadataset command, based on pgfkeys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+ /meta data/.is family, /meta data,
+   faculty/.estore in=\@faculty,
+   module code/.estore in =\@modulecode,
+   module title/.estore in=\@moduletitle,
+   document title/.estore in=\@abtitle,
+   document subtitle/.code=\absubtitle{#1},
+   presentation/.estore in=\@abyear,
+   copy right year/.estore in=\@copyrightyear,
+   multiple choice option text/.code=\optiontext{#1},
+   supp no/.estore in=\@suppno,
+   version no/.estore in=\@versionno,
+   instructions/.estore in=\@abinstructions,
+   no cut off date/.code = \nocutoffdate,
+}
+\newcommand{\metadataset}[1]{%
+    \pgfkeys{/meta data,#1}%
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

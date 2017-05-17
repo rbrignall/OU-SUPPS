@@ -310,6 +310,25 @@
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Meta data can be set using \metadataset command, based on pgfkeys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+ /meta data/.is family, /meta data,
+   faculty/.estore in=\@faculty,
+   module code/.estore in =\@modulecode,
+   module title/.estore in=\@moduletitle,
+   document title/.estore in=\@tntitle,
+   presentation/.estore in=\@tnyear,
+   copy right year/.estore in=\@copyrightyear,
+   specimen solutions color/.estore in=\@specsolnscolor,
+   multiple choice option text/.estore in=\@optiontext,
+   tutor only title/.estore in=\@tutoronlytitle,
+   student only title/.estore in=\@studentonlytitle,
+}
+\newcommand{\metadataset}[1]{%
+    \pgfkeys{/meta data,#1}%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tutor or Student text
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\tutoronly}[1]{#1}
