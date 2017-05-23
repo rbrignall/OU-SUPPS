@@ -433,6 +433,7 @@
 \def\mkplus{\solnmarksplus}
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 \newcommand{\longtextref}[1]{\hfill\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}{\emph{\textbf{#1}}}}}
+\newenvironment{references}{\par{\itshape References}\par}
 %\newcommand{\textref}[1]{\hfill\begin{framed}\emph{\textbf{#1}}\end{framed}}
 %\newcommand{\textref}[1]{%
  % \setlength{\@tempdima}{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}%
