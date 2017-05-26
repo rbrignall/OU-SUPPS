@@ -30,7 +30,10 @@
 \makeatother
 
 \newcommand\3{\unskip\enspace\fbox{\fontsize{4}{4}\selectfont NEW 3.0}}
+\newcommand{\metakeyavailable}{\textbullet}
 
+\usepackage{longtable}
+\usepackage{booktabs}
 \usepackage{hyperref}
 
 \pagestyle{headings}
@@ -193,7 +196,27 @@ This switches off the text ``Cut-off date'' that appears (e.g.) on the front pag
 \end{desc}
 Command for the instructions/rubric on the front page of the booklet (optional, but defaults to `No special instructions specified.')
 
-
+\begin{desc}
+|\metadataset{key=value}|  
+\end{desc}
+As an alternative to specifying the above commands individually, they can 
+all be configured using a |key=value| approach in the |\metadataset|
+command; for example:
+\begin{verbatim}
+\metadataset{faculty=Science Technology Engineering and Mathematics, 
+            module code=MST125,
+            module title=Title of Module,
+            document title=AB title,
+            document subtitle=AB subtitle,
+            presentation=2017B,
+            copyright year=1999,
+            supp no=3.14159,
+            version no=1.12,
+            multiple choice option text=choices,
+            no cut off date,
+            instructions=some specific instructions,
+            }
+\end{verbatim}
 \subsection{Creating assignments}
 Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type.
 
@@ -333,6 +356,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
 \item |marginnote| for handling marks, etc in the margin.
 \item |caption| with option |labelsep=quad| to improve formatting for figures.
+\item |pgfkeys| for setting flexible options in commands.
 \end{itemize}
 
 %
@@ -415,6 +439,26 @@ Command to change the font color used in Specimen Solutions to |<color>| (e.g. |
 |\optiontext{...}|
 \end{desc}
 Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
+
+\begin{desc}
+|\metadataset{key=value}|  
+\end{desc}
+As an alternative to specifying the above commands individually, they can 
+all be configured using a |key=value| approach in the |\metadataset|
+command; for example:
+\begin{verbatim}
+\metadataset{faculty=STEM, 
+            module code=MU123,
+            module title=Title of Module,
+            document title=Title of Tutor notes,
+            presentation=2017B,
+            copyright year=1999,
+            specimen solutions color=blue!50!black,
+            multiple choice option text=choices,
+            tutor only title={{\bfseries Title for tutor-only environment\par}},
+            student only title=Student material only\par,
+            }
+\end{verbatim}
 
 \subsection{Creating assignments}
 Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type. These commands have the same syntax as in |ouab|, but the behaviour is slightly different (since |outn| does not produce a table of contents).
@@ -716,7 +760,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |caption| with option |labelsep=quad| to improve formatting for figures.
 \item |xcolor| for colour
 \item |framed| for framing environment
-\item |pgfkeys| for setting flexible options in commands
+\item |pgfkeys| for setting flexible options in commands.
 \item |environ|
 \item |verbatim|
 \end{itemize}
@@ -869,6 +913,34 @@ Command for the instructions/rubric on the front page of the exam (optional, but
 \end{desc}
 Adjusts the padding at the top of the title page to |<x>|. Default is |0.5cm|, and this should only be changed if you know what you're doing.
 
+\begin{desc}
+|\metadataset{key=value}|  
+\end{desc}
+As an alternative to specifying the above commands individually, they can 
+all  be configured using a |key=value| approach in the |\metadataset|
+command; for example:
+\begin{verbatim}
+\metadataset{
+            module code=MST125,
+            session=D,
+            module title=Title of Module,
+            specimen solutions title=specimen solution title,
+            exam code=MST1241706F1PV1,
+            exam time=10am--2pm,
+            exam day=Wed,
+            exam month=Oct,
+            exam year=2017,
+            time allowed=3.5 hours,
+            copyright year=2017,
+            supp no=3,
+            version no=2.12,
+            faculty=STEM,
+            multiple choice option text=choices,
+            instructions= your instructions here,
+            top padding=0.5cm,
+            }
+\end{verbatim}
+
 \subsection{Creating questions}
 The internal counter used for generating questions is |question|. 
 
@@ -1018,6 +1090,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.
 \item |makebarcode| for creating the barcode on the front page. Not loaded if |nobarcode| option is specified.
 \item |extsizes| when options |14pt|, |17pt| or |20pt| are used, to handle larger font sizes. 
+\item |pgfkeys| for setting flexible options in commands.
 \end{itemize}
 
 %
@@ -1034,6 +1107,26 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \section{Using \texttt{ouicma.cls}}
 Not yet written!
 
+\begin{desc}
+|\metadataset{key=value}|  
+\end{desc}
+As an alternative to specifying the above commands individually, they can 
+all  be configured using a |key=value| approach in the |\metadataset|
+command; for example:
+\begin{verbatim}
+\metadataset{faculty=STEM, 
+            module code=MST140,
+            module title=Title of Module,
+            presentation=2017B,
+            document title=iCMA title,
+            supp no=3.14159,
+            cut off date=27th Oct,
+            covers material in={Units 1, 2 and 3},
+            multiple choice option text=choices,
+            %instructions=some specific instructions,
+            %declaration=your own declaration here,
+            }
+\end{verbatim}
 %
 %
 %
@@ -1045,6 +1138,50 @@ Not yet written!
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Summary of keys available for \texttt{metadataset}}
+Table~\ref{tab:metadataset} provides a summary of the available keys
+for the |metadataset| command in each of the |OU|-based class files.
+
+\begin{longtable}{lcccc}
+	\caption{Keys available to \texttt{metadataset} in each OU class file.}\label{tab:metadataset}\\
+	\toprule
+	                              & |ouab.cls|        & |ouexam.cls|      & |ouicma.cls|      & |outn.cls|        \\
+	\midrule
+	|faculty|                     & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|module code|                 & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|module title|                & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|multiple choice option text| & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	\cmidrule{2-5}
+	|document title|              & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
+	|presentation|                & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
+	|copyright year|             & \metakeyavailable & \metakeyavailable &                   & \metakeyavailable \\
+	|supp no|                     & \metakeyavailable & \metakeyavailable & \metakeyavailable &                   \\
+	|instructions|                & \metakeyavailable & \metakeyavailable & \metakeyavailable &                   \\
+	\cmidrule{2-5}
+	|version no|                  & \metakeyavailable & \metakeyavailable &                   &                   \\
+	\cmidrule{2-5}
+	|document subtitle|           & \metakeyavailable &                   &                   &                   \\
+	|no cut off date|             & \metakeyavailable &                   &                   &                   \\
+	%\cmidrule{2-5}
+	|session|                     &                   & \metakeyavailable &                   &                   \\
+	|specimen solutions title|    &                   & \metakeyavailable &                   &                   \\
+	|exam code|                   &                   & \metakeyavailable &                   &                   \\
+	|exam time|                   &                   & \metakeyavailable &                   &                   \\
+	|exam day|                    &                   & \metakeyavailable &                   &                   \\
+	|exam month|                  &                   & \metakeyavailable &                   &                   \\
+	|exam year|                   &                   & \metakeyavailable &                   &                   \\
+	|time allowed|                &                   & \metakeyavailable &                   &                   \\
+	%\cmidrule{2-5}
+	|cut off date|                &                   &                   & \metakeyavailable &                   \\
+	|covers material in|          &                   &                   & \metakeyavailable &                   \\
+	|declaration|                 &                   &                   & \metakeyavailable &                   \\
+	%\cmidrule{2-5}
+	|specimen solutions color|    &                   &                   &                   & \metakeyavailable \\
+	|tutor only title|            &                   &                   &                   & \metakeyavailable \\
+	|student only title|          &                   &                   &                   & \metakeyavailable \\
+	\bottomrule
+\end{longtable}
 \pagebreak
 \section{Moving from OUTeX}
 
