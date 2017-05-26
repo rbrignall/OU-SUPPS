@@ -79,7 +79,7 @@
    document title/.estore in=\@abtitle,
    document subtitle/.code=\absubtitle{#1},
    presentation/.estore in=\@abyear,
-   copy right year/.estore in=\@copyrightyear,
+   copyright year/.estore in=\@copyrightyear,
    multiple choice option text/.code=\optiontext{#1},
    supp no/.estore in=\@suppno,
    version no/.estore in=\@versionno,

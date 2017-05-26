@@ -196,7 +196,7 @@
    exam month/.estore in=\@exammonth,
    exam year/.estore in=\@examyear,
    time allowed/.estore in=\@timeallowed,
-   copy right year/.estore in=\@copyrightyear,
+   copyright year/.estore in=\@copyrightyear,
    supp no/.estore in=\@suppno,
    version no/.estore in=\@versionno,
    faculty/.estore in=\@faculty,

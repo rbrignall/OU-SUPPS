@@ -319,7 +319,7 @@
    module title/.estore in=\@moduletitle,
    document title/.estore in=\@tntitle,
    presentation/.estore in=\@tnyear,
-   copy right year/.estore in=\@copyrightyear,
+   copyright year/.estore in=\@copyrightyear,
    specimen solutions color/.estore in=\@specsolnscolor,
    multiple choice option text/.estore in=\@optiontext,
    tutor only title/.estore in=\@tutoronlytitle,
@@ -452,6 +452,7 @@
 \def\mkplus{\solnmarksplus}
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 \newcommand{\longtextref}[1]{\hfill\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}{\emph{\textbf{#1}}}}}
+\newenvironment{references}{\par{\itshape References}\par}
 %\newcommand{\textref}[1]{\hfill\begin{framed}\emph{\textbf{#1}}\end{framed}}
 %\newcommand{\textref}[1]{%
  % \setlength{\@tempdima}{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}%

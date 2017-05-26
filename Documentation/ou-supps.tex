@@ -209,7 +209,7 @@ command; for example:
             document title=AB title,
             document subtitle=AB subtitle,
             presentation=2017B,
-            copy right year=1999,
+            copyright year=1999,
             supp no=3.14159,
             version no=1.12,
             multiple choice option text=choices,
@@ -452,7 +452,7 @@ command; for example:
             module title=Title of Module,
             document title=Title of Tutor notes,
             presentation=2017B,
-            copy right year=1999,
+            copyright year=1999,
             specimen solutions color=blue!50!black,
             multiple choice option text=choices,
             tutor only title={{\bfseries Title for tutor-only environment\par}},
@@ -685,6 +685,12 @@ Inserts |<description>| in bold and italics, in a right-aligned box. Primarily e
 Provides a command and environment in which to write text that is visible only in the tutornotes (i.e.\ it is suppressed in |specsolns| mode). The |longremark| environment is designed for longer paragraphs of explanation.
 
 \emph{Warning: Do not use the |longremark| environment inside the |solutions| environment! In certain modes this will cause errors relating to verbatim mode.}
+
+\begin{desc}
+|\begin{references}<text>\end{references}|  
+\end{desc}
+
+Provides an environment for references; it typesets the word `References' in italics on its own line, with the |<text>| in normal font.
 
 \begin{desc}
 |\tutoronly{<commands/text>}|
@@ -925,7 +931,7 @@ command; for example:
             exam month=Oct,
             exam year=2017,
             time allowed=3.5 hours,
-            copy right year=2017,
+            copyright year=2017,
             supp no=3,
             version no=2.12,
             faculty=STEM,
@@ -1149,7 +1155,7 @@ for the |metadataset| command in each of the |OU|-based class files.
 	\cmidrule{2-5}
 	|document title|              & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
 	|presentation|                & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
-	|copy right year|             & \metakeyavailable & \metakeyavailable &                   & \metakeyavailable \\
+	|copyright year|             & \metakeyavailable & \metakeyavailable &                   & \metakeyavailable \\
 	|supp no|                     & \metakeyavailable & \metakeyavailable & \metakeyavailable &                   \\
 	|instructions|                & \metakeyavailable & \metakeyavailable & \metakeyavailable &                   \\
 	\cmidrule{2-5}
