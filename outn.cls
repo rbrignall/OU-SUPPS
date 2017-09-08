@@ -386,8 +386,6 @@
   \newcommand{\solnmarks}[2][]{\relax}
   \newcommand{\solnmarksplus}[2]{\relax}
   \newcommand{\remark}[1]{\relax}
-  \newcommand{\total}[2][\unskip]{\relax}
-  \newcommand{\subtotal}[2][\unskip]{\relax}
   \newenvironment{longremark}{\comment}{\endcomment}
 \else
   \newcounter{total}[question]
@@ -408,22 +406,30 @@
   \newcommand{\bracketedmarks}[2][\unskip]{\marginnote{\hfill \makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}}\@update@totals{#2}}
   \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill\small \makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}}\@update@totals{#2}}
   \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
-  \def\total{\@ifstar\@total\@@total}
-  \def\subtotal{\@ifstar\@subtotal\@@subtotal}
   \newcommand{\remark}[1]{\emph{Remark:} #1}
   \newenvironment{longremark}{\emph{Remarks:}\par}{}
 \fi
 
-% \total*
-\newcommand{\@total}[1][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
-% \total[]{}
-\newcommand{\@@total}[2][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+% definition of \total and \subtotal
+\def\total{\@ifstar\@total\@@total}
+\def\subtotal{\@ifstar\@subtotal\@@subtotal}
 
-% \subtotal*
-\newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
-
-% \subtotal[]{}
-\newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+\if@specsolns
+    % special solutions mode is active
+    \newcommand{\@total}[1][]{\relax}
+    \newcommand{\@@total}[2][]{\relax}
+    \newcommand{\@subtotal}[1][]{\relax}
+    \newcommand{\@@subtotal}[2][]{\relax}
+\else
+    % \total*
+    \newcommand{\@total}[1][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
+    % \total[]{}
+    \newcommand{\@@total}[2][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+    % \subtotal*
+    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    % \subtotal[]{}
+    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+\fi
 
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
