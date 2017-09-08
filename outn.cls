@@ -40,6 +40,9 @@
   \RequirePackage{xparse}
 \fi
 \RequirePackage{verbatim}
+\if@specsolns
+  \RequirePackage{caption}
+\fi
 
 
 %%
@@ -77,6 +80,7 @@
 \newcommand\specsolnscolor[1]{\def\@specsolnscolor{#1}}
 \if@specsolns
   \AtBeginDocument{\color{\@specsolnscolor}}
+  \captionsetup{font={color=\@specsolnscolor}}
 \fi
 %
 %
