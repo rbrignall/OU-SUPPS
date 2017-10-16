@@ -136,7 +136,7 @@
 }
 \hfill{\fboxsep=5mm\fboxrule=1.5mm\fbox{\large\sf Tutor Notes}}\par
 	\medskip
-	\textbf{\Large \@tntitle\ \@tnyear}
+	\textbf{{\Large \@tntitle\ \@tnyear}\hfill \large\sf CONFIDENTIAL}
 \end{tabular}
 \end{adjustwidth}
 %
