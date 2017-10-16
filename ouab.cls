@@ -101,6 +101,11 @@
 \textbf{\@versionno} }%
 }
 \renewcommand{\maketitle}{
+%% First, set up PDF metadata
+ \pdfinfo{
+   /Author (The Open University)
+   /Title  (\@modulecode\ \@abtitle\ \@abyear)
+}
   \thispagestyle{frontpage}
   %\vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}

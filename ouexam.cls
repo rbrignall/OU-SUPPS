@@ -226,6 +226,11 @@
 %%
 % Maketitle command %
 \renewcommand{\maketitle}{%
+%% First, set up PDF metadata
+ \pdfinfo{
+   /Author (The Open University)
+   /Title  (\@modulecode\ Exam\ \@examyear)
+}%
   \thispagestyle{frontpage}%
   \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted 
   \begin{adjustwidth}{0pt}{-3.5cm} % N.B. positive measurements increase margins!

@@ -98,6 +98,11 @@
 	}%
 }
 \renewcommand{\maketitle}{
+%% First, set up PDF metadata
+ \pdfinfo{
+   /Author (The Open University)
+   /Title  (\@modulecode\ \@tntitle\ \@tnyear)
+}
   \thispagestyle{frontpage}
 \if@specsolns
 %
