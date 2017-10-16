@@ -2,7 +2,7 @@
 % | Typeset this file to document the OU_SUPPS       |
 % +--------------------------------------------------+
 %
-% Copyright (c) 20015-2016 by Robert Brignall for The Open University.
+% Copyright (c) 20015-2017 by Robert Brignall for The Open University.
 % All Rights Reserved.
 %
 % This file is part of the OU-SUPPS distribution.
@@ -278,6 +278,18 @@ To create subquestions, use the standard \LaTeX\ |enumerate| environment.
 
 These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
 
+For inline subquestions, use the starred version of the |enumerate| environment:
+
+\begin{verbatim}
+\begin{enumerate*}
+\item ...
+\item ...
+...
+\end{enumerate*}
+\end{verbatim}
+
+Numbering style for |enumerate*| is |(i),(ii),...| at all levels. This can be adjusted using |enumitem| (see below).
+
 The class file |ouab.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
 
 \begin{itemize}
@@ -525,6 +537,18 @@ To create subquestions, use the standard \LaTeX\ |enumerate| environment.
 
 These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
 
+For inline subquestions, use the starred version of the |enumerate| environment:
+
+\begin{verbatim}
+\begin{enumerate*}
+\item ...
+\item ...
+...
+\end{enumerate*}
+\end{verbatim}
+
+Numbering style for |enumerate*| is |(i),(ii),...| at all levels. This can be adjusted using |enumitem| (see below).
+
 The class file |outn.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
 
 \begin{itemize}
@@ -755,7 +779,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |amssymb| extra mathematical symbols
 \item |lastpage| for knowing how many pages the document contains
 \item |ifthen| for internal latex coding
-\item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
+\item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
 \item |caption| with option |labelsep=quad| to improve formatting for figures.
 \item |xcolor| for colour
@@ -965,6 +989,18 @@ To create subquestions, use the standard \LaTeX\ |enumerate| environment.
 
 These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
 
+For inline subquestions, use the starred version of the |enumerate| environment:
+
+\begin{verbatim}
+\begin{enumerate*}
+\item ...
+\item ...
+...
+\end{enumerate*}
+\end{verbatim}
+
+Numbering style for |enumerate*| is |(i),(ii),...| at all levels. This can be adjusted using |enumitem| (see below).
+
 The class file |ouexam.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
 
 \begin{itemize}
@@ -1084,7 +1120,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |amssymb| extra mathematical symbols
 \item |lastpage| for knowing how many pages the document contains
 \item |ifthen| for internal latex coding
-\item |enumitem|. This is a powerful tool that will help preparing subquestions (see later).
+\item |enumitem|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
 \item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions.
 \item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.

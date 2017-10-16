@@ -69,7 +69,7 @@
 \RequirePackage{amsthm}
 \RequirePackage{lastpage}
 \RequirePackage{ifthen}
-\RequirePackage{enumitem}
+\RequirePackage[inline]{enumitem}
 \RequirePackage{marginnote}
 \RequirePackage[xcolor]{mdframed}
 \RequirePackage{verbatim}
@@ -347,6 +347,12 @@
 \setlist[itemize]{align=left,leftmargin=8mm,labelsep*=-1mm}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*),leftmargin=9mm}
+%%
+%% "Inline" lists, using inline option of enumitem:
+\renewlist{enumerate*}{enumerate*}{3}
+\setlist*[enumerate*]{before=\vspace{6pt}\newline,itemjoin=\hspace{50pt}}
+\setlist*[enumerate*,1]{label=(\roman*), ref=(\roman*)}
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for multi-choice questions (as per CMAs in ouab.cls)
 

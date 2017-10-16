@@ -268,6 +268,12 @@
 \setlist[itemize]{align=left,leftmargin=10mm,labelsep*=0pt}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
+%%
+%% "Inline" lists, using inline option of enumitem:
+\renewlist{enumerate*}{enumerate*}{3}
+\setlist*[enumerate*]{before=\vspace{6pt}\newline,itemjoin=\hspace{50pt}}
+\setlist*[enumerate*,1]{label=(\roman*), ref=(\roman*)}
+%%
 %%%%%%
 %% Marks
 \renewcommand{\marks}[1]{%
