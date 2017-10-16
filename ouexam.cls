@@ -395,7 +395,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
 \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
- \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill\small \makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}}}
+ \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill \makebox[2cm][r]{\sf\footnotesize #2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright\sf\footnotesize #1}}}}
   \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
 \def\marks{\mk}
