@@ -562,30 +562,33 @@ For fuller details of the possibilities with |enumitem|, see the documentation o
 Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned. In |specsolns| mode, all the commands in this subsubsection are suppressed in the resulting PDF. In |studenttex| mode, all these commands are suppressed in the outputted |latex| source file.
 
 \begin{desc}
-|\marks[<description>]{<n>}|
+|\mk[<description>]{<n>}[<voffset>]|
 \end{desc}
-Places |<n>| in the right hand margin on the line. The |<description>| (which could be a short sentence running to several lines) is placed to the right of the mark, but can be omitted (e.g. |\marks{5}|).
+Places |<n>| in the right hand margin on the line. The |<description>| (which could be a short sentence running to several lines) is placed to the right of the mark, but can be omitted (e.g. |\mk{5}|). 
+
+The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
 
 \emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
+
+\begin{desc}
+|\marks[<description>]{<n>}|\\
+|\solnmarksplus{<n>}{<description>}|\\
+|\mkplus{<n>}{<description>}|
+\end{desc}
+Some equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. These commands are deprecated, and exist primarily for backward-compatibility. They will be removed in a later release.
 
 \emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
 
 \begin{desc}
-|\mk[<description>]{<n>}|\\
-|\solnmarksplus{<n>}{<description>}|\\
-|\mkplus{<n>}{<description>}|
-\end{desc}
-Some equivalent commands that produce the same effect as |\marks[<description>]{<n>}|. These exist primarily for backward-compatibility with OUTeX.
-
-
-\begin{desc}
-|\subtotal[<description>]{<n>}|\\
-|\total[<description>]{<n>}|
+|\subtotal[<description>]{<n>}[<voffset>]|\\
+|\total[<description>]{<n>}[<voffset>]|
 \end{desc}
 
 Specifies that the subtotal or total for a part-question or question is |<n>|, placing |<n>| in the margin, and the word `Subtotal' or `Total' in large, bold to its right. The optional argument |<description>| can be used to append wording to the word `Total'. Typical usages of the |<description>| parameter are:\\ 
 |\subtotal[for part \theenumi]{<n>]}|\\
 |\total[for Question \thequestion]{<n>]}|.
+
+See under the description of |\mk| above for information on usage of the optional parameter |[<voffset>]|.
 
 \begin{desc}
 |\subtotal*[<description>]|\\
@@ -1077,9 +1080,11 @@ When displayed, the solutions can be formatted in one of two ways:
 \subsubsection{Specifying marks within the \texttt{solution} environment}
 
 \begin{desc}
-|\mk[<description>]{<n>}|
+|\mk[<description>]{<n>}[<voffset>]|
 \end{desc}
 This command can be used to specify marks, as per the format for creating questions. Within the |solution| environment in |[showsolutions]| mode, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets. Additionally, the optional |<description>| parameter allows users to enter text in the margin, to the right of the |<n>|. 
+
+The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
 
 \begin{desc}
 |\marks[<description>]{<n>}|\\
@@ -1244,12 +1249,13 @@ You can recover the OUTeX command by inserting the following into your preamble:
 However, we do not recommend you use this, as it will not be understood by anyone not previously familiar with OUTeX (e.g. ALs), and will mean snippets of your code won't work out of the context of the file it's in.
 \\\hline
 |\[ ... \\ ... \]|&
-|\beglin{gather*}...\\...\end{gather*}|
+|\begin{gather*}...\\...\end{gather*}|
 \\\hline
 Matrix alignment & Load the |mathtools| package, so you can write e.g. |\begin{pmatrix}[l]|\newline |<matrix>|\newline |\end{pmatrix}|\newline to left-align all columns. Alternatively (and to specify different column alignments) use the |array| environment instead, e.g.:\newline |\left(\begin{array}{lrcl}|\newline |<matrix>|\newline|\end{array}\right)|.
 \\\hline
 Binomials (column vector format)& |\binom{n}{k}|\\\hline
 |\setright{\text{<text>}}|&|\tag{<text>}|\\\hline
+|\solnmarksplus{<a>}{<b>}|&|\mk[<b>]{<a>}|\\\hline
 \end{tabular}
 
 \end{document}
