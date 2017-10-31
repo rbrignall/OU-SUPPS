@@ -534,7 +534,7 @@
 % Solutions environment: need to pull out solutions for spec papers and present differently.
 \newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
 \if@specimensolutions
-  \newenvironment{solution}{}{}
+  \newenvironment{solution}{\def\marks{\solnmarks}\def\mk{\solnmarks}}{}
 \else
   \if@showsolutions
     \newenvironment{solution}
