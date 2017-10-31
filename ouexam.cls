@@ -295,7 +295,6 @@
 
 	        \LARGE\raggedright \textbf{\@modulecode\ \@specimensolutionstitle}
 	\fi
-    &
     \end{tabular}
     \vspace{30pt}	
 }
