@@ -29,6 +29,7 @@
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
 \RequirePackage{pgfkeys}
+\RequirePackage{ifpdf}
 \RequirePackage[labelsep=quad]{caption} % Fixes figure captions to OU style
 %%
 %%
@@ -105,13 +106,24 @@
  \pdfinfo{
    /Author (The Open University)
    /Title  (\@modulecode\ \@abtitle\ \@abyear)
-}
+}%
+% Logo preamble:
+\ifpdf%
+  \def\@oulogofile{ou_greyscale_masterlogo_29mm.pdf}
+\else%
+  \def\@oulogofile{ou_greyscale_masterlogo_29mm.eps}
+\fi%
+%%
   \thispagestyle{frontpage}
   %\vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
   \begin{tabular}{@{}p{4cm}@{}p{\textwidth}@{}}
-  \vspace{0.2cm}
-  \includegraphics[width=3.5cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+  \vspace{0.2cm}%
+  \IfFileExists{\@oulogofile}{%
+    \includegraphics[width=3.5cm]{\@oulogofile}%
+  }{%
+    \fbox{\parbox[t][2cm][c]{3.5cm}{\centering OU Logo}}%
+  }%
 &
 \vspace{0.2cm}\textbf{\@faculty\newline
 \@modulecode\ \@moduletitle}

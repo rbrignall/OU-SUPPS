@@ -74,6 +74,7 @@
 \RequirePackage[xcolor]{mdframed}
 \RequirePackage{verbatim}
 \RequirePackage{pgfkeys}
+\RequirePackage{ifpdf}
 \if@nobarcode
 	\relax
 \else
@@ -231,6 +232,13 @@
    /Author (The Open University)
    /Title  (\@modulecode\ Exam\ \@examyear)
 }%
+% Logo preamble:
+\ifpdf%
+  \def\@oulogofile{ou_greyscale_masterlogo_29mm.pdf}
+\else%
+  \def\@oulogofile{ou_greyscale_masterlogo_29mm.eps}
+\fi%
+%%
   \thispagestyle{frontpage}%
   \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted 
   \begin{adjustwidth}{0pt}{-3.5cm} % N.B. positive measurements increase margins!
@@ -249,7 +257,11 @@
      \hfill\ \setbarcode\par\bigskip % New location for longer barcodes
      \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
         \vspace{-0.7cm}
-    	\includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%
+    	  \IfFileExists{\@oulogofile}{%
+              \includegraphics[width=3.9cm]{\@oulogofile}%
+            }{%
+              \fbox{\parbox[t][2.3cm][c]{3.9cm}{\centering OU Logo}}%
+            }%
      &
     	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}}}\\ %Equates to \Huge in 12pt
      &
@@ -283,7 +295,11 @@
 \def\@makespecimensolutionstitle{%
     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
         \vspace{-0.3cm}
-        \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%
+    	  \IfFileExists{\@oulogofile}{%
+              \includegraphics[width=3.9cm]{\@oulogofile}%
+            }{%
+              \fbox{\parbox[t][2.3cm][c]{3.9cm}{\centering OU Logo}}%
+            }%
     &
 	\if@bigfontneeded
 		\fontsize{14.4}{18}\selectfont\raggedright\textbf{\@faculty}\newline

@@ -20,6 +20,7 @@
 \RequirePackage{enumitem}
 \RequirePackage{mdframed}
 \RequirePackage{marginnote}
+\RequirePackage{ifpdf}
 %%
 
 %\def\contentsname{}
@@ -120,12 +121,23 @@ Personal identifier (PI): \\[20pt]
     \fancyfoot[L]{\textbf{Copyright \copyright\ \@ouyear\ The Open University}\hfill \textbf{\@suppno} }%
 }
 \renewcommand{\maketitle}{
+% Logo preamble:
+\ifpdf%
+  \def\@oulogofile{ou_greyscale_masterlogo_29mm.pdf}
+\else%
+  \def\@oulogofile{ou_greyscale_masterlogo_29mm.eps}
+\fi%
+%%
   \thispagestyle{frontpage}
   \vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
   \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
   \vspace{1.5cm}
-  \includegraphics[width=3.5cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+  \IfFileExists{\@oulogofile}{%
+    \includegraphics[width=3.5cm]{\@oulogofile}%
+  }{%
+    \fbox{\parbox[t][2cm][c]{3.5cm}{\centering OU Logo}}%
+  }%
 &
 \vspace{1.5cm}\textbf{\@faculty\newline
 \@modulecode\ \@moduletitle}
