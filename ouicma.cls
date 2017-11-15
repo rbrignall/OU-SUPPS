@@ -5,7 +5,7 @@
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \LoadClass[fleqn,12pt,onecolumn,twoside,a4paper]{article}
-\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=65pt,nohead,asymmetric]{geometry}%
+\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=5cm,marginparsep=0ex,nohead,asymmetric]{geometry}%
 \RequirePackage{fancyhdr}
 \RequirePackage{graphicx}
 %\RequirePackage{hyperref}
@@ -20,7 +20,6 @@
 \RequirePackage{enumitem}
 \RequirePackage{mdframed}
 \RequirePackage{marginnote}
-\RequirePackage{ifpdf}
 %%
 
 %\def\contentsname{}
@@ -35,31 +34,37 @@
 %
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
 \newcommand\@modulecode{\@latex@error{No \noexpand\modulecode specified}\@ehc}
-
+%
 \newcommand\moduletitle[1]{\renewcommand\@moduletitle{#1}}
 \newcommand\@moduletitle{\@latex@error{No \noexpand\moduletitle specified}\@ehc}
-
+%
 \newcommand\icmayear[1]{\renewcommand\@ouyear{#1}}
 \newcommand\@ouyear{\@latex@error{No \noexpand\icmayear specified}\@ehc}
-
+% Optional copyrightyear:
+\def\@copyrightyear{\@ouyear}
+\newcommand\copyrightyear[1]{\def\@copyrightyear{#1}}
+%
 \newcommand\icmatitle[1]{\renewcommand\@outitle{#1}}
 \newcommand\@outitle{\@latex@error{No \noexpand\icmatitle specified}\@ehc}
-
+%
 \def\@ousubtitle{\relax}
 \newcommand\icmasubtitle[1]{\DeclareRobustCommand\@ousubtitle{#1}}
-
+%
 \def\@instructions{No special instructions specified.}
 \newcommand\instructions[1]{\DeclareRobustCommand\@instructions{#1}}
-
+%
 \def\@cutoffdate{\relax}
 \newcommand\cutoffdate[1]{\DeclareRobustCommand\@cutoffdate{#1}}
-
+%
 \def\@coversmaterialin{\relax}
 \newcommand\coversmaterialin[1]{\DeclareRobustCommand\@coversmaterialin{#1}}
-
+%
 \def\@suppno{DRAFT}
 \newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
-
+%
+\def\@versionno{\relax} % default blank
+\newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
+%
 \def\@oudeclaration{%
 	\textbf{Read and complete the following --- otherwise your work will 
 not be marked}\\\bigskip
@@ -123,7 +128,8 @@ Personal identifier (PI): \\[20pt]
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{2pt}%
-    \fancyfoot[L]{\textbf{Copyright \copyright\ \@ouyear\ The Open University}\hfill \textbf{\@suppno} }%
+ \fancyfoot[L]{\large\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
+\textbf{\@versionno} }%
 }
 \renewcommand{\maketitle}{
 % Logo preamble:
@@ -205,7 +211,7 @@ Personal identifier (PI): \\[20pt]
 \parskip 4pt
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\boxtext{\protect{\marginnote{\hfill Answer:}[10pt]}}
+\def\boxtext{\protect{\marginnote{\ Answer:\hfill}[10pt]}}
 
 
 \newcounter{question}
@@ -235,8 +241,8 @@ Personal identifier (PI): \\[20pt]
 \def\marks{\ClassWarning{ouicma}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Boxes for people to write their answers in
-\newcommand{\answerbox}[1][1]{\marginnote{\hfill\tikz[scale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}
-\newcommand{\wideanswerbox}[1][1]{\marginnote{\hfill\tikz[xscale=2.4,yscale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}
+\newcommand{\answerbox}[1][1]{\marginnote{\ \tikz[scale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}
+\newcommand{\wideanswerbox}[1][1]{\marginnote{\ \tikz[xscale=2.4,yscale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
