@@ -2,7 +2,7 @@
 % | Typeset this file to document the OU_SUPPS       |
 % +--------------------------------------------------+
 %
-% Copyright (c) 20015-2017 by Robert Brignall for The Open University.
+% Copyright (c) 2015-2017 by Robert Brignall for The Open University.
 % All Rights Reserved.
 %
 % This file is part of the OU-SUPPS distribution.
@@ -31,7 +31,7 @@
 
 \newcommand\3{\unskip\enspace\fbox{\fontsize{4}{4}\selectfont NEW 3.0}}
 \newcommand{\metakeyavailable}{\textbullet}
-
+\usepackage[T1]{fontenc}
 \usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{hyperref}
@@ -78,7 +78,7 @@ The \textsf{OU-SUPPS} repository contains four class files:
 
 In addition, template \LaTeX\ files for each class file are available, illustrating most of the features available.
 
-\section{Installation}
+\section{Installation and basic usage}
 
 \textsf{OU-SUPPS} does not need installation. To use:
 
@@ -95,9 +95,9 @@ In addition, template \LaTeX\ files for each class file are available, illustrat
 \begin{itemize}
 \item The tex source for your document.
 \item The relevant class file (e.g.\ \texttt{ouab.cls} if you're creating an Assignment Booklet).
-\item The two OU logo files.
 \end{itemize}
 
+\paragraph{Logo files:}The OU Logo files are no longer held in the Github repository, and are \emph{not} required to be able to compile tex files that use any of the classes in \textsf{OU-SUPPS}. If you are a central member of staff and require a copy of the OU logos, please speak to the developer (Robert Brignall) or the DPU.
 
 
 \section{Using \texttt{ouab.cls}}
@@ -195,6 +195,14 @@ This switches off the text ``Cut-off date'' that appears (e.g.) on the front pag
 |\abinstructions{...}|
 \end{desc}
 Command for the instructions/rubric on the front page of the booklet (optional, but defaults to `No special instructions specified.')
+
+\begin{desc}
+|\oulogofilebase{...}|
+\end{desc}
+Overrides the internally-specified for the name of the OU logo, currently |OU_Master_Logo_Black_CMYK_29mm|. The filename should be specified \emph{without} extension (|.pdf| or |.eps|), as this will be added automatically depending on whether the source file is compiled using |latex| or |pdflatex|.
+
+\LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
+
 
 \begin{desc}
 |\metadataset{key=value}|  
@@ -408,7 +416,7 @@ This version is designed to create a specimen solutions PDF. In this mode, a num
 |\documentclass[studenttex]{outn}|
 \end{desc}
 
-(EXPERIMENTAL) The idea is that on compilation, as well as producing Tutor Notes (or specimen solutions if |specsolns| is also specified) it produces a compilable |latex| source file called |<filename>-student.tex| that can be compiled by (e.g.) ALs who do not have the |OU-SUPPS| suite of class files on their machine. This system is still under development, and is subject to some limitations in functionality.
+(EXPERIMENTAL) The idea is that on compilation, as well as producing Tutor Notes (or specimen solutions if |specsolns| is also specified) it produces a compilable |latex| source file called |<filename>-student.tex| that can be compiled by (e.g.) ALs who do not have the \textsf{OU-SUPPS} suite of class files on their machine. This system is still under development, and is subject to some limitations in functionality.
 
 
 \subsubsection{Commands to be used in the preamble}
@@ -451,6 +459,13 @@ Command to change the font color used in Specimen Solutions to |<color>| (e.g. |
 |\optiontext{...}|
 \end{desc}
 Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
+
+\begin{desc}
+|\oulogofilebase{...}|
+\end{desc}
+Overrides the internally-specified for the name of the OU logo, currently |OU_Master_Logo_Black_CMYK_29mm|. The filename should be specified \emph{without} extension (|.pdf| or |.eps|), as this will be added automatically depending on whether the source file is compiled using |latex| or |pdflatex|.
+
+\LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
 
 \begin{desc}
 |\metadataset{key=value}|  
@@ -936,6 +951,13 @@ Changes the text that appears at the top of multi-choice questions (optional, de
 Command for the instructions/rubric on the front page of the exam (optional, but defaults to `No special instructions specified.')
 
 \begin{desc}
+|\oulogofilebase{...}|
+\end{desc}
+Overrides the internally-specified for the name of the OU logo, currently |OU_Master_Logo_Black_CMYK_29mm|. The filename should be specified \emph{without} extension (|.pdf| or |.eps|), as this will be added automatically depending on whether the source file is compiled using |latex| or |pdflatex|.
+
+\LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
+
+\begin{desc}
 |\setlength\toppadding{<x>}|
 \end{desc}
 Adjusts the padding at the top of the title page to |<x>|. Default is |0.5cm|, and this should only be changed if you know what you're doing.
@@ -1149,6 +1171,13 @@ This section can be omitted unless you need/want to know a bit more about the cl
 Not yet written!
 
 \begin{desc}
+|\oulogofilebase{...}|
+\end{desc}
+Overrides the internally-specified for the name of the OU logo, currently |OU_Master_Logo_Black_CMYK_29mm|. The filename should be specified \emph{without} extension (|.pdf| or |.eps|), as this will be added automatically depending on whether the source file is compiled using |latex| or |pdflatex|.
+
+\LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
+
+\begin{desc}
 |\metadataset{key=value}|  
 \end{desc}
 As an alternative to specifying the above commands individually, they can 
@@ -1193,6 +1222,7 @@ for the |metadataset| command in each of the |OU|-based class files.
 	|module code|                 & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
 	|module title|                & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
 	|multiple choice option text| & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|ou logo file base| & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
 	\cmidrule{2-5}
 	|document title|              & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
 	|presentation|                & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
@@ -1251,9 +1281,9 @@ However, we do not recommend you use this, as it will not be understood by anyon
 |\[ ... \\ ... \]|&
 |\begin{gather*}...\\...\end{gather*}|
 \\\hline
-Matrix alignment & Load the |mathtools| package, so you can write e.g. |\begin{pmatrix}[l]|\newline |<matrix>|\newline |\end{pmatrix}|\newline to left-align all columns. Alternatively (and to specify different column alignments) use the |array| environment instead, e.g.:\newline |\left(\begin{array}{lrcl}|\newline |<matrix>|\newline|\end{array}\right)|.
+Matrix alignment & Load the |mathtools| package, so you can write e.g.\newline |\begin{pmatrix}[l]|\newline |<matrix>|\newline |\end{pmatrix}|\newline to left-align all columns. Alternatively (and to specify different column alignments) use the |array| environment instead, e.g.:\newline |\left(\begin{array}{lrcl}|\newline |<matrix>|\newline|\end{array}\right)|.
 \\\hline
-Binomials (column vector format)& |\binom{n}{k}|\\\hline
+Binomials (column vector)& |\binom{n}{k}|\\\hline
 |\setright{\text{<text>}}|&|\tag{<text>}|\\\hline
 |\solnmarksplus{<a>}{<b>}|&|\mk[<b>]{<a>}|\\\hline
 \end{tabular}
