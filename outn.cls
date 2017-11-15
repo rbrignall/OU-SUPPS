@@ -407,9 +407,9 @@
 \setlist*[enumerate*]{before=\vspace{6pt}\newline,itemjoin=\hspace{50pt}}
 \setlist*[enumerate*,1]{label=(\roman*), ref=(\roman*)}
 %%
-%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks and remarks
-
+%
 \if@specsolns
   % suppress everything
   \newcommand{\bracketedmarks}[2][]{\relax}
@@ -433,8 +433,8 @@
     \relax
   \fi
 }
-  \newcommand{\bracketedmarks}[2][\unskip]{\marginnote{\hfill \makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}}\@update@totals{#2}}
-  \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill\small \makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}}\@update@totals{#2}}
+  \newcommand{\bracketedmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill \makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}}}
+  \newcommand{\solnmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill\small\sf \makebox[1cm][r]{\sf #2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}}}
   \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
   \newcommand{\remark}[1]{\emph{Remark:} #1}
   \newenvironment{longremark}{\emph{Remarks:}\par}{}
@@ -452,13 +452,13 @@
     \newcommand{\@@subtotal}[2][]{\relax}
 \else
     % \total*
-    \newcommand{\@total}[1][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
+    \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
     % \total[]{}
-    \newcommand{\@@total}[2][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+    \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
     % \subtotal*
-    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
     % \subtotal[]{}
-    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
 \fi
 
 % total horizontal rule
@@ -483,7 +483,7 @@
 
 
 %
-\def\marks{\solnmarks}
+\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
 \def\mk{\solnmarks}
 \def\mkplus{\solnmarksplus}
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
@@ -609,18 +609,20 @@
 
 %\newmdenv[linewidth=0pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,frametitle=Solution to \thequestion]{solutionbox}
 %
-%\newenvironment{solution}
-% {\def\marks{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
-% {\end{solutionbox}\end{adjustwidth}\def\marks{\bracketedmarks}}
+%\newenvironment{solution}{%
+%	\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+%	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small
+% }
+% {\end{solutionbox}\end{adjustwidth}}
 \if@studenttex
     \ExplSyntaxOn
     \NewEnviron{solution}
      {
-      \def\marks{\solnmarks}
+      \def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
       \textbf{Solution}
       \par
       \strip_marks:V \BODY
-     }[\def\marks{\bracketedmarks}]
+     }
      
     \tl_new:N \l_solution_text_tl
     \iow_new:N \g_solution_stream

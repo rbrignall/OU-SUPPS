@@ -229,9 +229,10 @@ Personal identifier (PI): \\[20pt]
 \setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
-%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
-\renewcommand{\marks}[1]{\marginnote{\hfill[\textsl{#1}]}}
+\newcommand{\mk}[1]{\marginnote{\hfill[\textsl{#1}]}}
+\def\marks{\ClassWarning{ouicma}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Boxes for people to write their answers in
 \newcommand{\answerbox}[1][1]{\marginnote{\hfill\tikz[scale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}

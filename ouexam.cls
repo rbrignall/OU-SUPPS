@@ -142,8 +142,8 @@
 %
 \def\@specimensolutionstitle{Solutions to the Specimen Examination Paper}
 \newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
-
-\newcommand\conflation[1]{\renewcommand\@session{#1}} % backwards compatibility
+%
+\newcommand\conflation[1]{\renewcommand\@session{#1}\ClassWarning{ouexam}{\protect\conflation\space is deprecated. Please use \protect\session\space(same syntax)}} % backwards compatibility
 \newcommand\session[1]{\renewcommand\@session{#1}}
 \def\@suppno{\relax} % default
 \newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
@@ -417,7 +417,7 @@
  \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill \makebox[2cm][r]{\sf\footnotesize #2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright\sf\footnotesize #1}}}}
   \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
-\def\marks{\mk}
+\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 \def\mkplus{\solnmarksplus}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
@@ -554,12 +554,17 @@
 % Solutions environment: need to pull out solutions for spec papers and present differently.
 \newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
 \if@specimensolutions
-  \newenvironment{solution}{\def\marks{\solnmarks}\def\mk{\solnmarks}}{}
+  \newenvironment{solution}{%
+	\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+	\def\mk{\solnmarks}%
+  }{}
 \else
   \if@showsolutions
-    \newenvironment{solution}
-    {\def\marks{\solnmarks}\def\mk{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
-    {\end{solutionbox}\end{adjustwidth}\def\marks{\bracketedmarks}}
+    \newenvironment{solution}{%
+	\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+	\def\mk{\solnmarks}%
+	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small%
+  }{\end{solutionbox}\end{adjustwidth}}
   \else
     \newenvironment{solution}
     {\comment}

@@ -295,13 +295,13 @@
 \setlist*[enumerate*]{before=\vspace{6pt}\newline,itemjoin=\hspace{50pt}}
 \setlist*[enumerate*,1]{label=(\roman*), ref=(\roman*)}
 %%
-%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
-\renewcommand{\marks}[1]{%
+\newcommand{\mk}[1]{%
 	\marginnote{\hfill[\textsl{#1}]}
 	\if@markcheck\addtocounter{marksum}{#1}\fi % experimental	
 }
-\let\mk\marks
+\def\marks{\ClassWarning{ouab}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 
