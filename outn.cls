@@ -83,6 +83,29 @@
   \captionsetup{font={color=\@specsolnscolor}}
 \fi
 %
+\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Meta data can be set using \metadataset command, based on pgfkeys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+ /meta data/.is family, /meta data,
+   faculty/.estore in=\@faculty,
+   module code/.estore in =\@modulecode,
+   module title/.estore in=\@moduletitle,
+   document title/.estore in=\@tntitle,
+   presentation/.estore in=\@tnyear,
+   copyright year/.estore in=\@copyrightyear,
+   specimen solutions color/.estore in=\@specsolnscolor,
+   multiple choice option text/.estore in=\@optiontext,
+   tutor only title/.estore in=\@tutoronlytitle,
+   student only title/.estore in=\@studentonlytitle,
+   ou logo file base/.estore in=\@oulogofilebase,
+}
+\newcommand{\metadataset}[1]{%
+    \pgfkeys{/meta data,#1}%
+}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
@@ -105,9 +128,9 @@
 }%
 % Logo preamble:
 \ifpdf%
-  \def\@oulogofile{ou_greyscale_masterlogo_29mm.pdf}
+  \def\@oulogofile{\@oulogofilebase.pdf}
 \else%
-  \def\@oulogofile{ou_greyscale_masterlogo_29mm.eps}
+  \def\@oulogofile{\@oulogofilebase.eps}
 \fi%
 %%
   \thispagestyle{frontpage}
@@ -147,7 +170,7 @@
 }
 \hfill{\fboxsep=5mm\fboxrule=1.5mm\fbox{\large\sf Tutor Notes}}\par
 	\medskip
-	\textbf{{\Large \@tntitle\ \@tnyear}\hfill \large\sf CONFIDENTIAL}
+	\textbf{{\Large \@tntitle\ \@tnyear}\hfill \large\sf CONFIDENTIAL}\\[0.6cm]
 \end{tabular}
 \end{adjustwidth}
 %
@@ -328,26 +351,7 @@
     \kern3pt % space after the rule
   }\nointerlineskip % no additional space after the rule
 }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Meta data can be set using \metadataset command, based on pgfkeys
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pgfkeys{
- /meta data/.is family, /meta data,
-   faculty/.estore in=\@faculty,
-   module code/.estore in =\@modulecode,
-   module title/.estore in=\@moduletitle,
-   document title/.estore in=\@tntitle,
-   presentation/.estore in=\@tnyear,
-   copyright year/.estore in=\@copyrightyear,
-   specimen solutions color/.estore in=\@specsolnscolor,
-   multiple choice option text/.estore in=\@optiontext,
-   tutor only title/.estore in=\@tutoronlytitle,
-   student only title/.estore in=\@studentonlytitle,
-}
-\newcommand{\metadataset}[1]{%
-    \pgfkeys{/meta data,#1}%
-}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tutor or Student text
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

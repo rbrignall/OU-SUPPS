@@ -91,6 +91,10 @@ Personal identifier (PI): \\[20pt]
 
 }
 \newcommand\declaration[1]{\DeclareRobustCommand\@oudeclaration{#1}}
+%
+\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Meta data can be set using \metadataset command, based on pgfkeys
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -107,6 +111,7 @@ Personal identifier (PI): \\[20pt]
    multiple choice option text/.code=\optiontext{#1},
    instructions/.estore in=\@instructions,
    declaration/.estore in=\@oudeclaration,
+   ou logo file base/.estore in=\@oulogofilebase,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
@@ -123,9 +128,9 @@ Personal identifier (PI): \\[20pt]
 \renewcommand{\maketitle}{
 % Logo preamble:
 \ifpdf%
-  \def\@oulogofile{ou_greyscale_masterlogo_29mm.pdf}
+  \def\@oulogofile{\@oulogofilebase.pdf}
 \else%
-  \def\@oulogofile{ou_greyscale_masterlogo_29mm.eps}
+  \def\@oulogofile{\@oulogofilebase.eps}
 \fi%
 %%
   \thispagestyle{frontpage}

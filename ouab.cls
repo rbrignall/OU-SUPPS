@@ -68,7 +68,8 @@
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %
-
+\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Meta data can be set using \metadataset command, based on pgfkeys
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -86,6 +87,7 @@
    version no/.estore in=\@versionno,
    instructions/.estore in=\@abinstructions,
    no cut off date/.code = \nocutoffdate,
+   ou logo file base/.estore in=\@oulogofilebase,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
@@ -101,6 +103,8 @@
     \fancyfoot[L]{\large\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
 \textbf{\@versionno} }%
 }
+\newlength{\logospace}
+\setlength{\logospace}{4.1cm}
 \renewcommand{\maketitle}{
 %% First, set up PDF metadata
  \pdfinfo{
@@ -109,20 +113,20 @@
 }%
 % Logo preamble:
 \ifpdf%
-  \def\@oulogofile{ou_greyscale_masterlogo_29mm.pdf}
+  \def\@oulogofile{\@oulogofilebase.pdf}
 \else%
-  \def\@oulogofile{ou_greyscale_masterlogo_29mm.eps}
+  \def\@oulogofile{\@oulogofilebase.eps}
 \fi%
 %%
   \thispagestyle{frontpage}
   %\vspace{2cm}
-\begin{adjustwidth}{0cm}{-4cm}
-  \begin{tabular}{@{}p{4cm}@{}p{\textwidth}@{}}
+\begin{adjustwidth}{0cm}{-\logospace}
+  \begin{tabular}{@{}p{\logospace}@{}p{\textwidth}@{}}
   \vspace{0.2cm}%
   \IfFileExists{\@oulogofile}{%
-    \includegraphics[width=3.5cm]{\@oulogofile}%
+    \includegraphics[width=3.3cm]{\@oulogofile}%
   }{%
-    \fbox{\parbox[t][2cm][c]{3.5cm}{\centering OU Logo}}%
+    \fbox{\parbox[t][2cm][c]{3.3cm}{\centering OU Logo}}%
   }%
 &
 \vspace{0.2cm}\textbf{\@faculty\newline
@@ -147,11 +151,11 @@
 \nointerlineskip
 \end{tabular}
 \par\medskip
-  \rule{\dimexpr\textwidth+4cm}{2pt}
+  \rule{\dimexpr\textwidth+\logospace}{2pt}
 \par\medskip
 \end{adjustwidth}
 %
-\begin{adjustwidth}{4cm}{-4cm} 
+\begin{adjustwidth}{\logospace}{-\logospace} 
   \@abinstructions
 \end{adjustwidth}
 %

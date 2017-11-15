@@ -89,11 +89,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\@faculty{Faculty of Science, Technology, Engineering and Mathematics} % only used in specimensolutions
+\newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
+%
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
 \newcommand\@modulecode{\@latex@error{No \noexpand\modulecode specified}\@ehc}
+%
 \newcommand\moduletitle[1]{\renewcommand\@moduletitle{#1}}
 \newcommand\@moduletitle{\@latex@error{No \noexpand\moduletitle specified}\@ehc}
-
+%
 \newcommand\examtime[1]{\renewcommand\@examtime{#1}}
 \newcommand\examday[1]{\renewcommand\@examday{#1}}
 \newcommand\exammonth[1]{\renewcommand\@exammonth{#1}}
@@ -117,16 +121,16 @@
 		\newcommand\@examyear{\@latex@error{No \noexpand\examyear specified}\@ehc}
 	\fi
 \fi
-
+%
 \newcommand\timeallowed[1]{\renewcommand\@timeallowed{#1}}
 \newcommand\@timeallowed{\@latex@error{No \noexpand\timeallowed specified}\@ehc}
-
+%
 \def\@copyrightyear{\@examyear}
 \newcommand\copyrightyear[1]{\def\@copyrightyear{#1}}
-
+%
 \def\@examinstructions{No special instructions specified.}
 \newcommand\examinstructions[1]{\renewcommand\@examinstructions{#1}}
-
+%
 \def\@session{C}
 \if@specimen
 	\def\@session{Specimen}
@@ -135,7 +139,7 @@
 		\def\@session{Second Specimen}
 	\fi
 \fi
-
+%
 \def\@specimensolutionstitle{Solutions to the Specimen Examination Paper}
 \newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
 
@@ -145,11 +149,10 @@
 \newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
-
-\def\@faculty{Faculty of Science, Technology, Engineering and Mathematics} % only used in specimensolutions
-\newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
-
-
+%
+\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BARCODE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -204,6 +207,7 @@
    multiple choice option text/.estore in=\@optiontext,
    instructions/.estore in=\@examinstructions,
    top padding/.code=\setlength\toppadding{#1}, 
+   ou logo file base/.estore in=\@oulogofilebase,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
@@ -234,9 +238,9 @@
 }%
 % Logo preamble:
 \ifpdf%
-  \def\@oulogofile{ou_greyscale_masterlogo_29mm.pdf}
+  \def\@oulogofile{\@oulogofilebase.pdf}
 \else%
-  \def\@oulogofile{ou_greyscale_masterlogo_29mm.eps}
+  \def\@oulogofile{\@oulogofilebase.eps}
 \fi%
 %%
   \thispagestyle{frontpage}%
@@ -255,12 +259,12 @@
     	\fontsize{14.4}{18}\selectfont % Equates to \large in 12pt for most of the title page
      \fi
      \hfill\ \setbarcode\par\bigskip % New location for longer barcodes
-     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-        \vspace{-0.7cm}
+     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+        \vspace{-0.7cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[width=3.9cm]{\@oulogofile}%
+              \includegraphics[width=3.6cm]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][2.3cm][c]{3.9cm}{\centering OU Logo}}%
+              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
             }%
      &
     	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}}}\\ %Equates to \Huge in 12pt
@@ -293,12 +297,12 @@
 }
 %%
 \def\@makespecimensolutionstitle{%
-    \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-        \vspace{-0.3cm}
+    \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+        \vspace{-0.3cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[width=3.9cm]{\@oulogofile}%
+              \includegraphics[width=3.6cm]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][2.3cm][c]{3.9cm}{\centering OU Logo}}%
+              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
             }%
     &
 	\if@bigfontneeded
