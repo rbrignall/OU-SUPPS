@@ -411,14 +411,151 @@
 \newenvironment{options}%
 	{\par\medskip\@optiontext\begin{enumerate}[label=\textbf{\Alph*}]}%
 	{\end{enumerate}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Horizontal lines after subtotals and totals
+\newif\ifdraw@total@line
+\newif\ifdraw@subtotal@line
+\newif\ifdraw@ourule@line
+
+% reference: http://tex.stackexchange.com/questions/34312/how-to-create-a-command-with-key-values
+\pgfkeys{
+ /totalhline/.is family, /totalhline,
+ default/.style =
+  {moveleft=0pt,
+   width=\dimexpr\textwidth+5cm,
+   height=2pt,
+   color=black},
+   moveleft/.estore in=\@outn@total@hline@move@left,
+   width/.estore in=\@outn@total@hline@width,
+   height/.estore in=\@outn@total@hline@height,
+   color/.estore in=\@outn@total@hline@color,
+   draw line/.is if=draw@total@line,
+ /subtotalhline/.is family, /subtotalhline,
+ default/.style =
+  {moveleft=0pt,
+   width=\dimexpr\textwidth+5cm,
+   height=1pt,
+   color=black},
+   moveleft/.estore in=\@outn@subtotal@hline@move@left,
+   width/.estore in=\@outn@subtotal@hline@width,
+   height/.estore in=\@outn@subtotal@hline@height,
+   color/.estore in=\@outn@subtotal@hline@color,
+   draw line/.is if=draw@subtotal@line,
+ /ourule/.is family, /ourule,
+ default/.style = /totalhline/default,
+   moveleft/.estore in=\@outn@rule@move@left,
+   width/.estore in=\@outn@rule@width,
+   height/.estore in=\@outn@rule@height,
+   color/.estore in=\@outn@rule@color,
+   draw line/.is if=draw@ourule@line,
+}
+
+% command to customise the line after totals
+\newcommand{\setTotalHline}[1][]{%
+    \pgfkeys{/totalhline,default,#1}%
+}
+% by default, turn subtotal lines on
+\setTotalHline[draw line]
+
+% command to customise the line after subtotals
+\newcommand{\setSubtotalHline}[1][]{%
+    \pgfkeys{/subtotalhline,default,#1}%
+}
+% by default, turn subtotal lines on
+\setSubtotalHline[draw line]
+
+% command to customise the ourule
+\newcommand{\setOUrule}[1][]{%
+    \pgfkeys{/ourule,default,#1}%
+}
+% this command sets the default values of \@outn@rule@move@left and friends
+\setOUrule[/ourule/.default,draw line]
+
+% the following command draws a rule manually (not with subtotal and friends) with optional key=values
+\newcommand{\ourule}[1][]{%
+    \ifdraw@ourule@line
+    \pgfkeys{/ourule,#1}%
+    \outn@draw@rule{\@outn@rule@move@left}%
+                   {\@outn@rule@width}%
+                   {\@outn@rule@color}%
+                   {\@outn@rule@height}%
+  \fi
+}
+ 
+% reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
+\newcommand{\outn@draw@rule}[4]{%
+        % #1: moveleft
+        % #2: width
+        % #3: color
+        % #4: height
+    \par\bigskip\nobreak % don't break a page here
+    \moveleft#1\vbox{% we want the rule to protrude on the left
+    \hsize=#2% correct the length
+    \kern\the\prevdepth % don't take into account the depth of the preceding line
+    \kern\baselineskip % space before the rule
+    % DIFFERENT FROM OUTN: use \rlap{\hrule...} because of mdframed solutions environment.
+    \color{#3}\rlap{\rule{\hsize}{#4}}% height #4 width\hsize % the rule
+    \kern3pt % space after the rule
+  }\nointerlineskip % no additional space after the rule
+}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Marks
+%% Marks, totals, subtotals
+% @update@totals as per outn.cls
+\newcounter{total}[question]
+\newcounter{subtotal}[question]
+\def\@update@totals#1{%
+  \afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
+\def\get@args#1\hfuzz#2\hfuzz{%
+  \if\relax\detokenize{#1}\relax
+     \if\relax\detokenize{#2}\relax
+     \else
+        \addtocounter{subtotal}{#2}%
+        \addtocounter{total}{#2}%
+     \fi
+  \else
+    \relax
+  \fi
+}
+%
 \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
- \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill \makebox[2cm][r]{\sf\footnotesize #2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright\sf\footnotesize #1}}}}
-  \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
+%OLD:%\newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill \makebox[2cm][r]{\sf\footnotesize #2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright\sf\footnotesize #1}}}}
+\newcommand{\solnmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill\footnotesize\sf \makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}}}
+\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
 \def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 \def\mkplus{\solnmarksplus}
+%
+%% Definition of \total and \subtotal
+\def\total{\@ifstar\@total\@@total}
+\def\subtotal{\@ifstar\@subtotal\@@subtotal}
+  % \total*[]
+  \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
+  % \total[]{}
+  \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+  % \subtotal*[]
+  \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+  % \subtotal[]{}
+  \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{#2}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+% total horizontal rule
+\newcommand{\outn@draw@total@rule}{%
+\ifdraw@total@line
+        \outn@draw@rule{\@outn@total@hline@move@left}%
+                       {\@outn@total@hline@width}%
+                       {\@outn@total@hline@color}%
+                       {\@outn@total@hline@height}%
+\fi%
+}
+%
+% subtotal horizontal rule
+\newcommand{\outn@draw@subtotal@rule}{%
+\ifdraw@subtotal@line
+        \outn@draw@rule{\@outn@subtotal@hline@move@left}%
+                       {\@outn@subtotal@hline@width}%
+                       {\@outn@subtotal@hline@color}%
+                       {\@outn@subtotal@hline@height}%
+\fi%
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
 %% Needed for marginnote package

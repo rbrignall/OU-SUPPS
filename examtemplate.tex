@@ -1,4 +1,4 @@
-\documentclass{ouexam} 
+\documentclass[showsolutions]{ouexam} 
 % Main available options:
 %  specimen			For specimen exam papers
 %  secondspecimen	For 2nd specimen exam
@@ -64,6 +64,18 @@ The first question.\mk{12}
 Solutions can be placed in-line, to generate solution files from the same source.\mk{3}
 
 Inside solutions, notes can be added to the marks.\mk[Like this]{4}
+
+Automatically add up part marks inside the solution environment:
+
+\subtotal*[]
+
+After a subtotal, you can have some more marks.\mk{3}
+
+Rather than automatically adding up marks, you can specify a total or subtotal: 
+
+\subtotal{3}
+
+\total*
 \end{solution}
 
 \question
@@ -82,15 +94,19 @@ Solutions can be placed in-line, to generate solution files from the same source
 \item Sub-sub part.\mk{2}
 \begin{solution}
 Solutions can be created per sub-question, or per sub-sub-question, or after the entire question.\mk{2}
+
 \end{solution}
 \end{enumerate}
 \end{enumerate}
 The enumitem package allows numbering to be resumed later, to replace the OUTeX `intertext' command.
 \begin{enumerate}[resume]
 \item Numbering continues from before.\mk{4}
+\begin{solution}
+Within a question, the total and subtotal commands will remember marks from one solution environment to the next.\mk{2}
+
+\total*
+\end{solution}
 \end{enumerate}
-
-
 
 \question
 \emph{This question is about nothing in particular.}
@@ -118,7 +134,7 @@ Choose an option.
 \begin{options}
 \item There are no options
 \item There is one option
-\item This option is the wrong choice
+\item This option is the wrong choice\mk{3}
 \end{options}
 
 
@@ -134,7 +150,7 @@ Choose an inline option.
 \item yes
 \item yes
 \noitem %HACK. adds "blank" space so that the items line up as expected
-\noitem
+\noitem\mk{3}
 \end{inlineoptions}
 
 \question
