@@ -194,7 +194,7 @@
    session/.estore in =\@session,
    module title/.estore in=\@moduletitle,
    specimen solutions title/.estore in=\@specimensolutionstitle,
-   exam code/.estore in=\@examcode,
+   exam code/.code=\examcode{#1},
    exam time/.estore in =\@examtime,
    exam day/.estore in=\@examday,
    exam month/.estore in=\@exammonth,
