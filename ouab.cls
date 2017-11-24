@@ -75,19 +75,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfkeys{
  /meta data/.is family, /meta data,
-   faculty/.estore in=\@faculty,
-   module code/.estore in =\@modulecode,
-   module title/.estore in=\@moduletitle,
-   document title/.estore in=\@abtitle,
+   faculty/.store in=\@faculty,
+   module code/.store in =\@modulecode,
+   module title/.store in=\@moduletitle,
+   document title/.store in=\@abtitle,
    document subtitle/.code=\absubtitle{#1},
-   presentation/.estore in=\@abyear,
-   copyright year/.estore in=\@copyrightyear,
+   presentation/.store in=\@abyear,
+   copyright year/.store in=\@copyrightyear,
    multiple choice option text/.code=\optiontext{#1},
-   supp no/.estore in=\@suppno,
-   version no/.estore in=\@versionno,
-   instructions/.estore in=\@abinstructions,
+   supp no/.store in=\@suppno,
+   version no/.store in=\@versionno,
+   instructions/.store in=\@abinstructions,
    no cut off date/.code = \nocutoffdate,
-   ou logo file base/.estore in=\@oulogofilebase,
+   ou logo file base/.store in=\@oulogofilebase,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%

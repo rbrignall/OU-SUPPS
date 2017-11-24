@@ -105,18 +105,21 @@ Personal identifier (PI): \\[20pt]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfkeys{
  /meta data/.is family, /meta data,
-   faculty/.estore in=\@faculty,
-   module code/.estore in =\@modulecode,
-   module title/.estore in=\@moduletitle,
-   presentation/.estore in=\@ouyear,
-   document title/.estore in=\@outitle,
-   supp no/.estore in=\@suppno,
-   cut off date/.estore in=\@cutoffdate,
-   covers material in/.estore in=\@coversmaterialin,
+   faculty/.store in=\@faculty,
+   module code/.store in =\@modulecode,
+   module title/.store in=\@moduletitle,
+   presentation/.store in=\@ouyear,
+   copyright year/.store in=\@copyrightyear,
+   document title/.store in=\@outitle,
+   document subtitle/.store in=\@ousubtitle,
+   supp no/.store in=\@suppno,
+   version no/.store in=\@versionno,
+   cut off date/.store in=\@cutoffdate,
+   covers material in/.store in=\@coversmaterialin,
    multiple choice option text/.code=\optiontext{#1},
-   instructions/.estore in=\@instructions,
-   declaration/.estore in=\@oudeclaration,
-   ou logo file base/.estore in=\@oulogofilebase,
+   instructions/.store in=\@instructions,
+   declaration/.store in=\@oudeclaration,
+   ou logo file base/.store in=\@oulogofilebase,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
