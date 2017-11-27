@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2016/09/16 v0.7 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2017/11/27 v2.0 (Robert Brignall, all rights reserved)]
 
 \newif\if@studenttex
 \@studenttexfalse
@@ -40,6 +40,9 @@
   \RequirePackage{xparse}
 \fi
 \RequirePackage{verbatim}
+\if@specsolns
+  \RequirePackage{caption}
+\fi
 
 
 %%
@@ -77,8 +80,32 @@
 \newcommand\specsolnscolor[1]{\def\@specsolnscolor{#1}}
 \if@specsolns
   \AtBeginDocument{\color{\@specsolnscolor}}
+  \captionsetup{font={color=\@specsolnscolor}}
 \fi
 %
+\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Meta data can be set using \metadataset command, based on pgfkeys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+ /meta data/.is family, /meta data,
+   faculty/.store in=\@faculty,
+   module code/.store in =\@modulecode,
+   module title/.store in=\@moduletitle,
+   document title/.store in=\@tntitle,
+   presentation/.store in=\@tnyear,
+   copyright year/.store in=\@copyrightyear,
+   specimen solutions color/.store in=\@specsolnscolor,
+   multiple choice option text/.store in=\@optiontext,
+   tutor only title/.store in=\@tutoronlytitle,
+   student only title/.store in=\@studentonlytitle,
+   ou logo file base/.store in=\@oulogofilebase,
+}
+\newcommand{\metadataset}[1]{%
+    \pgfkeys{/meta data,#1}%
+}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
@@ -94,6 +121,18 @@
 	}%
 }
 \renewcommand{\maketitle}{
+%% First, set up PDF metadata
+ \pdfinfo{
+   /Author (The Open University)
+   /Title  (\@modulecode\ \@tntitle\ \@tnyear)
+}%
+% Logo preamble:
+\ifpdf%
+  \def\@oulogofile{\@oulogofilebase.pdf}
+\else%
+  \def\@oulogofile{\@oulogofilebase.eps}
+\fi%
+%%
   \thispagestyle{frontpage}
 \if@specsolns
 %
@@ -118,7 +157,11 @@
 \begin{adjustwidth}{0cm}{-4cm}
   \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
   \vspace{0.2cm}
-  \includegraphics[width=3.5cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+  \IfFileExists{\@oulogofile}{%
+    \includegraphics[width=3.5cm]{\@oulogofile}%
+  }{%
+    \fbox{\parbox[t][2cm][c]{3.5cm}{\centering OU Logo}}%
+  }%
 &
 \vspace{0.2cm}\relax
 \parbox{8cm}{
@@ -127,7 +170,7 @@
 }
 \hfill{\fboxsep=5mm\fboxrule=1.5mm\fbox{\large\sf Tutor Notes}}\par
 	\medskip
-	\textbf{\Large \@tntitle\ \@tnyear}
+	\textbf{{\Large \@tntitle\ \@tnyear}\hfill \large\sf CONFIDENTIAL}\\[0.6cm]
 \end{tabular}
 \end{adjustwidth}
 %
@@ -308,7 +351,7 @@
     \kern3pt % space after the rule
   }\nointerlineskip % no additional space after the rule
 }
-
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tutor or Student text
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -358,17 +401,21 @@
 \setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
-%%%%%%
+%%
+%% "Inline" lists, using inline option of enumitem:
+\renewlist{enumerate*}{enumerate*}{3}
+\setlist*[enumerate*]{before=\vspace{6pt}\newline,itemjoin=\hspace{50pt}}
+\setlist*[enumerate*,1]{label=(\roman*), ref=(\roman*)}
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks and remarks
-
+%
 \if@specsolns
   % suppress everything
   \newcommand{\bracketedmarks}[2][]{\relax}
   \newcommand{\solnmarks}[2][]{\relax}
   \newcommand{\solnmarksplus}[2]{\relax}
   \newcommand{\remark}[1]{\relax}
-  \newcommand{\total}[2][\unskip]{\relax}
-  \newcommand{\subtotal}[2][\unskip]{\relax}
   \newenvironment{longremark}{\comment}{\endcomment}
 \else
   \newcounter{total}[question]
@@ -386,25 +433,33 @@
     \relax
   \fi
 }
-  \newcommand{\bracketedmarks}[2][\unskip]{\marginnote{\hfill \makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}}\@update@totals{#2}}
-  \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill\small \makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}}\@update@totals{#2}}
+  \newcommand{\bracketedmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill \makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}}}
+  \newcommand{\solnmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill\small\sf \makebox[1cm][r]{\sf #2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}}}
   \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
-  \def\total{\@ifstar\@total\@@total}
-  \def\subtotal{\@ifstar\@subtotal\@@subtotal}
   \newcommand{\remark}[1]{\emph{Remark:} #1}
   \newenvironment{longremark}{\emph{Remarks:}\par}{}
 \fi
 
-% \total*
-\newcommand{\@total}[1][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
-% \total[]{}
-\newcommand{\@@total}[2][\unskip]{\marginnote{\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+% definition of \total and \subtotal
+\def\total{\@ifstar\@total\@@total}
+\def\subtotal{\@ifstar\@subtotal\@@subtotal}
 
-% \subtotal*
-\newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
-
-% \subtotal[]{}
-\newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+\if@specsolns
+    % special solutions mode is active
+    \newcommand{\@total}[1][]{\relax}
+    \newcommand{\@@total}[2][]{\relax}
+    \newcommand{\@subtotal}[1][]{\relax}
+    \newcommand{\@@subtotal}[2][]{\relax}
+\else
+    % \total*
+    \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
+    % \total[]{}
+    \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+    % \subtotal*
+    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    % \subtotal[]{}
+    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+\fi
 
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
@@ -428,11 +483,12 @@
 
 
 %
-\def\marks{\solnmarks}
+\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
 \def\mk{\solnmarks}
 \def\mkplus{\solnmarksplus}
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 \newcommand{\longtextref}[1]{\hfill\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}{\emph{\textbf{#1}}}}}
+\newenvironment{references}{\par{\itshape References}\par}
 %\newcommand{\textref}[1]{\hfill\begin{framed}\emph{\textbf{#1}}\end{framed}}
 %\newcommand{\textref}[1]{%
  % \setlength{\@tempdima}{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}%
@@ -553,18 +609,20 @@
 
 %\newmdenv[linewidth=0pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,frametitle=Solution to \thequestion]{solutionbox}
 %
-%\newenvironment{solution}
-% {\def\marks{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
-% {\end{solutionbox}\end{adjustwidth}\def\marks{\bracketedmarks}}
+%\newenvironment{solution}{%
+%	\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+%	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small
+% }
+% {\end{solutionbox}\end{adjustwidth}}
 \if@studenttex
     \ExplSyntaxOn
     \NewEnviron{solution}
      {
-      \def\marks{\solnmarks}
+      \def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
       \textbf{Solution}
       \par
       \strip_marks:V \BODY
-     }[\def\marks{\bracketedmarks}]
+     }
      
     \tl_new:N \l_solution_text_tl
     \iow_new:N \g_solution_stream

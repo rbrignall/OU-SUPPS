@@ -11,7 +11,7 @@
 \modulecode{MST124}
 \session{C} % Can be omitted if "specimen" or "secondspecimen" options are on
 \moduletitle{Title of Module}
-\examcode{MST1241606X} % Generates barcode
+\examcode{MST1241706F1PV1} % Generates barcode
 \examtime{10:00\,am -- 1:00\,pm}
 \examday{Tuesday 7}
 \exammonth{October}
@@ -19,6 +19,7 @@
 \timeallowed{3 hours}
 \copyrightyear{2016} %Optional: same as \examyear if omitted
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
+\oulogofilebase{ou_greyscale_masterlogo_29mm}% Overrides internal OU logo specification
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INSTRUCTIONS ON FIRST PAGE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,6 +28,26 @@
 
 Insert module-specific examination instructions here
 }% ends \examinstructions
+%% alternative way of updating the above information
+%\metadataset{
+%            module code=MST142,
+%            session=D,
+%            module title=Title of Module,
+%            specimen solutions title=spec title,
+%            exam code=MST1241706F1PV1,
+%            exam time=10am--2pm,
+%            exam day=Wed,
+%            exam month=Oct,
+%            exam year=2017,
+%            time allowed=3.5 hours,
+%            copyright year=2017,
+%            supp no=3,
+%            version no=2.12,
+%            faculty=STEM,
+%            multiple choice option text=choices,
+%            instructions= your instructions here,
+%            %top padding=0.5cm,
+%            }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \maketitle
@@ -43,10 +64,22 @@ The first question.\mk{12}
 Solutions can be placed in-line, to generate solution files from the same source.\mk{3}
 
 Inside solutions, notes can be added to the marks.\mk[Like this]{4}
+
+Automatically add up part marks inside the solution environment:
+
+\subtotal*[]
+
+After a subtotal, you can have some more marks.\mk{3}
+
+Rather than automatically adding up marks, you can specify a total or subtotal: 
+
+\subtotal{3}
+
+\total*
 \end{solution}
 
 \question
-The second question.\marks{3}
+The second question.\mk{3}
 
 \begin{solution}
 Solutions can be placed in-line, to generate solution files from the same source.\mk[Be generous!]{3}
@@ -61,15 +94,19 @@ Solutions can be placed in-line, to generate solution files from the same source
 \item Sub-sub part.\mk{2}
 \begin{solution}
 Solutions can be created per sub-question, or per sub-sub-question, or after the entire question.\mk{2}
+
 \end{solution}
 \end{enumerate}
 \end{enumerate}
 The enumitem package allows numbering to be resumed later, to replace the OUTeX `intertext' command.
 \begin{enumerate}[resume]
 \item Numbering continues from before.\mk{4}
+\begin{solution}
+Within a question, the total and subtotal commands will remember marks from one solution environment to the next.\mk{2}
+
+\total*
+\end{solution}
 \end{enumerate}
-
-
 
 \question
 \emph{This question is about nothing in particular.}
@@ -81,6 +118,12 @@ The enumitem package allows numbering to be resumed later, to replace the OUTeX 
 \item Sub-sub\mk 2
 \item Sub-sub that is sufficiently long that it runs over more than one line.\mk 2
 \end{enumerate}
+\item Starred enumerate environment gives you inline enumerate:
+\begin{enumerate*}
+\item first part
+\item second part
+\item third part\mk{3}
+\end{enumerate*}
 \end{enumerate}
 
 \section{Multiple choice questions}
@@ -91,7 +134,7 @@ Choose an option.
 \begin{options}
 \item There are no options
 \item There is one option
-\item This option is the wrong choice
+\item This option is the wrong choice\mk{3}
 \end{options}
 
 
@@ -107,7 +150,7 @@ Choose an inline option.
 \item yes
 \item yes
 \noitem %HACK. adds "blank" space so that the items line up as expected
-\noitem
+\noitem\mk{3}
 \end{inlineoptions}
 
 \question

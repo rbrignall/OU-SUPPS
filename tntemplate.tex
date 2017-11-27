@@ -15,10 +15,23 @@
 \tntitle{Title of TN}
 \tnyear{2015B}
 \copyrightyear{2012} % If different from \abyear
-%\tutoronlytitle{Title for tutor-only environment\par}      % specifies title for 'Tutor-only' environment
+%\tutoronlytitle{ {\bfseries Title for tutor-only environment\par}}      % specifies title for 'Tutor-only' environment
 %\studentonlytitle{Title for student-only environment\par}  % specifies title for 'Student-only' environment
 %\specsolnscolor{blue} % can be used to change text colour in specsolns mode
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
+\oulogofilebase{ou_greyscale_masterlogo_29mm}% Overrides internal OU logo specification
+%% alternative way of updating the above information
+%\metadataset{faculty=STEM, 
+%            module title=Title of Module,
+%            module code=MST142,
+%            presentation=2017B,
+%            copyright year=1999,
+%            document title=Title of Tutor notes,
+%            specimen solutions color=blue!50!black,
+%            multiple choice option text=choices,
+%            tutor only title={Title for tutor-only environment\par},
+%            student only title=Student material only\par,
+%            }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \maketitle
@@ -70,12 +83,12 @@
 \remark{For making short comments for tutors.}
 
 \begin{enumerate}
-\item hello\marks 4
+\item hello\mk 4
 \item goodbye running a long time until it goes over to a second line perhaps
 \item 
 \begin{enumerate}
-\item Sub sub\marks 2
-\item Sub sub\marks 2
+\item Sub sub\mk 2
+\item Sub sub\mk 2
 \end{enumerate}
 \subtotal[for part \theenumi]{4}
 \end{enumerate}
@@ -87,19 +100,30 @@
 You can place longer remarks inside the longremark environment.
 \end{longremark}
 
+\begin{references}
+You can place references inside the references environment.
+\end{references}
+
 \question*\label{myqnnum-a}
 % Put your solution inside the solution environment
 % if you want to try using the studenttex option.
 \begin{solution}
 \begin{enumerate}
-\item First part of the solution, inside the solution environment. \marks{4}
-\item Some mathematics: $\int_0^\infty x$ and \[a^2=b^2=c^2\marks{2}\] 
+\item First part of the solution, inside the solution environment. \mk{4}
+\item Some mathematics: $\int_0^\infty x$ and \[a^2=b^2=c^2\mk{2}\] 
 
 \remark{Award no marks for this part of the question.}
 
-\item Marks with marginal comments. \marks[Method. Ignore all attempts at this question.]{40}
+\item Marks with marginal comments. \mk[Method. Ignore all attempts at this question.]{40}
 
-\item The final part.\marks{3}
+\item Starred enumerate environment gives you inline enumerate:
+\begin{enumerate*}
+\item first part
+\item second part
+\item third part\mk{3}
+\end{enumerate*}
+
+\item The final part.\mk{3}
 
 \subtotal[for part~\theenumi]{1}
 \end{enumerate}
@@ -207,11 +231,11 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
     \ourule
       \item \verb!\ourule[color=orange]!
     \ourule[color=orange]
-      \item \verb1\ourule[color=black!50!red,height=3pt,moveleft=4cm,width=.5\textwidth]1
-    \ourule[color=black!50!red,height=3pt,moveleft=-4cm,width=.5\textwidth]
-  \item You can specify the style of the \verb!\ourule! command globally using, for example, \verb!\setOUrule[color=red,height=4pt,moveleft=-2cm,width=.75\textwidth]!
+      \item \verb1\ourule[color=black!50!red,height=3pt,width=.5\textwidth]1
+    \ourule[color=black!50!red,height=3pt,width=.5\textwidth]
+  \item You can specify the style of the \verb!\ourule! command globally using, for example, \verb!\setOUrule[color=red,moveleft=-2cm,width=.75\textwidth]!
 
-\setOUrule[color=red,height=4pt,moveleft=-2cm,width=.75\textwidth]
+\setOUrule[color=red,moveleft=-2cm,width=.75\textwidth]
 
 Now, when using simply \verb!\ourule!, the output is:
 
@@ -287,7 +311,7 @@ Choose an inline option from four columns.
 \item yes
 \end{inlineoptions}
 
-\question
+\question*
 Choose an inline option at 1.5 spacing.
 \begin{inlineoptions}[1.5]{3} %optional parameter specifies line spacing
 \item yes
@@ -316,13 +340,13 @@ Choose an option.
 
 \question[(changing subquestion labels)]{8}
 \begin{enumerate}[(i)]
-\item enumitem lets you change the labelling of subquestions\marks 4
+\item enumitem lets you change the labelling of subquestions\mk 4
 \item goodbye running a long time until it goes over to a second line perhaps
 \end{enumerate}
 
 \question[(changing subquestion labels 2)]{8}
 \begin{enumerate}[(A)]
-\item enumitem lets you change the labelling of subquestions\marks 4
+\item enumitem lets you change the labelling of subquestions\mk 4
 \item goodbye running a long time until it goes over to a second line perhaps
 \end{enumerate}
 

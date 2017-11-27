@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2017/02/06 v1.4 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2017/11/27 v2.0 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -69,14 +69,16 @@
 \RequirePackage{amsthm}
 \RequirePackage{lastpage}
 \RequirePackage{ifthen}
-\RequirePackage{enumitem}
+\RequirePackage[inline]{enumitem}
 \RequirePackage{marginnote}
 \RequirePackage[xcolor]{mdframed}
 \RequirePackage{verbatim}
+\RequirePackage{pgfkeys}
+\RequirePackage{ifpdf}
 \if@nobarcode
 	\relax
 \else
-	\RequirePackage{barcodes}
+    \RequirePackage[code=Code39,X=.364mm,ratio=2.3,H=0.63cm]{makebarcode}
 \fi
 
 %%
@@ -87,11 +89,15 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def\@faculty{Faculty of Science, Technology, Engineering and Mathematics} % only used in specimensolutions
+\newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
+%
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
 \newcommand\@modulecode{\@latex@error{No \noexpand\modulecode specified}\@ehc}
+%
 \newcommand\moduletitle[1]{\renewcommand\@moduletitle{#1}}
 \newcommand\@moduletitle{\@latex@error{No \noexpand\moduletitle specified}\@ehc}
-
+%
 \newcommand\examtime[1]{\renewcommand\@examtime{#1}}
 \newcommand\examday[1]{\renewcommand\@examday{#1}}
 \newcommand\exammonth[1]{\renewcommand\@exammonth{#1}}
@@ -115,16 +121,16 @@
 		\newcommand\@examyear{\@latex@error{No \noexpand\examyear specified}\@ehc}
 	\fi
 \fi
-
+%
 \newcommand\timeallowed[1]{\renewcommand\@timeallowed{#1}}
 \newcommand\@timeallowed{\@latex@error{No \noexpand\timeallowed specified}\@ehc}
-
+%
 \def\@copyrightyear{\@examyear}
 \newcommand\copyrightyear[1]{\def\@copyrightyear{#1}}
-
+%
 \def\@examinstructions{No special instructions specified.}
 \newcommand\examinstructions[1]{\renewcommand\@examinstructions{#1}}
-
+%
 \def\@session{C}
 \if@specimen
 	\def\@session{Specimen}
@@ -133,21 +139,20 @@
 		\def\@session{Second Specimen}
 	\fi
 \fi
-
+%
 \def\@specimensolutionstitle{Solutions to the Specimen Examination Paper}
 \newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
-
-\newcommand\conflation[1]{\renewcommand\@session{#1}} % backwards compatibility
+%
+\newcommand\conflation[1]{\renewcommand\@session{#1}\ClassWarning{ouexam}{\protect\conflation\space is deprecated. Please use \protect\session\space(same syntax)}} % backwards compatibility
 \newcommand\session[1]{\renewcommand\@session{#1}}
 \def\@suppno{\relax} % default
 \newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
-
-\def\@faculty{Faculty of Science, Technology, Engineering and Mathematics} % only used in specimensolutions
-\newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
-
-
+%
+\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BARCODE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,12 +164,11 @@
 \if@nobarcode % Set by nobarcode option to class as override
 	\newcommand\examcode[1]{\relax}
 \else
-	\font\barcodefont=wlc39 scaled 1300    % Size OK?
 	\newlength\barcodewidth
 	\newcommand\examcode[1]{%
 	  \@barcodetrue
 	  \DeclareRobustCommand\@examcode{#1}
-	  \def\bar@examcode{\barcodefont @#1@}
+	  \def\bar@examcode{\barcode{#1}}
 	  \settowidth{\barcodewidth}{\bar@examcode}
 	}
 \fi
@@ -182,6 +186,33 @@
   \fi
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Meta data can be set using \metadataset command, based on pgfkeys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+ /meta data/.is family, /meta data,
+   module code/.store in =\@modulecode,
+   session/.store in =\@session,
+   module title/.store in=\@moduletitle,
+   specimen solutions title/.store in=\@specimensolutionstitle,
+   exam code/.code=\examcode{#1},
+   exam time/.store in =\@examtime,
+   exam day/.store in=\@examday,
+   exam month/.store in=\@exammonth,
+   exam year/.store in=\@examyear,
+   time allowed/.store in=\@timeallowed,
+   copyright year/.store in=\@copyrightyear,
+   supp no/.store in=\@suppno,
+   version no/.store in=\@versionno,
+   faculty/.store in=\@faculty,
+   multiple choice option text/.store in=\@optiontext,
+   instructions/.store in=\@examinstructions,
+   top padding/.code=\setlength\toppadding{#1}, 
+   ou logo file base/.store in=\@oulogofilebase,
+}
+\newcommand{\metadataset}[1]{%
+    \pgfkeys{/meta data,#1}%
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Footers for title page (copyright, etc)
@@ -195,14 +226,26 @@
 \newlength\titletablewidth
 \setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
 \newlength\toppadding
-\setlength\toppadding{0.5cm} % allows users to adjust space at top if desired
+\setlength\toppadding{0cm} % allows users to adjust space at top if desired
 %%
 %%
 % Maketitle command %
 \renewcommand{\maketitle}{%
+%% First, set up PDF metadata
+ \pdfinfo{
+   /Author (The Open University)
+   /Title  (\@modulecode\ Exam\ \@examyear)
+}%
+% Logo preamble:
+\ifpdf%
+  \def\@oulogofile{\@oulogofilebase.pdf}
+\else%
+  \def\@oulogofile{\@oulogofilebase.eps}
+\fi%
+%%
   \thispagestyle{frontpage}%
   \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted 
-  \begin{adjustwidth}{0cm}{-3.5cm} % N.B. positive measurements increase margins!
+  \begin{adjustwidth}{0pt}{-3.5cm} % N.B. positive measurements increase margins!
      \if@specimensolutions%
   	\@makespecimensolutionstitle
      \else%
@@ -215,11 +258,16 @@
      \if@bigfontneeded
     	\fontsize{14.4}{18}\selectfont % Equates to \large in 12pt for most of the title page
      \fi
-     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-        \vspace{-0.7cm}
-    	\includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%
+     \hfill\ \setbarcode\par\bigskip % New location for longer barcodes
+     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+        \vspace{-0.7cm}%
+    	  \IfFileExists{\@oulogofile}{%
+              \includegraphics[width=3.6cm]{\@oulogofile}%
+            }{%
+              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
+            }%
      &
-    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}} \hfill\ \setbarcode}\\ %Equates to \Huge in 12pt
+    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}}}\\ %Equates to \Huge in 12pt
      &
     	\raggedright\bfseries Module Examination \@examyear \newline
     	
@@ -249,9 +297,13 @@
 }
 %%
 \def\@makespecimensolutionstitle{%
-    \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}
-        \vspace{-0.3cm}
-        \includegraphics[width=3.9cm]{ou_greyscale_masterlogo_29mm}%
+    \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+        \vspace{-0.3cm}%
+    	  \IfFileExists{\@oulogofile}{%
+              \includegraphics[width=3.6cm]{\@oulogofile}%
+            }{%
+              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
+            }%
     &
 	\if@bigfontneeded
 		\fontsize{14.4}{18}\selectfont\raggedright\textbf{\@faculty}\newline
@@ -263,7 +315,6 @@
 
 	        \LARGE\raggedright \textbf{\@modulecode\ \@specimensolutionstitle}
 	\fi
-    &
     \end{tabular}
     \vspace{30pt}	
 }
@@ -320,6 +371,12 @@
 \setlist[itemize]{align=left,leftmargin=8mm,labelsep*=-1mm}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*),leftmargin=9mm}
+%%
+%% "Inline" lists, using inline option of enumitem:
+\renewlist{enumerate*}{enumerate*}{3}
+\setlist*[enumerate*]{before=\vspace{6pt}\newline,itemjoin=\hspace{50pt}}
+\setlist*[enumerate*,1]{label=(\roman*), ref=(\roman*)}
+%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for multi-choice questions (as per CMAs in ouab.cls)
 
@@ -354,14 +411,151 @@
 \newenvironment{options}%
 	{\par\medskip\@optiontext\begin{enumerate}[label=\textbf{\Alph*}]}%
 	{\end{enumerate}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Horizontal lines after subtotals and totals
+\newif\ifdraw@total@line
+\newif\ifdraw@subtotal@line
+\newif\ifdraw@ourule@line
+
+% reference: http://tex.stackexchange.com/questions/34312/how-to-create-a-command-with-key-values
+\pgfkeys{
+ /totalhline/.is family, /totalhline,
+ default/.style =
+  {moveleft=0pt,
+   width=\dimexpr\textwidth+5cm,
+   height=2pt,
+   color=black},
+   moveleft/.estore in=\@outn@total@hline@move@left,
+   width/.estore in=\@outn@total@hline@width,
+   height/.estore in=\@outn@total@hline@height,
+   color/.estore in=\@outn@total@hline@color,
+   draw line/.is if=draw@total@line,
+ /subtotalhline/.is family, /subtotalhline,
+ default/.style =
+  {moveleft=0pt,
+   width=\dimexpr\textwidth+5cm,
+   height=1pt,
+   color=black},
+   moveleft/.estore in=\@outn@subtotal@hline@move@left,
+   width/.estore in=\@outn@subtotal@hline@width,
+   height/.estore in=\@outn@subtotal@hline@height,
+   color/.estore in=\@outn@subtotal@hline@color,
+   draw line/.is if=draw@subtotal@line,
+ /ourule/.is family, /ourule,
+ default/.style = /totalhline/default,
+   moveleft/.estore in=\@outn@rule@move@left,
+   width/.estore in=\@outn@rule@width,
+   height/.estore in=\@outn@rule@height,
+   color/.estore in=\@outn@rule@color,
+   draw line/.is if=draw@ourule@line,
+}
+
+% command to customise the line after totals
+\newcommand{\setTotalHline}[1][]{%
+    \pgfkeys{/totalhline,default,#1}%
+}
+% by default, turn subtotal lines on
+\setTotalHline[draw line]
+
+% command to customise the line after subtotals
+\newcommand{\setSubtotalHline}[1][]{%
+    \pgfkeys{/subtotalhline,default,#1}%
+}
+% by default, turn subtotal lines on
+\setSubtotalHline[draw line]
+
+% command to customise the ourule
+\newcommand{\setOUrule}[1][]{%
+    \pgfkeys{/ourule,default,#1}%
+}
+% this command sets the default values of \@outn@rule@move@left and friends
+\setOUrule[/ourule/.default,draw line]
+
+% the following command draws a rule manually (not with subtotal and friends) with optional key=values
+\newcommand{\ourule}[1][]{%
+    \ifdraw@ourule@line
+    \pgfkeys{/ourule,#1}%
+    \outn@draw@rule{\@outn@rule@move@left}%
+                   {\@outn@rule@width}%
+                   {\@outn@rule@color}%
+                   {\@outn@rule@height}%
+  \fi
+}
+ 
+% reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
+\newcommand{\outn@draw@rule}[4]{%
+        % #1: moveleft
+        % #2: width
+        % #3: color
+        % #4: height
+    \par\bigskip\nobreak % don't break a page here
+    \moveleft#1\vbox{% we want the rule to protrude on the left
+    \hsize=#2% correct the length
+    \kern\the\prevdepth % don't take into account the depth of the preceding line
+    \kern\baselineskip % space before the rule
+    % DIFFERENT FROM OUTN: use \rlap{\hrule...} because of mdframed solutions environment.
+    \color{#3}\rlap{\rule{\hsize}{#4}}% height #4 width\hsize % the rule
+    \kern3pt % space after the rule
+  }\nointerlineskip % no additional space after the rule
+}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Marks
+%% Marks, totals, subtotals
+% @update@totals as per outn.cls
+\newcounter{total}[question]
+\newcounter{subtotal}[question]
+\def\@update@totals#1{%
+  \afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
+\def\get@args#1\hfuzz#2\hfuzz{%
+  \if\relax\detokenize{#1}\relax
+     \if\relax\detokenize{#2}\relax
+     \else
+        \addtocounter{subtotal}{#2}%
+        \addtocounter{total}{#2}%
+     \fi
+  \else
+    \relax
+  \fi
+}
+%
 \newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
- \newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill\small \makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}}}
-  \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
+%OLD:%\newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill \makebox[2cm][r]{\sf\footnotesize #2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright\sf\footnotesize #1}}}}
+\newcommand{\solnmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill\footnotesize\sf \makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}}}
+\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
-\def\marks{\mk}
+\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 \def\mkplus{\solnmarksplus}
+%
+%% Definition of \total and \subtotal
+\def\total{\@ifstar\@total\@@total}
+\def\subtotal{\@ifstar\@subtotal\@@subtotal}
+  % \total*[]
+  \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
+  % \total[]{}
+  \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+  % \subtotal*[]
+  \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+  % \subtotal[]{}
+  \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{#2}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+% total horizontal rule
+\newcommand{\outn@draw@total@rule}{%
+\ifdraw@total@line
+        \outn@draw@rule{\@outn@total@hline@move@left}%
+                       {\@outn@total@hline@width}%
+                       {\@outn@total@hline@color}%
+                       {\@outn@total@hline@height}%
+\fi%
+}
+%
+% subtotal horizontal rule
+\newcommand{\outn@draw@subtotal@rule}{%
+\ifdraw@subtotal@line
+        \outn@draw@rule{\@outn@subtotal@hline@move@left}%
+                       {\@outn@subtotal@hline@width}%
+                       {\@outn@subtotal@hline@color}%
+                       {\@outn@subtotal@hline@height}%
+\fi%
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
 %% Needed for marginnote package
@@ -497,12 +691,17 @@
 % Solutions environment: need to pull out solutions for spec papers and present differently.
 \newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
 \if@specimensolutions
-  \newenvironment{solution}{}{}
+  \newenvironment{solution}{%
+	\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+	\def\mk{\solnmarks}%
+  }{}
 \else
   \if@showsolutions
-    \newenvironment{solution}
-    {\def\marks{\solnmarks}\def\mk{\solnmarks}\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}
-    {\end{solutionbox}\end{adjustwidth}\def\marks{\bracketedmarks}}
+    \newenvironment{solution}{%
+	\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+	\def\mk{\solnmarks}%
+	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small%
+  }{\end{solutionbox}\end{adjustwidth}}
   \else
     \newenvironment{solution}
     {\comment}

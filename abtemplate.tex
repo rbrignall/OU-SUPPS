@@ -20,12 +20,28 @@
 \versionno{1.0} %optional
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
 %\nocutoffdate % Suppresses "Cut-off date" text from appearing
+\oulogofilebase{ou_greyscale_masterlogo_29mm}% Overrides internal OU logo specification
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INSTRUCTIONS ON FIRST PAGE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \abinstructions{%
 Module-specific instructions for the front page.
 }% ends \abinstructions
+
+%% alternative way of updating the above information
+%\metadataset{faculty=STEM, 
+%            module code=MST142,
+%            module title=Title of Module,
+%            document title=AB title,
+%            document subtitle=AB subtitle,
+%            presentation=2017B,
+%            copyright year=1999,
+%            supp no=3.14159,
+%            version no=1.12,
+%            multiple choice option text=choices,
+%            no cut off date,
+%            instructions=some specific instructions,
+%            }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -77,13 +93,13 @@ Preamble text, if desired.
 \question[(essay question)]{25}
 \emph{This question is about nothing in particular.}
 \begin{enumerate}
-\item hello\marks 4
+\item hello\mk 4
 \item goodbye running a long time until it goes over to a second line perhaps about now.
 \[ a^2 + b^2 = c^2.\]
 \item Another item
 \begin{enumerate}
-\item Sub sub\marks 2
-\item Sub sub question that runs a long time until it goes over to a second line\marks 2
+\item Sub sub\mk 2
+\item Sub sub question that runs a long time until it goes over to a second line\mk 2
 \end{enumerate}
 \end{enumerate}
 
@@ -101,6 +117,12 @@ Preamble text, if desired.
 Emulate the OUTeX intertext command using the (built-in) enumitem command.
 \begin{enumerate}[resume]
 \item Numbering continues
+\item Starred enumerate environment gives you inline enumerate:
+\begin{enumerate*}
+\item first part
+\item second part
+\item third part\mk{3}
+\end{enumerate*}
 \end{enumerate}
 
 
@@ -177,13 +199,13 @@ Choose an option.
 
 \question[(changing subquestion labels)]{8}
 \begin{enumerate}[(i)]
-\item enumitem lets you change the labelling of subquestions\marks 4
+\item enumitem lets you change the labelling of subquestions\mk 4
 \item goodbye running a long time until it goes over to a second line perhaps
 \end{enumerate}
 
 \question[(changing subquestion labels 2)]{8}
 \begin{enumerate}[(A)]
-\item enumitem lets you change the labelling of subquestions\marks 4
+\item enumitem lets you change the labelling of subquestions\mk 4
 \item goodbye running a long time until it goes over to a second line perhaps
 \end{enumerate}
 

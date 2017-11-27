@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/08/10 v0.962 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2017/11/27 v2.0 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
@@ -28,6 +28,8 @@
 \RequirePackage{ifthen}
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
+\RequirePackage{pgfkeys}
+\RequirePackage{ifpdf}
 \RequirePackage[labelsep=quad]{caption} % Fixes figure captions to OU style
 %%
 %%
@@ -66,6 +68,30 @@
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %
+\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Meta data can be set using \metadataset command, based on pgfkeys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+ /meta data/.is family, /meta data,
+   faculty/.store in=\@faculty,
+   module code/.store in =\@modulecode,
+   module title/.store in=\@moduletitle,
+   document title/.store in=\@abtitle,
+   document subtitle/.code=\absubtitle{#1},
+   presentation/.store in=\@abyear,
+   copyright year/.store in=\@copyrightyear,
+   multiple choice option text/.code=\optiontext{#1},
+   supp no/.store in=\@suppno,
+   version no/.store in=\@versionno,
+   instructions/.store in=\@abinstructions,
+   no cut off date/.code = \nocutoffdate,
+   ou logo file base/.store in=\@oulogofilebase,
+}
+\newcommand{\metadataset}[1]{%
+    \pgfkeys{/meta data,#1}%
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -77,13 +103,31 @@
     \fancyfoot[L]{\large\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
 \textbf{\@versionno} }%
 }
+\newlength{\logospace}
+\setlength{\logospace}{4.1cm}
 \renewcommand{\maketitle}{
+%% First, set up PDF metadata
+ \pdfinfo{
+   /Author (The Open University)
+   /Title  (\@modulecode\ \@abtitle\ \@abyear)
+}%
+% Logo preamble:
+\ifpdf%
+  \def\@oulogofile{\@oulogofilebase.pdf}
+\else%
+  \def\@oulogofile{\@oulogofilebase.eps}
+\fi%
+%%
   \thispagestyle{frontpage}
   %\vspace{2cm}
-\begin{adjustwidth}{0cm}{-4cm}
-  \begin{tabular}{@{}p{4cm}@{}p{\textwidth}@{}}
-  \vspace{0.2cm}
-  \includegraphics[width=3.5cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+\begin{adjustwidth}{0cm}{-\logospace}
+  \begin{tabular}{@{}p{\logospace}@{}p{\textwidth}@{}}
+  \vspace{0.2cm}%
+  \IfFileExists{\@oulogofile}{%
+    \includegraphics[width=3.3cm]{\@oulogofile}%
+  }{%
+    \fbox{\parbox[t][2cm][c]{3.3cm}{\centering OU Logo}}%
+  }%
 &
 \vspace{0.2cm}\textbf{\@faculty\newline
 \@modulecode\ \@moduletitle}
@@ -107,11 +151,11 @@
 \nointerlineskip
 \end{tabular}
 \par\medskip
-  \rule{\dimexpr\textwidth+4cm}{2pt}
+  \rule{\dimexpr\textwidth+\logospace}{2pt}
 \par\medskip
 \end{adjustwidth}
 %
-\begin{adjustwidth}{4cm}{-4cm} 
+\begin{adjustwidth}{\logospace}{-\logospace} 
   \@abinstructions
 \end{adjustwidth}
 %
@@ -245,13 +289,19 @@
 \setlist[itemize]{align=left,leftmargin=10mm,labelsep*=0pt}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
-%%%%%%
+%%
+%% "Inline" lists, using inline option of enumitem:
+\renewlist{enumerate*}{enumerate*}{3}
+\setlist*[enumerate*]{before=\vspace{6pt}\newline,itemjoin=\hspace{50pt}}
+\setlist*[enumerate*,1]{label=(\roman*), ref=(\roman*)}
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
-\renewcommand{\marks}[1]{%
+\newcommand{\mk}[1]{%
 	\marginnote{\hfill[\textsl{#1}]}
 	\if@markcheck\addtocounter{marksum}{#1}\fi % experimental	
 }
-\let\mk\marks
+\def\marks{\ClassWarning{ouab}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 

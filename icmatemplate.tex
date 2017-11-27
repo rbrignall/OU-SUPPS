@@ -9,10 +9,13 @@
 \moduletitle{Title of Module}
 \icmayear{2015}
 \icmatitle{Title of iCMA}
+\icmasubtitle{Subtitle of iCMA} % optional
 \suppno{WEB 12345 6} %can be omitted for "DRAFT"
+\versionno{1.2} % Optional
 \cutoffdate{26 November 2014}
 \coversmaterialin{Units 1,2 and 3.}
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
+\oulogofilebase{ou_greyscale_masterlogo_29mm}% Overrides internal OU logo specification
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % INSTRUCTIONS ON FIRST PAGE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,8 +33,8 @@ need to use a calculator to answer some questions.
 The completed iCMA should be returned to
 \begin{quotation}
 M140 Module Team\\
-Department of Mathematics and Statistics\\
-Faculty of Mathematics, Computing and Technology\\
+School of Mathematics and Statistics\\
+Faculty of Science, Technology, Engineering and Mathematics\\
 The Open University\\
 Walton Hall\\
 Milton Keynes\\
@@ -49,6 +52,19 @@ this should be interpreted as `box in margin'.
 }% ends \examinstructions
 
 % \declaration{} Optional: you can use this to write your own declaration page.
+%% alternative way of updating the above information
+%\metadataset{faculty=STEM, 
+%            module code=MST142,
+%            module title=Title of Module,
+%            presentation=2017B,
+%            document title=iCMA title,
+%            supp no=3.14159,
+%            cut off date=27th Oct,
+%            covers material in={Units 1, 2 and 3},
+%            multiple choice option text=choices,
+%            %instructions=some specific instructions,
+%            %declaration=your own declaration here,
+%            }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \pagenumbering{arabic}
@@ -130,20 +146,20 @@ Choose an inline option at 1.5 spacing.
 \end{inlineoptions}
 
 \question
-You can have non-inline options too:
+Answer boxes accept an optional parameter to put several side-by-side:
 \begin{options}
 \item There are no options
 \item There is one option
-\item This option is the wrong choice\answerbox
+\item This option is the wrong choice\answerbox[4]
 \end{options}
 
 
 \question
-You can have non-inline options too:
+The optional parameter works for wide answer boxes too:
 \begin{options}
 \item There are no options
 \item There is one option
-\item This option is the wrong choice\answerbox
+\item This option is the wrong choice\wideanswerbox[2]
 \end{options}
 
 blah blah 

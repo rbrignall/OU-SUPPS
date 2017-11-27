@@ -1,11 +1,11 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouicma}[2015/04/01 v1.0 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouicma}[2017/11/27 v2.0 (Robert Brignall, all rights reserved)]
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \LoadClass[fleqn,12pt,onecolumn,twoside,a4paper]{article}
-\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=65pt,nohead,asymmetric]{geometry}%
+\RequirePackage[a4paper,left=2cm,right=6cm,top=1cm,bottom=3cm,marginparwidth=5cm,marginparsep=0ex,nohead,asymmetric]{geometry}%
 \RequirePackage{fancyhdr}
 \RequirePackage{graphicx}
 %\RequirePackage{hyperref}
@@ -16,6 +16,7 @@
 \RequirePackage{amssymb}
 \RequirePackage{lastpage}
 \RequirePackage{ifthen}
+\RequirePackage{tikz}
 \RequirePackage{enumitem}
 \RequirePackage{mdframed}
 \RequirePackage{marginnote}
@@ -33,31 +34,37 @@
 %
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
 \newcommand\@modulecode{\@latex@error{No \noexpand\modulecode specified}\@ehc}
-
+%
 \newcommand\moduletitle[1]{\renewcommand\@moduletitle{#1}}
 \newcommand\@moduletitle{\@latex@error{No \noexpand\moduletitle specified}\@ehc}
-
+%
 \newcommand\icmayear[1]{\renewcommand\@ouyear{#1}}
 \newcommand\@ouyear{\@latex@error{No \noexpand\icmayear specified}\@ehc}
-
+% Optional copyrightyear:
+\def\@copyrightyear{\@ouyear}
+\newcommand\copyrightyear[1]{\def\@copyrightyear{#1}}
+%
 \newcommand\icmatitle[1]{\renewcommand\@outitle{#1}}
 \newcommand\@outitle{\@latex@error{No \noexpand\icmatitle specified}\@ehc}
-
+%
 \def\@ousubtitle{\relax}
 \newcommand\icmasubtitle[1]{\DeclareRobustCommand\@ousubtitle{#1}}
-
+%
 \def\@instructions{No special instructions specified.}
 \newcommand\instructions[1]{\DeclareRobustCommand\@instructions{#1}}
-
+%
 \def\@cutoffdate{\relax}
 \newcommand\cutoffdate[1]{\DeclareRobustCommand\@cutoffdate{#1}}
-
+%
 \def\@coversmaterialin{\relax}
 \newcommand\coversmaterialin[1]{\DeclareRobustCommand\@coversmaterialin{#1}}
-
+%
 \def\@suppno{DRAFT}
 \newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
-
+%
+\def\@versionno{\relax} % default blank
+\newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
+%
 \def\@oudeclaration{%
 	\textbf{Read and complete the following --- otherwise your work will 
 not be marked}\\\bigskip
@@ -89,6 +96,34 @@ Personal identifier (PI): \\[20pt]
 
 }
 \newcommand\declaration[1]{\DeclareRobustCommand\@oudeclaration{#1}}
+%
+\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Meta data can be set using \metadataset command, based on pgfkeys
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\pgfkeys{
+ /meta data/.is family, /meta data,
+   faculty/.store in=\@faculty,
+   module code/.store in =\@modulecode,
+   module title/.store in=\@moduletitle,
+   presentation/.store in=\@ouyear,
+   copyright year/.store in=\@copyrightyear,
+   document title/.store in=\@outitle,
+   document subtitle/.store in=\@ousubtitle,
+   supp no/.store in=\@suppno,
+   version no/.store in=\@versionno,
+   cut off date/.store in=\@cutoffdate,
+   covers material in/.store in=\@coversmaterialin,
+   multiple choice option text/.code=\optiontext{#1},
+   instructions/.store in=\@instructions,
+   declaration/.store in=\@oudeclaration,
+   ou logo file base/.store in=\@oulogofilebase,
+}
+\newcommand{\metadataset}[1]{%
+    \pgfkeys{/meta data,#1}%
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -96,15 +131,27 @@ Personal identifier (PI): \\[20pt]
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{2pt}%
-    \fancyfoot[L]{\textbf{Copyright \copyright\ \@ouyear\ The Open University}\hfill \textbf{\@suppno} }%
+ \fancyfoot[L]{\large\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
+\textbf{\@versionno} }%
 }
 \renewcommand{\maketitle}{
+% Logo preamble:
+\ifpdf%
+  \def\@oulogofile{\@oulogofilebase.pdf}
+\else%
+  \def\@oulogofile{\@oulogofilebase.eps}
+\fi%
+%%
   \thispagestyle{frontpage}
   \vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
   \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
   \vspace{1.5cm}
-  \includegraphics[width=3.5cm]{ou_greyscale_masterlogo_29mm}%{ou_compact_grey_24mm}
+  \IfFileExists{\@oulogofile}{%
+    \includegraphics[width=3.5cm]{\@oulogofile}%
+  }{%
+    \fbox{\parbox[t][2cm][c]{3.5cm}{\centering OU Logo}}%
+  }%
 &
 \vspace{1.5cm}\textbf{\@faculty\newline
 \@modulecode\ \@moduletitle}
@@ -167,7 +214,7 @@ Personal identifier (PI): \\[20pt]
 \parskip 4pt
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\boxtext{\protect{\marginnote{\hfill Answer:}[10pt]}}
+\def\boxtext{\protect{\marginnote{\ Answer:\hfill}[10pt]}}
 
 
 \newcounter{question}
@@ -191,27 +238,14 @@ Personal identifier (PI): \\[20pt]
 \setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
-%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
-\renewcommand{\marks}[1]{\marginnote{\hfill[\textsl{#1}]}}
+\newcommand{\mk}[1]{\marginnote{\hfill[\textsl{#1}]}}
+\def\marks{\ClassWarning{ouicma}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Boxes for people to write their answers in
-\newcommand{\answerbox}{%
-  \marginnote{%
-    \hfill\fbox{
-	\begin{minipage}{20pt}
-		\hfill\vspace{25pt}
-	\end{minipage}
-	}}[-10pt]
-}
-\newcommand{\wideanswerbox}{%
-  \marginnote{%
-    \hfill\fbox{
-	\begin{minipage}{50pt}
-		\hfill\vspace{25pt}
-	\end{minipage}
-  }}[-10pt]
-}
+\newcommand{\answerbox}[1][1]{\marginnote{\ \tikz[scale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}
+\newcommand{\wideanswerbox}[1][1]{\marginnote{\ \tikz[xscale=2.4,yscale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,8 +1,8 @@
 % +--------------------------------------------------+
-% | Typeset this file to document the OU_SUPPS       |
+% | Typeset this file to document the OU-SUPPS       |
 % +--------------------------------------------------+
 %
-% Copyright (c) 20015-2016 by Robert Brignall for The Open University.
+% Copyright (c) 2015-2017 by Robert Brignall for The Open University.
 % All Rights Reserved.
 %
 % This file is part of the OU-SUPPS distribution.
@@ -30,7 +30,10 @@
 \makeatother
 
 \newcommand\3{\unskip\enspace\fbox{\fontsize{4}{4}\selectfont NEW 3.0}}
-
+\newcommand{\metakeyavailable}{\textbullet}
+\usepackage[T1]{fontenc}
+\usepackage{longtable}
+\usepackage{booktabs}
 \usepackage{hyperref}
 
 \pagestyle{headings}
@@ -75,7 +78,7 @@ The \textsf{OU-SUPPS} repository contains four class files:
 
 In addition, template \LaTeX\ files for each class file are available, illustrating most of the features available.
 
-\section{Installation}
+\section{Installation and basic usage}
 
 \textsf{OU-SUPPS} does not need installation. To use:
 
@@ -92,9 +95,9 @@ In addition, template \LaTeX\ files for each class file are available, illustrat
 \begin{itemize}
 \item The tex source for your document.
 \item The relevant class file (e.g.\ \texttt{ouab.cls} if you're creating an Assignment Booklet).
-\item The two OU logo files.
 \end{itemize}
 
+\paragraph{Logo files:}The OU Logo files are no longer held in the Github repository, and are \emph{not} required to be able to compile tex files that use any of the classes in \textsf{OU-SUPPS}. If you are a central member of staff and require a copy of the OU logos, please speak to the developer (Robert Brignall) or the DPU.
 
 
 \section{Using \texttt{ouab.cls}}
@@ -193,7 +196,35 @@ This switches off the text ``Cut-off date'' that appears (e.g.) on the front pag
 \end{desc}
 Command for the instructions/rubric on the front page of the booklet (optional, but defaults to `No special instructions specified.')
 
+\begin{desc}
+|\oulogofilebase{...}|
+\end{desc}
+Overrides the internally-specified for the name of the OU logo, currently |OU_Master_Logo_Black_CMYK_29mm|. The filename should be specified \emph{without} extension (|.pdf| or |.eps|), as this will be added automatically depending on whether the source file is compiled using |latex| or |pdflatex|.
 
+\LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
+
+
+\begin{desc}
+|\metadataset{key=value}|  
+\end{desc}
+As an alternative to specifying the above commands individually, they can 
+all be configured using a |key=value| approach in the |\metadataset|
+command; for example:
+\begin{verbatim}
+\metadataset{faculty=Science Technology Engineering and Mathematics, 
+            module code=MST125,
+            module title=Title of Module,
+            document title=AB title,
+            document subtitle=AB subtitle,
+            presentation=2017B,
+            copyright year=1999,
+            supp no=3.14159,
+            version no=1.12,
+            multiple choice option text=choices,
+            no cut off date,
+            instructions=some specific instructions,
+            }
+\end{verbatim}
 \subsection{Creating assignments}
 Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type.
 
@@ -255,6 +286,18 @@ To create subquestions, use the standard \LaTeX\ |enumerate| environment.
 
 These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
 
+For inline subquestions, use the starred version of the |enumerate| environment:
+
+\begin{verbatim}
+\begin{enumerate*}
+\item ...
+\item ...
+...
+\end{enumerate*}
+\end{verbatim}
+
+Numbering style for |enumerate*| is |(i),(ii),...| at all levels. This can be adjusted using |enumitem| (see below).
+
 The class file |ouab.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
 
 \begin{itemize}
@@ -268,16 +311,15 @@ For fuller details of the possibilities with |enumitem|, see the documentation o
 Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned.
 
 \begin{desc}
-|\marks{<n>}|
+|\mk{<n>}|
 \end{desc}
 Places |<n>| in square brackets in the right hand margin on the line. 
 
-\emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
 
 \begin{desc}
-|\mk{<n>}|
+|\marks{<n>}|
 \end{desc}
-A synonym for |\marks|, for those moving from OUTeX.
+A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
 
 If using the experimental |markcheck| option, when compiled, \LaTeX\ will check whether the sum of the entries inside |\marks| and |\mk| commands adds up to the parameter |<marks>| specified by the preceding |\question|. This has some limitations (e.g.\ it won't understand |\tfrac{1}{2}|).
 
@@ -333,6 +375,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
 \item |marginnote| for handling marks, etc in the margin.
 \item |caption| with option |labelsep=quad| to improve formatting for figures.
+\item |pgfkeys| for setting flexible options in commands.
 \end{itemize}
 
 %
@@ -372,7 +415,7 @@ This version is designed to create a specimen solutions PDF. In this mode, a num
 |\documentclass[studenttex]{outn}|
 \end{desc}
 
-(EXPERIMENTAL) The idea is that on compilation, as well as producing Tutor Notes (or specimen solutions if |specsolns| is also specified) it produces a compilable |latex| source file called |<filename>-student.tex| that can be compiled by (e.g.) ALs who do not have the |OU-SUPPS| suite of class files on their machine. This system is still under development, and is subject to some limitations in functionality.
+(EXPERIMENTAL) The idea is that on compilation, as well as producing Tutor Notes (or specimen solutions if |specsolns| is also specified) it produces a compilable |latex| source file called |<filename>-student.tex| that can be compiled by (e.g.) ALs who do not have the \textsf{OU-SUPPS} suite of class files on their machine. This system is still under development, and is subject to some limitations in functionality.
 
 
 \subsubsection{Commands to be used in the preamble}
@@ -415,6 +458,33 @@ Command to change the font color used in Specimen Solutions to |<color>| (e.g. |
 |\optiontext{...}|
 \end{desc}
 Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
+
+\begin{desc}
+|\oulogofilebase{...}|
+\end{desc}
+Overrides the internally-specified for the name of the OU logo, currently |OU_Master_Logo_Black_CMYK_29mm|. The filename should be specified \emph{without} extension (|.pdf| or |.eps|), as this will be added automatically depending on whether the source file is compiled using |latex| or |pdflatex|.
+
+\LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
+
+\begin{desc}
+|\metadataset{key=value}|  
+\end{desc}
+As an alternative to specifying the above commands individually, they can 
+all be configured using a |key=value| approach in the |\metadataset|
+command; for example:
+\begin{verbatim}
+\metadataset{faculty=STEM, 
+            module code=MU123,
+            module title=Title of Module,
+            document title=Title of Tutor notes,
+            presentation=2017B,
+            copyright year=1999,
+            specimen solutions color=blue!50!black,
+            multiple choice option text=choices,
+            tutor only title={{\bfseries Title for tutor-only environment\par}},
+            student only title=Student material only\par,
+            }
+\end{verbatim}
 
 \subsection{Creating assignments}
 Three commands are available to create assignments: TMA, CMA, and a generic command for creating any other type. These commands have the same syntax as in |ouab|, but the behaviour is slightly different (since |outn| does not produce a table of contents).
@@ -481,6 +551,18 @@ To create subquestions, use the standard \LaTeX\ |enumerate| environment.
 
 These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
 
+For inline subquestions, use the starred version of the |enumerate| environment:
+
+\begin{verbatim}
+\begin{enumerate*}
+\item ...
+\item ...
+...
+\end{enumerate*}
+\end{verbatim}
+
+Numbering style for |enumerate*| is |(i),(ii),...| at all levels. This can be adjusted using |enumitem| (see below).
+
 The class file |outn.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
 
 \begin{itemize}
@@ -494,30 +576,33 @@ For fuller details of the possibilities with |enumitem|, see the documentation o
 Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned. In |specsolns| mode, all the commands in this subsubsection are suppressed in the resulting PDF. In |studenttex| mode, all these commands are suppressed in the outputted |latex| source file.
 
 \begin{desc}
-|\marks[<description>]{<n>}|
+|\mk[<description>]{<n>}[<voffset>]|
 \end{desc}
-Places |<n>| in the right hand margin on the line. The |<description>| (which could be a short sentence running to several lines) is placed to the right of the mark, but can be omitted (e.g. |\marks{5}|).
+Places |<n>| in the right hand margin on the line. The |<description>| (which could be a short sentence running to several lines) is placed to the right of the mark, but can be omitted (e.g. |\mk{5}|). 
+
+The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
 
 \emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
+
+\begin{desc}
+|\marks[<description>]{<n>}|\\
+|\solnmarksplus{<n>}{<description>}|\\
+|\mkplus{<n>}{<description>}|
+\end{desc}
+Some equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. These commands are deprecated, and exist primarily for backward-compatibility. They will be removed in a later release.
 
 \emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
 
 \begin{desc}
-|\mk[<description>]{<n>}|\\
-|\solnmarksplus{<n>}{<description>}|\\
-|\mkplus{<n>}{<description>}|
-\end{desc}
-Some equivalent commands that produce the same effect as |\marks[<description>]{<n>}|. These exist primarily for backward-compatibility with OUTeX.
-
-
-\begin{desc}
-|\subtotal[<description>]{<n>}|\\
-|\total[<description>]{<n>}|
+|\subtotal[<description>]{<n>}[<voffset>]|\\
+|\total[<description>]{<n>}[<voffset>]|
 \end{desc}
 
 Specifies that the subtotal or total for a part-question or question is |<n>|, placing |<n>| in the margin, and the word `Subtotal' or `Total' in large, bold to its right. The optional argument |<description>| can be used to append wording to the word `Total'. Typical usages of the |<description>| parameter are:\\ 
 |\subtotal[for part \theenumi]{<n>]}|\\
 |\total[for Question \thequestion]{<n>]}|.
+
+See under the description of |\mk| above for information on usage of the optional parameter |[<voffset>]|.
 
 \begin{desc}
 |\subtotal*[<description>]|\\
@@ -643,6 +728,12 @@ Provides a command and environment in which to write text that is visible only i
 \emph{Warning: Do not use the |longremark| environment inside the |solutions| environment! In certain modes this will cause errors relating to verbatim mode.}
 
 \begin{desc}
+|\begin{references}<text>\end{references}|  
+\end{desc}
+
+Provides an environment for references; it typesets the word `References' in italics on its own line, with the |<text>| in normal font.
+
+\begin{desc}
 |\tutoronly{<commands/text>}|
 \end{desc}
 Commands, text, and anything else (e.g |\pagebreak|) passed to the |\tutoronly| command will only
@@ -705,12 +796,12 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |amssymb| extra mathematical symbols
 \item |lastpage| for knowing how many pages the document contains
 \item |ifthen| for internal latex coding
-\item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
+\item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
 \item |caption| with option |labelsep=quad| to improve formatting for figures.
 \item |xcolor| for colour
 \item |framed| for framing environment
-\item |pgfkeys| for setting flexible options in commands
+\item |pgfkeys| for setting flexible options in commands.
 \item |environ|
 \item |verbatim|
 \end{itemize}
@@ -781,7 +872,10 @@ This provides a large-print version for visually impaired students. Also availab
 |\documentclass[nobarcode]{ouexam}|
 \end{desc}
 
-This option is available for drafting exams, on machines where the package containing |barcodes.sty| does not work properly. In most cases, the DPU can insert the requisite barcode later.
+This option is available for drafting exams, suppressing the barcode production code (and the |makebarcode| package). In most cases, the DPU can insert the requisite barcode later.
+
+[This was originally created when the system used the old OU\TeX\ code for barcodes, which relied on a specific font that was not always installed correctly in certain \TeX\ distributions. The new approach provided by the |makebarcode| package instead uses the |\rule| command to draw black and white lines of appropriate sizes.]
+
 
 \subsubsection{Commands to be used in the preamble}
 \begin{desc}
@@ -856,9 +950,44 @@ Changes the text that appears at the top of multi-choice questions (optional, de
 Command for the instructions/rubric on the front page of the exam (optional, but defaults to `No special instructions specified.')
 
 \begin{desc}
+|\oulogofilebase{...}|
+\end{desc}
+Overrides the internally-specified for the name of the OU logo, currently |OU_Master_Logo_Black_CMYK_29mm|. The filename should be specified \emph{without} extension (|.pdf| or |.eps|), as this will be added automatically depending on whether the source file is compiled using |latex| or |pdflatex|.
+
+\LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
+
+\begin{desc}
 |\setlength\toppadding{<x>}|
 \end{desc}
 Adjusts the padding at the top of the title page to |<x>|. Default is |0.5cm|, and this should only be changed if you know what you're doing.
+
+\begin{desc}
+|\metadataset{key=value}|  
+\end{desc}
+As an alternative to specifying the above commands individually, they can 
+all  be configured using a |key=value| approach in the |\metadataset|
+command; for example:
+\begin{verbatim}
+\metadataset{
+            module code=MST125,
+            session=D,
+            module title=Title of Module,
+            specimen solutions title=specimen solution title,
+            exam code=MST1241706F1PV1,
+            exam time=10am--2pm,
+            exam day=Wed,
+            exam month=Oct,
+            exam year=2017,
+            time allowed=3.5 hours,
+            copyright year=2017,
+            supp no=3,
+            version no=2.12,
+            faculty=STEM,
+            multiple choice option text=choices,
+            instructions= your instructions here,
+            top padding=0.5cm,
+            }
+\end{verbatim}
 
 \subsection{Creating questions}
 The internal counter used for generating questions is |question|. 
@@ -884,6 +1013,18 @@ To create subquestions, use the standard \LaTeX\ |enumerate| environment.
 
 These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
 
+For inline subquestions, use the starred version of the |enumerate| environment:
+
+\begin{verbatim}
+\begin{enumerate*}
+\item ...
+\item ...
+...
+\end{enumerate*}
+\end{verbatim}
+
+Numbering style for |enumerate*| is |(i),(ii),...| at all levels. This can be adjusted using |enumitem| (see below).
+
 The class file |ouexam.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
 
 \begin{itemize}
@@ -897,16 +1038,14 @@ For fuller details of the possibilities with |enumitem|, see the documentation o
 Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned.
 
 \begin{desc}
-|\marks{<n>}|
+|\mk{<n>}|
 \end{desc}
 Places |<n>| in square brackets in the right hand margin on the line. 
 
-\emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
-
 \begin{desc}
-|\mk{<n>}|
+|\marks{<n>}|
 \end{desc}
-A synonym for |\marks|, for those moving from OUTeX.
+A synonym for |\mk|, preserved as part of legacy support from the earliest versions of |ouexam.cls|. Because this synonym currently redefines a \TeX\ primitive, this command has been deprecated and will be removed in a future release.
 
 
 \subsubsection{Multiple choice} 
@@ -962,17 +1101,107 @@ When displayed, the solutions can be formatted in one of two ways:
 \subsubsection{Specifying marks within the \texttt{solution} environment}
 
 \begin{desc}
-|\mk[<description>]{<n>}|
+|\mk[<description>]{<n>}[<voffset>]|
 \end{desc}
 This command can be used to specify marks, as per the format for creating questions. Within the |solution| environment in |[showsolutions]| mode, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets. Additionally, the optional |<description>| parameter allows users to enter text in the margin, to the right of the |<n>|. 
+
+The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
 
 \begin{desc}
 |\marks[<description>]{<n>}|\\
 |\solnmarksplus{<n>}{<description>}|\\
 |\mkplus{<n>}{<description>}|
 \end{desc}
-Some equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. These exist primarily for backward-compatibility with OUTeX.
+Some deprecated equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. The |\mark| command currently redefines a \TeX\ primitive and will be removed in a future release.
 
+
+\begin{desc}
+|\subtotal[<description>]{<n>}[<voffset>]|\\
+|\total[<description>]{<n>}[<voffset>]|
+\end{desc}
+
+Specifies that the subtotal or total for a part-question or question is |<n>|, placing |<n>| in the margin, and the word `Subtotal' or `Total' in large, bold to its right. The optional argument |<description>| can be used to append wording to the word `Total'. Typical usages of the |<description>| parameter are:\\ 
+|\subtotal[for part \theenumi]{<n>]}|\\
+|\total[for Question \thequestion]{<n>]}|.
+
+See under the description of |\mk| above for information on usage of the optional parameter |[<voffset>]|.
+
+\begin{desc}
+|\subtotal*[<description>]|\\
+|\total*[<description>]|
+\end{desc}
+
+Calculates the subtotal or total for a part-question or question, placing 
+the calculated value in the margin, and the word `Subtotal' or `Total' in large, 
+bold to its right; the calculated value accounts for all marks given in 
+any of the following commands, but only \emph{within} a |solution| environment: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
+|marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
+as with the |\subtotal| and |\total| commands. 
+
+\subsubsection{Rules}
+
+Primarily aimed at the creation of exam solutions (though they will work in any file using |ouexam.cls|), the available commands for rules are the same as for |outn|.
+
+\begin{desc}
+|\setSubtotalHline[<options>]|
+\end{desc}
+
+Sets options (including turning off) for horizontal lines after |\subtotal| and
+|\subtotal*| command. Supported options, in any order, are:
+\begin{itemize}
+  \item |moveleft=<length>|, default is |.1\textwidth|: specifies the horizontal offset of the line;
+  \item |width=<length>|, default is |1.5\textwidth|: specifies the horizontal width of the line;
+  \item |height=<length>|, default is |2pt|: specifies the height of the line;
+  \item |color=<color>|, default is |black|: specifies the colour of the line;
+  \item |draw line=<true/false>|, default is |true|: specifies if the line is to be drawn or not.
+\end{itemize}
+
+Simply calling |\setSubtotalHline| without options, resets all of the options
+to their default values.
+
+Sample uses include, for example:
+
+|\setSubtotalHline[moveleft=0pt]|
+
+|\setSubtotalHline[moveleft=0pt,height=5pt,color=orange]|
+
+This command is just a short cut to the |\pgfkeys| command, and 
+users familiar with the syntax of |\pgfkeys| might prefer to use, 
+for example:
+
+|\pgfkeys{/subtotalhline,default,moveleft=-3cm,color=red!40!white}|
+
+\begin{desc}
+|\setTotalHline[<options>]|
+\end{desc}
+This is analogous to the |\setSubtotalHline| command, and customises the lines
+drawn (if any) after the |\total| and |\total*| commands. It takes exactly 
+the same options as |\setSubtotalHline|, and each option performs the analogous
+task; the default |height| for the |subtotal| horizontal lines is |1pt|, 
+but all other defaults are the same as those for the  |total| horizontal lines.
+
+Users who prefer to use |\pgfkeys| directly may use, for example,
+
+|\pgfkeys{/totalhline,default,moveleft=-3cm,color=red!40!white}|
+
+\begin{desc}
+|\ourule[<options>]|
+\end{desc}
+This command enables users to draw a horizontal rule manually at some point in their tutor notes, 
+not using any of the |\subtotal| and friends commands. It takes exactly the 
+same options as |\setSubtotalHline|, and each option performs the analogous
+task. The default 
+values are copied from the default values of the |\setTotalHline|.
+
+\begin{desc}
+|\setOUrule[<options>]|
+\end{desc}
+Users may specify global options for their |\ourule| command in exactly the same 
+way as in |\setSubtotalHline| and |\setTotalHline|.
+
+Users who prefer to use |\pgfkeys| directly may use, for example,
+
+|\pgfkeys{/ourule,default,moveleft=-3cm,color=red!40!white}|
 
 \subsection{Alternative method to create solutions}
 If you prefer not to have solutions appearing in-line with the questions, an alternative method is to place all solutions at the end. You should not use this method for creating specimen solutions.
@@ -1005,12 +1234,13 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |amssymb| extra mathematical symbols
 \item |lastpage| for knowing how many pages the document contains
 \item |ifthen| for internal latex coding
-\item |enumitem|. This is a powerful tool that will help preparing subquestions (see later).
+\item |enumitem|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
 \item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions.
 \item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.
-\item |barcodes| for creating the barcode on the front page. 
+\item |makebarcode| for creating the barcode on the front page. Not loaded if |nobarcode| option is specified.
 \item |extsizes| when options |14pt|, |17pt| or |20pt| are used, to handle larger font sizes. 
+\item |pgfkeys| for setting flexible options in commands.
 \end{itemize}
 
 %
@@ -1025,7 +1255,251 @@ This section can be omitted unless you need/want to know a bit more about the cl
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Using \texttt{ouicma.cls}}
-Not yet written!
+
+\subsection{Preamble}
+\subsubsection{Commands to be used in the preamble}
+\begin{desc}
+|\faculty{...}|
+\end{desc}
+The name of the faculty (optional, default is `Faculty of Science, Technology, Engineering and Mathematics')
+\begin{desc}
+|\modulecode{...}|
+\end{desc}
+Sets the code of the module (required).
+\begin{desc}
+|\moduletitle{...}|
+\end{desc}
+Sets the title (i.e./ name) of the module (required).
+
+\begin{desc}
+|\icmatitle{...}|
+\end{desc}
+Sets the title for the iCMA (required).
+
+\begin{desc}
+|\icmasubtitle{...}|
+\end{desc}
+Sets the subtitle for the iCMA (optional).
+
+\begin{desc}
+|\icmayear{...}|
+\end{desc}
+Sets the year/presentation for this iCMA (required).
+
+\begin{desc}
+|\copyrightyear{...}|
+\end{desc}
+Sets the date for copyright, used in the footer on the front page (optional, default is same as |\icmayear|).
+
+
+\begin{desc}
+|\suppno{...}| %can be omitted for "DRAFT"
+\end{desc}
+Sets the SUPP number, mainly used by DPU/LTS (optional, default is `DRAFT').
+
+\begin{desc}
+|\versionno{...}| %optional
+\end{desc}
+Sets the version number, mainly used by DPU/LTS (optional, default is blank).
+
+\begin{desc}
+|\optiontext{...}|
+\end{desc}
+Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
+
+\begin{desc}
+|\cutoffdate{...}|
+\end{desc}
+Specifies the cut-off date for the iCMA.
+
+\begin{desc}
+|\coversmaterialin{...}|
+\end{desc}
+Specifies the material covered by the iCMA.
+
+\begin{desc}
+|\instructions{...}|
+\end{desc}
+Command for the instructions/rubric on the front page of the booklet (optional, but defaults to `No special instructions specified.')
+
+\begin{desc}
+|\declaration{...}|
+\end{desc}
+Allows you to change the declaration on page 3 of the iCMA. This is optional, and the default is as follows.
+
+\begin{verbatim}
+\textbf{Read and complete the following --- otherwise your work will 
+not be marked}\\\bigskip
+The University has to ensure as far as possible that the work submitted by 
+students is their own and that credit is not given for unreferenced material 
+from other sources. The University statement `What constitutes 
+plagiarism or cheating' appears in the Plagiarism Policy Document and in 
+your Assessment Handbook and you are expected to have familiarised 
+yourself with it. Please be aware that the University may subject your 
+work to checks (including computerised checks) for plagiarism and in some 
+instances may need to seek further information from you. Any cases where 
+a basis for concern about the originality of the work is identified will be 
+considered under the University's policy on academic conduct. 
+
+I confirm that I have read the statement `What constitutes plagiarism or 
+cheating' and that my answers will be my own work. \bigskip
+
+Signature:\\[20pt]
+
+\rule{\textwidth}{2pt}\\[20pt]
+
+Name (in block capitals):\\[20pt]
+
+\rule{\textwidth}{2pt}\\[20pt]
+
+Personal identifier (PI): \\[20pt]
+
+\rule{\textwidth}{2pt}\\[20pt]
+\end{verbatim}
+
+
+
+
+\begin{desc}
+|\oulogofilebase{...}|
+\end{desc}
+Overrides the internally-specified for the name of the OU logo, currently |OU_Master_Logo_Black_CMYK_29mm|. The filename should be specified \emph{without} extension (|.pdf| or |.eps|), as this will be added automatically depending on whether the source file is compiled using |latex| or |pdflatex|.
+
+\LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
+
+
+\begin{desc}
+|\metadataset{key=value}|  
+\end{desc}
+As an alternative to specifying the above commands individually, they can 
+all be configured using a |key=value| approach in the |\metadataset|
+command; for example:
+\begin{verbatim}
+\metadataset{faculty=STEM, 
+            module code=MST140,
+            module title=Title of Module,
+            presentation=2017B,
+            document title=iCMA title,
+            supp no=3.14159,
+            cut off date=27th Oct,
+            covers material in={Units 1, 2 and 3},
+            multiple choice option text=choices,
+            %instructions=some specific instructions,
+            %declaration=your own declaration here,
+            }
+\end{verbatim}
+\subsection{Creating questions}
+
+\subsubsection{Question syntax}
+
+\begin{desc}
+|\question|
+\end{desc}
+Creates a new question. Unlike other class files in \textsf{OU-SUPPS}, this takes no parameters.
+
+\subsubsection{Subquestions}
+To create subquestions, use the standard \LaTeX\ |enumerate| environment.
+
+\begin{verbatim}
+\begin{enumerate}
+\item ...
+\item ...
+...
+\end{enumerate}
+\end{verbatim}
+
+These environments can be nested to create subsubquestions, etc. The default numbering style is |(a),(b),...| for subquestions, and |(i),(ii),...| for subsubquestions.
+
+The class file |ouab.cls| loads the |enumitem| package, which provides a number of features, two of which we list here.
+
+\begin{itemize}
+\item Changing the numbering: Start the environment using, e.g.\ |\begin{enumerate}[A.]|, to modify the numbering system to |A.,B.,...|.
+\item Resuming numbering after a break: use |\begin{enumerate}[resume]| to continue counting from the previous time an enumerate environment at this level was called.
+\end{itemize} 
+
+For fuller details of the possibilities with |enumitem|, see the documentation on its CTAN entry.
+
+\subsubsection{Marks}
+Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned.
+
+\begin{desc}
+|\mk{<n>}|
+\end{desc}
+Places |<n>| in square brackets in the right hand margin on the line. 
+
+\begin{desc}
+|\marks{<n>}|
+\end{desc}
+A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
+
+
+\subsubsection{Multiple choice} 
+
+Multiple choice options can be produced using the following commands.
+
+The text appearing at the top of each list of options can be changed using the |\optiontext{<title>}| command. This command can be used in the premable, or at any point in the document.
+
+\begin{desc}
+|\begin{options}|\\
+|   \item ...|\\
+|   \item ...|\\
+|\end{options}|
+\end{desc}
+Creates a list of options, with the text of each |\item| starting on a new line. Options are labelled |A.,B.,C.,...|.
+
+\begin{desc}
+|\begin{inlineoptions}[<line spacing>]{<columns>}|\\
+|   \item ...|\\
+|   \item ...|\\
+|\end{inlineoptions}|
+\end{desc}
+Creates a list of options, displayed in |<columns>| number of columns, equally spaced. Each successive |\item| is placed sequentially from left to right, then starting a new line as necessary. Options are labelled |A.,B.,C.,...|.
+
+The optional parameter |<line spacing>| can be used to increase the spacing between each line. However, note that this also affect spacing within options, which can have undesired effect if your options include, e.g., a |matrix| environment.
+
+\begin{desc}
+|\noitem|
+\end{desc}
+This command can be used within  |inlineoptions| to leave a `blank' in the list of options. This is particularly useful on the final line if you have fewer |\item|s left than the specified number of |<columns>|.
+
+
+\subsubsection{Answer boxes}
+
+\begin{desc}
+|\answerbox[<n>]|
+\end{desc}
+
+Places a 1.2cm $\times$ 1.2cm answer box in the right-hand margin. The optional parameter |<n>| allows you to place |<n>| answer boxes side-by side. If omitted, |<n>| is taken to be 1. Numbers greater than 4 are unlikely to look good.
+
+\begin{desc}
+|\wideanswerbox[<n>]|
+\end{desc}
+
+Places a 2.4cm $\times$ 1.2cm wide answer box in the right-hand margin. The optional parameter |<n>| allows you to place |<n>| answer boxes side-by side. If omitted, |<n>| is taken to be 1. Numbers greater than 2 are unlikely to look good.
+
+
+\subsection{Technical info}
+
+|ouab.cls| loads the following packages automatically, so you do not need to call |\usepackage{...}| to use the features provided by these.
+
+\begin{itemize}
+\item |geometry| to set page margins, sizes, etc
+\item |fancyhdr| for formatting headings
+\item |graphicx| for handling images, etc
+\item |changepage| to adjust page widths automatically
+\item |array| extends the |array| and |tabular| environments.
+\item |amsmath| loaded with the |fleqn| option to left-align displayed mathematics.
+\item |amssymb| extra mathematical symbols
+\item |lastpage| for knowing how many pages the document contains
+\item |ifthen| for internal latex coding
+\item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
+\item |marginnote| for handling marks, etc in the margin.
+\item |tikz| to draw boxes in the margin.
+\item |mdframed| to format the question headers.
+\end{itemize}
+
+
+
 
 %
 %
@@ -1038,6 +1512,50 @@ Not yet written!
 %
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Summary of keys available for \texttt{metadataset}}
+Table~\ref{tab:metadataset} provides a summary of the available keys
+for the |metadataset| command in each of the |OU|-based class files.
+
+\begin{longtable}{lcccc}
+	\caption{Keys available to \texttt{metadataset} in each OU class file.}\label{tab:metadataset}\\
+	\toprule
+	                              & |ouab.cls|        & |ouexam.cls|      & |ouicma.cls|      & |outn.cls|        \\
+	\midrule
+	|faculty|                     & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|module code|                 & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|module title|                & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|multiple choice option text| & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|ou logo file base| & \metakeyavailable & \metakeyavailable & \metakeyavailable & \metakeyavailable \\
+	|copyright year|             & \metakeyavailable & \metakeyavailable & \metakeyavailable  & \metakeyavailable \\
+	\cmidrule{2-5}
+	|document title|              & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
+	|presentation|                & \metakeyavailable &                   & \metakeyavailable & \metakeyavailable \\
+	|supp no|                     & \metakeyavailable & \metakeyavailable & \metakeyavailable &                   \\
+	|instructions|                & \metakeyavailable & \metakeyavailable & \metakeyavailable &                   \\
+	|version no|                  & \metakeyavailable & \metakeyavailable & \metakeyavailable &                   \\
+	\cmidrule{2-5}
+	|document subtitle|           & \metakeyavailable &                   & \metakeyavailable &                   \\
+	|no cut off date|             & \metakeyavailable &                   &                   &                   \\
+	%\cmidrule{2-5}
+	|session|                     &                   & \metakeyavailable &                   &                   \\
+	|specimen solutions title|    &                   & \metakeyavailable &                   &                   \\
+	|exam code|                   &                   & \metakeyavailable &                   &                   \\
+	|exam time|                   &                   & \metakeyavailable &                   &                   \\
+	|exam day|                    &                   & \metakeyavailable &                   &                   \\
+	|exam month|                  &                   & \metakeyavailable &                   &                   \\
+	|exam year|                   &                   & \metakeyavailable &                   &                   \\
+	|time allowed|                &                   & \metakeyavailable &                   &                   \\
+	%\cmidrule{2-5}
+	|cut off date|                &                   &                   & \metakeyavailable &                   \\
+	|covers material in|          &                   &                   & \metakeyavailable &                   \\
+	|declaration|                 &                   &                   & \metakeyavailable &                   \\
+	%\cmidrule{2-5}
+	|specimen solutions color|    &                   &                   &                   & \metakeyavailable \\
+	|tutor only title|            &                   &                   &                   & \metakeyavailable \\
+	|student only title|          &                   &                   &                   & \metakeyavailable \\
+	\bottomrule
+\end{longtable}
 \pagebreak
 \section{Moving from OUTeX}
 
@@ -1064,12 +1582,13 @@ You can recover the OUTeX command by inserting the following into your preamble:
 However, we do not recommend you use this, as it will not be understood by anyone not previously familiar with OUTeX (e.g. ALs), and will mean snippets of your code won't work out of the context of the file it's in.
 \\\hline
 |\[ ... \\ ... \]|&
-|\beglin{gather*}...\\...\end{gather*}|
+|\begin{gather*}...\\...\end{gather*}|
 \\\hline
-Matrix alignment & Load the |mathtools| package, so you can write e.g. |\begin{pmatrix}[l]|\newline |<matrix>|\newline |\end{pmatrix}|\newline to left-align all columns. Alternatively (and to specify different column alignments) use the |array| environment instead, e.g.:\newline |\left(\begin{array}{lrcl}|\newline |<matrix>|\newline|\end{array}\right)|.
+Matrix alignment & Load the |mathtools| package, so you can write e.g.\newline |\begin{pmatrix}[l]|\newline |<matrix>|\newline |\end{pmatrix}|\newline to left-align all columns. Alternatively (and to specify different column alignments) use the |array| environment instead, e.g.:\newline |\left(\begin{array}{lrcl}|\newline |<matrix>|\newline|\end{array}\right)|.
 \\\hline
-Binomials (column vector format)& |\binom{n}{k}|\\\hline
+Binomials (column vector)& |\binom{n}{k}|\\\hline
 |\setright{\text{<text>}}|&|\tag{<text>}|\\\hline
+|\solnmarksplus{<a>}{<b>}|&|\mk[<b>]{<a>}|\\\hline
 \end{tabular}
 
 \end{document}
