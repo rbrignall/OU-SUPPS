@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2016/08/10 v0.962 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2017/11/27 v2.0 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@markcheck
 \@markcheckfalse
