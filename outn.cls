@@ -91,17 +91,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \pgfkeys{
  /meta data/.is family, /meta data,
-   faculty/.estore in=\@faculty,
-   module code/.estore in =\@modulecode,
-   module title/.estore in=\@moduletitle,
-   document title/.estore in=\@tntitle,
-   presentation/.estore in=\@tnyear,
-   copyright year/.estore in=\@copyrightyear,
-   specimen solutions color/.estore in=\@specsolnscolor,
-   multiple choice option text/.estore in=\@optiontext,
-   tutor only title/.estore in=\@tutoronlytitle,
-   student only title/.estore in=\@studentonlytitle,
-   ou logo file base/.estore in=\@oulogofilebase,
+   faculty/.store in=\@faculty,
+   module code/.store in =\@modulecode,
+   module title/.store in=\@moduletitle,
+   document title/.store in=\@tntitle,
+   presentation/.store in=\@tnyear,
+   copyright year/.store in=\@copyrightyear,
+   specimen solutions color/.store in=\@specsolnscolor,
+   multiple choice option text/.store in=\@optiontext,
+   tutor only title/.store in=\@tutoronlytitle,
+   student only title/.store in=\@studentonlytitle,
+   ou logo file base/.store in=\@oulogofilebase,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
