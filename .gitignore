@@ -3,6 +3,7 @@
 *.out
 *.log
 *.tma
+*.dvi
 *.synctex.gz
 ou_greyscale_masterlogo_29mm.eps
 ou_greyscale_masterlogo_29mm.pdf
