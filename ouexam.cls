@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2017/11/27 v2.0 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2018/05/17 v2.1 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -556,49 +556,40 @@
                        {\@outn@subtotal@hline@height}%
 \fi%
 }
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
 %% Needed for marginnote package
-\long\def\@mn@@@marginnote[#1]#2[#3]{%
-  \begingroup
-    \ifmmode\mn@strut\let\@tempa\mn@vadjust\else
-      \if@inlabel\leavevmode\fi
-      \ifhmode\mn@strut\let\@tempa\mn@vadjust\else\let\@tempa\mn@vlap\fi
-    \fi
-    \@tempa{%
-      \vbox to\z@{%
-        \vss
-        \@mn@margintest
-        \if@reversemargin\if@tempswa
-            \@tempswafalse
-          \else
-            \@tempswatrue
-        \fi\fi
-          \rlap{%
-            \ifx\@mn@currxpos\relax
-              \kern\marginnoterightadjust
-              \if@mn@verbose
-                \PackageInfo{marginnote}{%
-                  xpos not known,\MessageBreak
-                  using \string\marginnoterightadjust}%
-              \fi
-            \else\ifx\@mn@currxpos\@empty
-                \kern\marginnoterightadjust
-                \if@mn@verbose
-                  \PackageInfo{marginnote}{%
-                    xpos not known,\MessageBreak
-                    using \string\marginnoterightadjust}%
-                \fi
+%% \@mn@@@marginnote changed on 2018/04/13
+\@ifpackagelater{marginnote}{2018/04/13}
+  {%
+    % Version of marginnote from 2018/04/13
+    \long\def\@mn@@@marginnote[#1]#2[#3]{%
+      \begingroup
+        \ifmmode\mn@strut\let\@tempa\mn@vadjust\else
+          \if@inlabel\leavevmode\fi
+          \ifhmode\mn@strut\let\@tempa\mn@vadjust\else\let\@tempa\mn@vlap\fi
+        \fi
+        \@tempa{%
+          \vbox to\z@{%
+            \vss
+            \@mn@margintest
+            \if@reversemargin\if@tempswa
+                \@tempswafalse
               \else
+                \@tempswatrue
+            \fi\fi
+            %\if@tempswa
+              \rlap{%
                 \if@mn@verbose
-                  \PackageInfo{marginnote}{%
-                    xpos seems to be \@mn@currxpos,\MessageBreak
-                    \string\marginnoterightadjust
-                    \space ignored}%
+                  \PackageInfo{marginnote}{xpos seems to be \@mn@currxpos}%
                 \fi
                 \begingroup
-                  \setlength{\@tempdima}{\@mn@currxpos}%
-                  \kern-\@tempdima
+                  \ifx\@mn@currxpos\relax\else\ifx\@mn@currxpos\@empty\else
+                      \kern-\dimexpr\@mn@currxpos\relax
+                  \fi\fi
+                  \ifx\@mn@currpage\relax
+                    \let\@mn@currpage\@ne
+                  \fi
                   \if@twoside\ifodd\@mn@currpage\relax
                       \kern\oddsidemargin
                     \else
@@ -609,23 +600,93 @@
                   \fi
                   \kern 1in
                 \endgroup
-              \fi
-            \fi
-            \kern\marginnotetextwidth\kern\marginparsep
-            \vbox to\z@{\kern\marginnotevadjust\kern #3
-              \vbox to\z@{%
-                \hsize\marginparwidth
-                \linewidth\hsize
-                \kern-\parskip
-                \marginfont\raggedrightmarginnote\strut\hspace{\z@}%
-                \ignorespaces#2\endgraf
-                \vss}%
-              \vss}%
+                \kern\marginnotetextwidth\kern\marginparsep
+                \vbox to\z@{\kern\marginnotevadjust\kern #3
+                  \vbox to\z@{%
+                    \hsize\marginparwidth
+                    \linewidth\hsize
+                    \kern-\parskip
+                    \marginfont\raggedrightmarginnote\strut\hspace{\z@}%
+                    \ignorespaces#2\endgraf
+                    \vss}%
+                  \vss}%
+              }%
           }%
-      }%
-    }%
-  \endgroup
-}
+        }%
+      \endgroup
+    }  
+  }
+  {% Older versions of marginnote
+    \long\def\@mn@@@marginnote[#1]#2[#3]{%
+      \begingroup
+        \ifmmode\mn@strut\let\@tempa\mn@vadjust\else
+          \if@inlabel\leavevmode\fi
+          \ifhmode\mn@strut\let\@tempa\mn@vadjust\else\let\@tempa\mn@vlap\fi
+        \fi
+        \@tempa{%
+          \vbox to\z@{%
+            \vss
+            \@mn@margintest
+            \if@reversemargin\if@tempswa
+                \@tempswafalse
+              \else
+                \@tempswatrue
+            \fi\fi
+            % Removed: \if@tempswa
+              \rlap{%
+                \ifx\@mn@currxpos\relax
+                  \kern\marginnoterightadjust
+                  \if@mn@verbose
+                    \PackageInfo{marginnote}{%
+                      xpos not known,\MessageBreak
+                      using \string\marginnoterightadjust}%
+                  \fi
+                \else\ifx\@mn@currxpos\@empty
+                    \kern\marginnoterightadjust
+                    \if@mn@verbose
+                      \PackageInfo{marginnote}{%
+                        xpos not known,\MessageBreak
+                        using \string\marginnoterightadjust}%
+                    \fi
+                  \else
+                    \if@mn@verbose
+                      \PackageInfo{marginnote}{%
+                        xpos seems to be \@mn@currxpos,\MessageBreak
+                        \string\marginnoterightadjust
+                        \space ignored}%
+                    \fi
+                    \begingroup
+                      \setlength{\@tempdima}{\@mn@currxpos}%
+                      \kern-\@tempdima
+                      \if@twoside\ifodd\@mn@currpage\relax
+                          \kern\oddsidemargin
+                        \else
+                          \kern\evensidemargin
+                        \fi
+                      \else
+                        \kern\oddsidemargin
+                      \fi
+                      \kern 1in
+                    \endgroup
+                  \fi
+                \fi
+                \kern\marginnotetextwidth\kern\marginparsep
+                \vbox to\z@{\kern\marginnotevadjust\kern #3
+                  \vbox to\z@{%
+                    \hsize\marginparwidth
+                    \linewidth\hsize
+                    \kern-\parskip
+                    \marginfont\raggedrightmarginnote\strut\hspace{\z@}%
+                    \ignorespaces#2\endgraf
+                    \vss}%
+                  \vss}%
+              }%
+          }%
+        }%
+      \endgroup
+    }
+  }%
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Section headers:
 %\renewcommand{\section}[1]{\@startsection
