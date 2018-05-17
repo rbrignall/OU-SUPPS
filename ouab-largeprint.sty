@@ -1,0 +1,89 @@
+\def\@txtsize{12pt}%
+\DeclareOption{14pt}{%
+ \def\@txtsize{14pt}
+}
+\DeclareOption{15pt}{%
+ \def\@txtsize{15pt}
+}
+\DeclareOption{16pt}{%
+ \def\@txtsize{16pt}
+}
+\DeclareOption{17pt}{%
+ \def\@txtsize{17pt}
+}
+\DeclareOption{18pt}{%
+ \def\@txtsize{18pt}
+}
+\DeclareOption{20pt}{%
+ \def\@txtsize{20pt}
+}
+\newif\if@garamond
+\@garamondfalse
+\DeclareOption{garamond}{%
+ \@garamondtrue
+}
+\ProcessOptions\relax
+%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage[fontsize=\@txtsize]{scrextend}
+\if@garamond%
+\RequirePackage[urw-garamond]{mathdesign}
+\RequirePackage[T1]{fontenc}
+%\RequirePackage{lmodern}
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%
+\renewcommand{\maketitle}{
+%% First, set up PDF metadata
+ \pdfinfo{
+   /Author (The Open University)
+   /Title  (\@modulecode\ \@abtitle\ \@abyear)
+}%
+% Logo preamble:
+\ifpdf%
+  \def\@oulogofile{\@oulogofilebase.pdf}
+\else%
+  \def\@oulogofile{\@oulogofilebase.eps}
+\fi%
+%%
+  \thispagestyle{frontpage}
+  %\vspace{2cm}
+\begin{adjustwidth}{0cm}{-\logospace}
+  \begin{tabular}{@{}p{\logospace}@{}p{\textwidth}@{}}
+  \vspace{0.2cm}%
+  \IfFileExists{\@oulogofile}{%
+    \includegraphics[width=3.3cm]{\@oulogofile}%
+  }{%
+    \fbox{\parbox[t][2cm][c]{3.3cm}{\centering OU Logo}}%
+  }%
+&
+\vspace{0.2cm}\textbf{\@faculty\newline
+\@modulecode\ \@moduletitle}
+
+\bigskip\bigskip\bigskip
+\textbf{\fontsize{24.88}{30}\selectfont \@modulecode}\newline
+\rule{\textwidth}{1pt}
+
+\bigskip\bigskip\textbf{\fontsize{24.88}{30}\selectfont \@abtitle\hfill\@abyear}
+\if@subtitle\par\bigskip\textbf{\fontsize{14.4}{18}\selectfont \@absubtitle}\fi
+
+\medskip\rule{\textwidth}{1pt}
+
+\if@oneassignment
+\medskip
+\else
+\medskip{\fontsize{14.4}{18}\selectfont \textbf{Contents\hfill \@covercutofftext}}\par\medskip
+\fi
+%inserts list of TMA/CMA entries
+\@starttoc{tma}
+\nointerlineskip
+\end{tabular}
+\par\medskip
+  \rule{\dimexpr\textwidth+\logospace}{2pt}
+\par\medskip
+\end{adjustwidth}
+%
+\begin{adjustwidth}{\logospace}{-\logospace} 
+  \@abinstructions
+\end{adjustwidth}
+%
+  \newpage
+}
