@@ -103,7 +103,6 @@
 \fancypagestyle{frontpage}{%
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
-  %\renewcommand{\footrulewidth}{2pt}%
     \fancyfoot[L]{%
     	\if@specsolns\color{\@specsolnscolor}\fi
     	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}%
@@ -175,10 +174,15 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{4cm} % lines up number with marks column
-    \fancyfoot[C]{%
+    \fancyfoot[R]{%
     	\if@specsolns\color{\@specsolnscolor}\fi
     	page~\thepage~of~\pageref{LastPage}%
 	} % centre bottom of every page except first
+	% Copyright as per front page
+	\fancyfoot[L]{%
+    	\if@specsolns\color{\@specsolnscolor}\fi
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}%
+	}%
 }
 \pagestyle{internalpages}
 
