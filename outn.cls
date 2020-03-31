@@ -348,16 +348,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tutor or Student text
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\tutoronly}[1]{#1}
-\newenvironment{tutor}{\@tutoronlytitle}{}
+% For user to specify color:
+\def\@tutorcolor{black}
+\def\@studentcolor{black}
+\newcommand\tutoronlycolor[1]{\def\@tutorcolor{#1}}
+\newcommand\studentonlycolor[1]{\def\@studentcolor{#1}}
+%%%
+\newcommand{\tutoronly}[1]{{\color{\@tutorcolor}#1}}
+\newenvironment{tutor}{\color{\@tutorcolor}\@tutoronlytitle}{}
 \newcommand{\studentonly}[1]{}
 \newenvironment{student}{\comment}{\endcomment}
 \if@specsolns
     \AtBeginDocument{
         \renewcommand{\tutoronly}[1]{}
-        \renewcommand{\studentonly}[1]{#1}
+        \renewcommand{\studentonly}[1]{{\color{\@studentcolor}#1}}
         \renewenvironment{tutor}{\comment}{\endcomment}
-        \renewenvironment{student}{\@studentonlytitle}{}
+        \renewenvironment{student}{\color{\@studentcolor}\@studentonlytitle}{}
     }
 \else
     \AtBeginDocument{
@@ -369,9 +375,9 @@
     % #1: for tutors only
     % #2: for students only
     \if@specsolns
-        #2
+        {\color{\@studentcolor}#2}
     \else
-        #1
+        {\color{\@tutorcolor}#1}
     \fi
 }
 
