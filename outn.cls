@@ -441,13 +441,13 @@
     \newcommand{\@@subtotal}[2][]{\relax}
 \else
     % \total*
-    \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
+    \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
     % \total[]{}
-    \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+    \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
     % \subtotal*
-    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
     % \subtotal[]{}
-    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
 \fi
 
 % total horizontal rule
