@@ -22,12 +22,17 @@
  \@showsolutionstrue
  \if@specimen
    \@specimensolutionstrue
-  \fi
+ \fi
+ \if@secondspecimen
+   \@specimensolutionstrue
+ \fi
 }
 \DeclareOption{specimensolutions}{%
+ \@specimentrue
  \@specimensolutionstrue
  \@showsolutionstrue
 }
+%
 \newif\if@bigfontneeded
 \@bigfontneededfalse
 \DeclareOption{14pt}{%
@@ -132,15 +137,15 @@
 \newcommand\examinstructions[1]{\renewcommand\@examinstructions{#1}}
 %
 \def\@session{C}
-\if@specimen
-	\def\@session{Specimen}
+\if@secondspecimen
+	\def\@session{Second Specimen}
 \else
-	\if@secondspecimen
-		\def\@session{Second Specimen}
+	\if@specimen
+		\def\@session{Specimen}
 	\fi
 \fi
 %
-\def\@specimensolutionstitle{Solutions to the Specimen Examination Paper}
+\def\@specimensolutionstitle{Solutions to the \@session\ Examination Paper}
 \newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
 %
 \newcommand\conflation[1]{\renewcommand\@session{#1}\ClassWarning{ouexam}{\protect\conflation\space is deprecated. Please use \protect\session\space(same syntax)}} % backwards compatibility
