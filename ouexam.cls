@@ -22,12 +22,17 @@
  \@showsolutionstrue
  \if@specimen
    \@specimensolutionstrue
-  \fi
+ \fi
+ \if@secondspecimen
+   \@specimensolutionstrue
+ \fi
 }
 \DeclareOption{specimensolutions}{%
+ \@specimentrue
  \@specimensolutionstrue
  \@showsolutionstrue
 }
+%
 \newif\if@bigfontneeded
 \@bigfontneededfalse
 \DeclareOption{14pt}{%
@@ -132,15 +137,15 @@
 \newcommand\examinstructions[1]{\renewcommand\@examinstructions{#1}}
 %
 \def\@session{C}
-\if@specimen
-	\def\@session{Specimen}
+\if@secondspecimen
+	\def\@session{Second specimen}
 \else
-	\if@secondspecimen
-		\def\@session{Second Specimen}
+	\if@specimen
+		\def\@session{Specimen}
 	\fi
 \fi
 %
-\def\@specimensolutionstitle{Solutions to the Specimen Examination Paper}
+\def\@specimensolutionstitle{Solutions to the \@session\ Examination Paper}
 \newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
 %
 \newcommand\conflation[1]{\renewcommand\@session{#1}\ClassWarning{ouexam}{\protect\conflation\space is deprecated. Please use \protect\session\space(same syntax)}} % backwards compatibility
@@ -216,12 +221,26 @@
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Footers for title page (copyright, etc)
+% First, some lengths that depend on whether were SSEP or an exam
+\newlength\@titlefooterleftindent
+\newlength\@titlefooterrightindent
+\if@specimensolutions%
+	\setlength\@titlefooterleftindent{0cm}
+	\setlength\@titlefooterrightindent{-2.5cm}
+\else%
+	\setlength\@titlefooterleftindent{1cm}
+	\setlength\@titlefooterrightindent{-1cm}
+\fi%
 \fancypagestyle{frontpage}{%
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
-    \fancyfoot[L]{\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
-\textbf{\@versionno} }%
+    \fancyfoot[L]{%
+    \begin{adjustwidth}{\@titlefooterleftindent}{\@titlefooterrightindent}%
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
+		\textbf{\@versionno}%
+	\end{adjustwidth}%
+	}%
 }
 \newlength\titletablewidth
 \setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
@@ -289,7 +308,7 @@
     \end{tabular}
     \vspace{20pt}
 	
-    \begin{adjustwidth}{2cm}{1cm}
+    \begin{adjustwidth}{1cm}{1cm}
 	\raggedright
 	\@examinstructions
     \end{adjustwidth}
@@ -336,9 +355,9 @@
     \fancyfoot[LE,RO]{\bfseries\thepage}
 	\fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
 	\if@bigfontneeded %suppress module code on LO to avoid text clashes
-	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
 	\else
-	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
 	\fi
   \fi
 }
