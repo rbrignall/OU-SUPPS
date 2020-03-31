@@ -1,11 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{outn}[2018/05/17 v2.1 (Robert Brignall, all rights reserved)]
 
-\newif\if@studenttex
-\@studenttexfalse
-\DeclareOption{studenttex}{%
-  \@studenttextrue
-}
 \newif\if@specsolns
 \@specsolnsfalse
 \DeclareOption{specsolns}{%
@@ -30,15 +25,9 @@
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
 \RequirePackage{xcolor}
-%\RequirePackage[xcolor]{mdframed}
 \RequirePackage{framed}
 \RequirePackage{pgfkeys}
 \RequirePackage{environ}
-\if@studenttex
-  \RequirePackage{l3regex,l3tl-analysis,l3str}
-  \RequirePackage{answers}
-  \RequirePackage{xparse}
-\fi
 \RequirePackage{verbatim}
 \if@specsolns
   \RequirePackage{caption}
@@ -675,59 +664,9 @@
 %	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small
 % }
 % {\end{solutionbox}\end{adjustwidth}}
-\if@studenttex
-    \ExplSyntaxOn
-    \NewEnviron{solution}
-     {
-      \def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-      \textbf{Solution}
-      \par
-      \strip_marks:V \BODY
-     }
-     
-    \tl_new:N \l_solution_text_tl
-    \iow_new:N \g_solution_stream
-  
-    \cs_generate_variant:Nn \tl_replace_all:Nnn {NV}
-    \cs_generate_variant:Nn \iow_now:Nn { NV }
-    \str_const:Nx \c_other_eol_str { \cs_to_str:N \^^M }
-    
-    \cs_new_protected:Npn \strip_marks:n #1
-    {
-        \tl_set:Nn \l_solution_text_tl { #1 }
-        \l_solution_text_tl % Send token list to normal output unmodified 
-        %\tl_show_analysis:n { \l_solution_text_tl } % for debugging
-        % Remove all instances of \marks{} commands
-        \regex_replace_all:nnN { \c{marks}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{marks} \w } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{solnmarksplus}\cB\{ [^\}]* \cE\} \cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{solnmarksplus} ^[\}|\{] } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{mk}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{mk} \w } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{remark}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
-        \iow_now:Nx \g_solution_stream {Solution~to~Question~\thequestion}
-        \iow_now:NV \g_solution_stream \l_solution_text_tl % Send modified token list to stream.
-    }
-    \cs_generate_variant:Nn \strip_marks:n { V }
-    
-    \AtBeginDocument{
-      \iow_open:Nn \g_solution_stream { \jobname-student.tex }
-      \def\solnpreamble{\documentclass{article}\usepackage{amsmath}\begin{document}}
-      \iow_now:Nn \g_solution_stream {\documentclass{article}\usepackage{amsmath}\begin{document}}
-    }
-    \AtEndDocument{
-      \iow_now:Nn \g_solution_stream{\end{document}}
-      \iow_close:N \g_solution_stream
-    }
-    \ExplSyntaxOff
-\else %matches \if@studenttex
-  \newenvironment{solution}{}{}
-  %\NewEnviron{solution}
-  %{
-   % \BODY % This doesn't work if verbatim is contained inside too.
-  %}
-\fi
-
+% Dummy environment:
+\newenvironment{solution}{}{}
+%
 %
 %
 %
