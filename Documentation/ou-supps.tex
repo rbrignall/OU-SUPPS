@@ -1100,6 +1100,24 @@ When displayed, the solutions can be formatted in one of two ways:
 
 \emph{Note:} The showing/hiding solutions features of |ouexam| are designed for use by authors when drafting exams, to help you check answers tally up to the corresponding questions. When creating the final version for handover, you will probably want to make two copies of your working file, one to create the exam (with solutions removed), the other to create the solutions (possibly with the questions removed, though this is option except for specimen solutions).
 
+\subsubsection{Customising the \texttt{solution} environment appearance}
+
+The |solution| environment is defined by an environment called |solutionbox|, which is created using the |mdframed| package. It is specified as follows.
+
+\begin{desc}
+|\newmdenv[linewidth=3pt,|\\
+|      topline=false,|\\
+|      bottomline=false,|\\
+|      rightline=false,|\\
+|      innerrightmargin=5.5cm,|\\
+|      innerleftmargin=10pt,|\\
+|      linecolor=black,|\\
+|      backgroundcolor=yellow!10,|\\
+|      frametitle=Solution]{solutionbox}|
+\end{desc}
+
+You can replace this using |\renewmdenv[...]{solutionbox}|. See the |mdframed| package documentation for details.
+
 \subsubsection{Specifying marks within the \texttt{solution} environment}
 
 \begin{desc}
