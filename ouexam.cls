@@ -76,7 +76,18 @@
 \RequirePackage{ifthen}
 \RequirePackage[inline]{enumitem}
 \RequirePackage{marginnote}
-\RequirePackage[xcolor]{mdframed}
+\if@showsolutions%
+	\if@specimensolutions%
+		\RequirePackage{xcolor}
+	\else%
+	% Suppressed if not displaying solutions
+	% mdframed uses expl3 which has installation
+	% issues.
+		\RequirePackage[xcolor]{mdframed}
+	\fi%
+\else
+	\RequirePackage{xcolor}
+\fi%
 \RequirePackage{verbatim}
 \RequirePackage{pgfkeys}
 \RequirePackage{ifpdf}
@@ -769,24 +780,31 @@
 
 %%%%%%%%%%%%%%%%%%
 % Solutions environment: need to pull out solutions for spec papers and present differently.
-\newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
-\if@specimensolutions
-  \newenvironment{solution}{%
-	\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-	\def\mk{\solnmarks}%
-  }{}
+%
+\if@showsolutions%
+	\if@specimensolutions%
+		% Don't want to use mdframed here
+		\newenvironment{solution}{%
+			\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+			\def\mk{\solnmarks}%
+  		}{}
+	\else
+		% Regular solutions: use mdframed environment to define box
+		\newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,
+	          innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,
+	          backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
+	    % Now define the wrapper
+	        \newenvironment{solution}{%
+					\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+					\def\mk{\solnmarks}%
+					\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}%
+  				{\end{solutionbox}\end{adjustwidth}}
+	\fi
 \else
-  \if@showsolutions
-    \newenvironment{solution}{%
-	\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-	\def\mk{\solnmarks}%
-	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small%
-  }{\end{solutionbox}\end{adjustwidth}}
-  \else
+	% Suppress anything in the solution environment.
     \newenvironment{solution}
     {\comment}
     {\endcomment}
-  \fi
 \fi
 
 

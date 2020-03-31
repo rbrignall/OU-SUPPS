@@ -411,12 +411,6 @@ This is the default operation for using |outn.cls|. It produces a Tutor Notes bo
 
 This version is designed to create a specimen solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\marks| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
 
-\begin{desc}
-|\documentclass[studenttex]{outn}|
-\end{desc}
-
-(EXPERIMENTAL) The idea is that on compilation, as well as producing Tutor Notes (or specimen solutions if |specsolns| is also specified) it produces a compilable |latex| source file called |<filename>-student.tex| that can be compiled by (e.g.) ALs who do not have the \textsf{OU-SUPPS} suite of class files on their machine. This system is still under development, and is subject to some limitations in functionality.
-
 
 \subsubsection{Commands to be used in the preamble}
 \begin{desc}
@@ -1256,7 +1250,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |ifthen| for internal latex coding
 \item |enumitem|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
-\item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions.
+\item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions. This is only loaded if |showsolutions| is specified, otherwise |xcolor| is loaded on its own.
 \item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.
 \item |makebarcode| for creating the barcode on the front page. Not loaded if |nobarcode| option is specified.
 \item |extsizes| when options |14pt|, |17pt| or |20pt| are used, to handle larger font sizes. 
