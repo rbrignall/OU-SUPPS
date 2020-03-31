@@ -350,7 +350,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % For user to specify color:
 \def\@tutorcolor{black}
-\def\@studentcolor{black}
+\def\@studentcolor{\@specsolnscolor}
 \newcommand\tutoronlycolor[1]{\def\@tutorcolor{#1}}
 \newcommand\studentonlycolor[1]{\def\@studentcolor{#1}}
 %%%
