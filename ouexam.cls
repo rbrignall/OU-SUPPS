@@ -138,7 +138,7 @@
 %
 \def\@session{C}
 \if@secondspecimen
-	\def\@session{Second Specimen}
+	\def\@session{Second specimen}
 \else
 	\if@specimen
 		\def\@session{Specimen}
@@ -355,9 +355,9 @@
     \fancyfoot[LE,RO]{\bfseries\thepage}
 	\fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
 	\if@bigfontneeded %suppress module code on LO to avoid text clashes
-	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
 	\else
-	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
 	\fi
   \fi
 }
