@@ -216,12 +216,26 @@
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Footers for title page (copyright, etc)
+% First, some lengths that depend on whether were SSEP or an exam
+\newlength\@titlefooterleftindent
+\newlength\@titlefooterrightindent
+\if@specimensolutions%
+	\setlength\@titlefooterleftindent{0cm}
+	\setlength\@titlefooterrightindent{-2.5cm}
+\else%
+	\setlength\@titlefooterleftindent{1cm}
+	\setlength\@titlefooterrightindent{-1cm}
+\fi%
 \fancypagestyle{frontpage}{%
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
-    \fancyfoot[L]{\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
-\textbf{\@versionno} }%
+    \fancyfoot[L]{%
+    \begin{adjustwidth}{\@titlefooterleftindent}{\@titlefooterrightindent}%
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
+		\textbf{\@versionno}%
+	\end{adjustwidth}%
+	}%
 }
 \newlength\titletablewidth
 \setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
@@ -289,7 +303,7 @@
     \end{tabular}
     \vspace{20pt}
 	
-    \begin{adjustwidth}{2cm}{1cm}
+    \begin{adjustwidth}{1cm}{1cm}
 	\raggedright
 	\@examinstructions
     \end{adjustwidth}
