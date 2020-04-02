@@ -228,6 +228,7 @@
    instructions/.store in=\@examinstructions,
    top padding/.code=\setlength\toppadding{#1}, 
    ou logo file base/.store in=\@oulogofilebase,
+   switch marks/.is if=@switchmarks,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%

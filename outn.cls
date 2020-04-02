@@ -95,6 +95,7 @@
    tutor only title/.store in=\@tutoronlytitle,
    student only title/.store in=\@studentonlytitle,
    ou logo file base/.store in=\@oulogofilebase,
+   switch marks/.is if=@switchmarks,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
