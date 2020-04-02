@@ -103,7 +103,6 @@
 \fancypagestyle{frontpage}{%
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
-  %\renewcommand{\footrulewidth}{2pt}%
     \fancyfoot[L]{%
     	\if@specsolns\color{\@specsolnscolor}\fi
     	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}%
@@ -175,10 +174,15 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{4cm} % lines up number with marks column
-    \fancyfoot[C]{%
+    \fancyfoot[R]{%
     	\if@specsolns\color{\@specsolnscolor}\fi
     	page~\thepage~of~\pageref{LastPage}%
 	} % centre bottom of every page except first
+	% Copyright as per front page
+	\fancyfoot[L]{%
+    	\if@specsolns\color{\@specsolnscolor}\fi
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}%
+	}%
 }
 \pagestyle{internalpages}
 
@@ -344,16 +348,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tutor or Student text
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\tutoronly}[1]{#1}
-\newenvironment{tutor}{\@tutoronlytitle}{}
+% For user to specify color:
+\def\@tutorcolor{black}
+\def\@studentcolor{\@specsolnscolor}
+\newcommand\tutoronlycolor[1]{\def\@tutorcolor{#1}}
+\newcommand\studentonlycolor[1]{\def\@studentcolor{#1}}
+%%%
+\newcommand{\tutoronly}[1]{{\color{\@tutorcolor}#1}}
+\newenvironment{tutor}{\color{\@tutorcolor}\@tutoronlytitle}{}
 \newcommand{\studentonly}[1]{}
 \newenvironment{student}{\comment}{\endcomment}
 \if@specsolns
     \AtBeginDocument{
         \renewcommand{\tutoronly}[1]{}
-        \renewcommand{\studentonly}[1]{#1}
+        \renewcommand{\studentonly}[1]{{\color{\@studentcolor}#1}}
         \renewenvironment{tutor}{\comment}{\endcomment}
-        \renewenvironment{student}{\@studentonlytitle}{}
+        \renewenvironment{student}{\color{\@studentcolor}\@studentonlytitle}{}
     }
 \else
     \AtBeginDocument{
@@ -365,9 +375,9 @@
     % #1: for tutors only
     % #2: for students only
     \if@specsolns
-        #2
+        {\color{\@studentcolor}#2}
     \else
-        #1
+        {\color{\@tutorcolor}#1}
     \fi
 }
 
@@ -441,13 +451,13 @@
     \newcommand{\@@subtotal}[2][]{\relax}
 \else
     % \total*
-    \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
+    \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
     % \total[]{}
-    \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+    \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
     % \subtotal*
-    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
     % \subtotal[]{}
-    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
 \fi
 
 % total horizontal rule
