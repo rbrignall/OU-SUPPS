@@ -412,7 +412,7 @@ This is the default operation for using |outn.cls|. It produces a Tutor Notes bo
 This version is designed to create a specimen solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\marks| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
 
 
-\subsubsection{Commands to be used in the preamble}
+\subsubsection{Commands to be used in the preamble}\label{outn-preamble}
 \begin{desc}
 |\faculty{...}|
 \end{desc}
@@ -461,6 +461,11 @@ Overrides the internally-specified for the name of the OU logo, currently |OU_Ma
 \LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
 
 \begin{desc}
+|\switchmarks|
+\end{desc}
+This command (which can be used anywhere, but best used in the preamble) defines the various commands for entering marks so that any comments appear to the left of the mark.
+
+\begin{desc}
 |\metadataset{key=value}|  
 \end{desc}
 As an alternative to specifying the above commands individually, they can 
@@ -477,6 +482,7 @@ command; for example:
             multiple choice option text=choices,
             tutor only title={{\bfseries Title for tutor-only environment\par}},
             student only title=Student material only\par,
+            switch marks=true,
             }
 \end{verbatim}
 
@@ -573,6 +579,8 @@ Marks can be placed anywhere in the document (including inside displayed equatio
 |\mk[<description>]{<n>}[<voffset>]|
 \end{desc}
 Places |<n>| in the right hand margin on the line. The |<description>| (which could be a short sentence running to several lines) is placed to the right of the mark, but can be omitted (e.g. |\mk{5}|). 
+
+If the |\switchmark| command is issued (see Subsubsection~\ref{outn-preamble}) then the mark |<n>| is placed to the \emph{right} of any |<description>|.
 
 The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
 
@@ -877,7 +885,7 @@ This option is available for drafting exams, suppressing the barcode production 
 [This was originally created when the system used the old OU\TeX\ code for barcodes, which relied on a specific font that was not always installed correctly in certain \TeX\ distributions. The new approach provided by the |makebarcode| package instead uses the |\rule| command to draw black and white lines of appropriate sizes.]
 
 
-\subsubsection{Commands to be used in the preamble}
+\subsubsection{Commands to be used in the preamble}\label{ouexam-preamble}
 \begin{desc}
 |\modulecode{...}|
 \end{desc}
@@ -959,6 +967,11 @@ Overrides the internally-specified for the name of the OU logo, currently |OU_Ma
 \LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
 
 \begin{desc}
+|\switchmarks|
+\end{desc}
+This command (which can be used anywhere, but best used in the preamble) defines the various commands for entering marks so that any comments appear to the left of the mark. This applies only to marks for solutions.
+
+\begin{desc}
 |\setlength\toppadding{<x>}|
 \end{desc}
 Adjusts the padding at the top of the title page to |<x>|. Default is |0.5cm|, and this should only be changed if you know what you're doing.
@@ -988,6 +1001,7 @@ command; for example:
             multiple choice option text=choices,
             instructions= your instructions here,
             top padding=0.5cm,
+            switch marks=true,
             }
 \end{verbatim}
 
@@ -1124,6 +1138,8 @@ You can replace this using |\renewmdenv[...]{solutionbox}|. See the |mdframed| p
 |\mk[<description>]{<n>}[<voffset>]|
 \end{desc}
 This command can be used to specify marks, as per the format for creating questions. Within the |solution| environment in |[showsolutions]| mode, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets. Additionally, the optional |<description>| parameter allows users to enter text in the margin, to the right of the |<n>|. 
+
+If the |\switchmark| command is issued (see Subsubsection~\ref{ouexam-preamble}) then the mark |<n>| is placed to the \emph{right} of any |<description>|.
 
 The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
 
