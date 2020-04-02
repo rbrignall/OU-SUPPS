@@ -169,6 +169,10 @@
 \def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
+\newif\if@switchmarks
+\@switchmarksfalse
+\newcommand\switchmarks{\@switchmarkstrue}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BARCODE
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -224,6 +228,7 @@
    instructions/.store in=\@examinstructions,
    top padding/.code=\setlength\toppadding{#1}, 
    ou logo file base/.store in=\@oulogofilebase,
+   switch marks/.is if=@switchmarks,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
@@ -548,9 +553,22 @@
   \fi
 }
 %
-\newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
-%OLD:%\newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill \makebox[2cm][r]{\sf\footnotesize #2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright\sf\footnotesize #1}}}}
-\newcommand{\solnmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill\footnotesize\sf \makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}}}
+\newcommand{\bracketedmarks}[1]{%
+	\marginnote{%
+		\if@switchmarks\if@showsolutions\makebox[3cm][r]{\relax}\fi\fi%
+		\makebox[2cm][r]{[\textsl{#1}]\if@switchmarks\if@showsolutions\hspace{0.5cm}\fi\fi}\hfill%
+	}%
+}
+%
+\newcommand{\solnmarks}[2][\unskip]{%
+	\@update@totals{#2}\marginnote{\hfill\footnotesize\sf %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
+		\else%
+			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}%
+		\fi%
+	}%
+}
 \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
 \def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
@@ -559,14 +577,58 @@
 %% Definition of \total and \subtotal
 \def\total{\@ifstar\@total\@@total}
 \def\subtotal{\@ifstar\@subtotal\@@subtotal}
+% \total*
+\newcommand{\@total}[1][\unskip]{%
+    \marginnote{\sf\bfseries %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{\thetotal\hspace{0.5cm}}%
+     	\else%
+			\makebox[2cm][r]{\thetotal}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}%
+		\fi%
+	}%
+	\nopagebreak\outn@draw@total@rule%
+}%
+% \total[]{}
+\newcommand{\@@total}[2][\unskip]{%
+    \marginnote{\sf\bfseries %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
+     	\else%
+			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}%
+		\fi%
+	}%
+	\nopagebreak\outn@draw@total@rule%
+}
+% \subtotal*
+\newcommand{\@subtotal}[1][\unskip]{%
+    \marginnote{\small\sf\bfseries %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{\thesubtotal\hspace{0.5cm}}%
+     	\else%
+			\makebox[2cm][r]{\thesubtotal}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}%
+		\fi%
+	}%
+	\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+}
+% \subtotal[]{}
+\newcommand{\@@subtotal}[2][\unskip]{%
+   	\marginnote{\small\sf\bfseries %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
+    	\else%
+			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}%
+		\fi%
+	}%
+	\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+}
   % \total*[]
-  \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{\thetotal}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
+%  \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{\thetotal}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
   % \total[]{}
-  \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{#2}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
+%  \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{#2}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
   % \subtotal*[]
-  \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
+%  \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
   % \subtotal[]{}
-  \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{#2}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
+%  \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{#2}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
 \ifdraw@total@line

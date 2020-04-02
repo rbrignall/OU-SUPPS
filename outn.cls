@@ -75,6 +75,10 @@
 \def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
+\newif\if@switchmarks
+\@switchmarksfalse
+\newcommand\switchmarks{\@switchmarkstrue}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Meta data can be set using \metadataset command, based on pgfkeys
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -91,6 +95,7 @@
    tutor only title/.store in=\@tutoronlytitle,
    student only title/.store in=\@studentonlytitle,
    ou logo file base/.store in=\@oulogofilebase,
+   switch marks/.is if=@switchmarks,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
@@ -409,55 +414,114 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks and remarks
 %
-\if@specsolns
-  % suppress everything
-  \newcommand{\bracketedmarks}[2][]{\relax}
-  \newcommand{\solnmarks}[2][]{\relax}
-  \newcommand{\solnmarksplus}[2]{\relax}
-  \newcommand{\remark}[1]{\relax}
-  \newenvironment{longremark}{\comment}{\endcomment}
-\else
-  \newcounter{total}[question]
-  \newcounter{subtotal}[question]
-\def\@update@totals#1{%
-  \afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
-\def\get@args#1\hfuzz#2\hfuzz{%
-  \if\relax\detokenize{#1}\relax
-     \if\relax\detokenize{#2}\relax
-     \else
-        \addtocounter{subtotal}{#2}%
-        \addtocounter{total}{#2}%
-     \fi
-  \else
-    \relax
-  \fi
-}
-  \newcommand{\bracketedmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill \makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}}}
-  \newcommand{\solnmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill\small\sf \makebox[1cm][r]{\sf #2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}}}
-  \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
-  \newcommand{\remark}[1]{\emph{Remark:} #1}
-  \newenvironment{longremark}{\emph{Remarks:}\par}{}
+\if@specsolns%
+  	% suppress everything in specimen solutions
+  	\newcommand{\bracketedmarks}[2][]{\relax}
+  	\newcommand{\solnmarks}[2][]{\relax}
+  	\newcommand{\solnmarksplus}[2]{\relax}
+  	\newcommand{\remark}[1]{\relax}
+  	\newenvironment{longremark}{\comment}{\endcomment}
+\else%
+	% Not specimen solutions
+	\newcommand{\bracketedmarks}[2][\unskip]{%
+		\@update@totals{#2}\marginnote{\hfill %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}\makebox[1cm][r]{[\textsl{#2}]}%
+			\else%
+				\makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}%
+			\fi%		
+		}%
+	}
+	\newcommand{\solnmarks}[2][\unskip]{%
+		\@update@totals{#2}\marginnote{\hfill\small\sf %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}\makebox[1cm][r]{#2}%
+			\else%
+				\makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}%
+			\fi%
+		}%
+	}	
+  	\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
+  	\newcommand{\remark}[1]{\emph{Remark:} #1}
+  	\newenvironment{longremark}{\emph{Remarks:}\par}{}
 \fi
-
+% The standard \mk command is defined in terms of solnmarks.
+% \bracketedmarks is available mainly for compatibility with ouab and ouexam.
+\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
+\def\mk{\solnmarks}
+\def\mkplus{\solnmarksplus}
+%
+%
 % definition of \total and \subtotal
 \def\total{\@ifstar\@total\@@total}
 \def\subtotal{\@ifstar\@subtotal\@@subtotal}
-
-\if@specsolns
-    % special solutions mode is active
+%
+\if@specsolns%
+    % specimen solutions mode is active
     \newcommand{\@total}[1][]{\relax}
     \newcommand{\@@total}[2][]{\relax}
     \newcommand{\@subtotal}[1][]{\relax}
     \newcommand{\@@subtotal}[2][]{\relax}
-\else
+\else%
+    \newcounter{total}[question]
+    \newcounter{subtotal}[question]
+    \def\@update@totals#1{%
+      	\afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
+	\def\get@args#1\hfuzz#2\hfuzz{%
+  		\if\relax\detokenize{#1}\relax
+     		\if\relax\detokenize{#2}\relax
+     		\else%
+        		\addtocounter{subtotal}{#2}%
+        		\addtocounter{total}{#2}%
+     		\fi%
+  		\else%
+    		\relax
+  		\fi%
+	}
     % \total*
-    \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
+    \newcommand{\@total}[1][\unskip]{%
+    	\marginnote{\sf\bfseries %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{\thetotal}%
+     		\else%
+				\makebox[1cm][r]{\thetotal}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}%
+			\fi%
+		}%
+		\nopagebreak\outn@draw@total@rule%
+	}%
     % \total[]{}
-    \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
+    \newcommand{\@@total}[2][\unskip]{%
+    	\marginnote{\sf\bfseries %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{#2}%
+     		\else%
+				\makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}%
+			\fi%
+		}%
+		\nopagebreak\outn@draw@total@rule%
+	}
     % \subtotal*
-    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@subtotal}[1][\unskip]{%
+    	\marginnote{\small\sf\bfseries %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{\thesubtotal}%
+     		\else%
+				\makebox[1cm][r]{\thesubtotal}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}%
+			\fi%
+		}%
+		\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+	}
     % \subtotal[]{}
-    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@@subtotal}[2][\unskip]{%
+    	\marginnote{\small\sf\bfseries %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{#2}%
+     		\else%
+				\makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}%
+			\fi%
+		}%
+		\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+	}
 \fi
 
 % total horizontal rule
@@ -482,9 +546,6 @@
 
 
 %
-\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
-\def\mk{\solnmarks}
-\def\mkplus{\solnmarksplus}
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 \newcommand{\longtextref}[1]{\hfill\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}{\emph{\textbf{#1}}}}}
 \newenvironment{references}{\par{\itshape References}\par}
