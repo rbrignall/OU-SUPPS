@@ -576,13 +576,16 @@ For fuller details of the possibilities with |enumitem|, see the documentation o
 Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned. In |specsolns| mode, all the commands in this subsubsection are suppressed in the resulting PDF. In |studenttex| mode, all these commands are suppressed in the outputted |latex| source file.
 
 \begin{desc}
-|\mk[<description>]{<n>}[<voffset>]|
+|\mk[<description>]{<n>}[<voffset>]|\\
+|\mk*[<description>]{<n>}[<voffset>]|
 \end{desc}
 Places |<n>| in the right hand margin on the line. The |<description>| (which could be a short sentence running to several lines) is placed to the right of the mark, but can be omitted (e.g. |\mk{5}|). 
 
 If the |\switchmark| command is issued (see Subsubsection~\ref{outn-preamble}) then the mark |<n>| is placed to the \emph{right} of any |<description>|.
 
 The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
+
+The starred variant |\mk*| performs the same function, but does not add the value of |<n>| to the |total| and |subtotal| counters, so can be used, e.g., if several solutions are possible with separate mark schemes.
 
 \emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
 
@@ -617,6 +620,8 @@ bold to its right; the calculated value accounts for all marks given in
 any of the following commands: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
 |marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
 as with the |\subtotal| and |\total| commands. 
+
+\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters.
 
 \begin{desc}
 |\setSubtotalHline[<options>]|
