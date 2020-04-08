@@ -423,8 +423,10 @@
   	\newenvironment{longremark}{\comment}{\endcomment}
 \else%
 	% Not specimen solutions
+	% Bracketed marks - not really used in outn
 	\newcommand{\bracketedmarks}[2][\unskip]{%
-		\@update@totals{#2}\marginnote{\hfill %
+		%\@update@totals{#2}% RB commented out 08/04/20: see if anyone notices...
+		\marginnote{\hfill %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}\makebox[1cm][r]{[\textsl{#2}]}%
 			\else%
@@ -432,8 +434,18 @@
 			\fi%		
 		}%
 	}
-	\newcommand{\solnmarks}[2][\unskip]{%
-		\@update@totals{#2}\marginnote{\hfill\small\sf %
+	% Solnmarks -- the main system for rendering marks in outn
+	\def\solnmarks{\@ifstar\@solnmarks\@@solnmarks}
+	% \solnmarks*[]{}, doesn't affect @update@totals
+	\newcommand{\@solnmarks}[2][\unskip]{%
+		\@solnmarksbox{#1}{#2}%
+	}	
+	\newcommand{\@@solnmarks}[2][\unskip]{%
+		\@update@totals{#2}%
+		\@solnmarksbox{#1}{#2}%
+	}
+	\newcommand{\@solnmarksbox}[2]{%
+		\marginnote{\hfill\small\sf %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}\makebox[1cm][r]{#2}%
 			\else%
@@ -441,6 +453,7 @@
 			\fi%
 		}%
 	}	
+	%	
   	\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
   	\newcommand{\remark}[1]{\emph{Remark:} #1}
   	\newenvironment{longremark}{\emph{Remarks:}\par}{}
@@ -449,7 +462,7 @@
 % \bracketedmarks is available mainly for compatibility with ouab and ouexam.
 \def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
 \def\mk{\solnmarks}
-\def\mkplus{\solnmarksplus}
+\def\mkplus{\solnmarksplus} % Note: doesn't support * mode.
 %
 %
 % definition of \total and \subtotal
