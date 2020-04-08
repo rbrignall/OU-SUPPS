@@ -1140,13 +1140,18 @@ You can replace this using |\renewmdenv[...]{solutionbox}|. See the |mdframed| p
 \subsubsection{Specifying marks within the \texttt{solution} environment}
 
 \begin{desc}
-|\mk[<description>]{<n>}[<voffset>]|
+|\mk[<description>]{<n>}[<voffset>]|\\
+|\mk*[<description>]{<n>}[<voffset>]|
 \end{desc}
 This command can be used to specify marks, as per the format for creating questions. Within the |solution| environment in |[showsolutions]| mode, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets. Additionally, the optional |<description>| parameter allows users to enter text in the margin, to the right of the |<n>|. 
 
 If the |\switchmark| command is issued (see Subsubsection~\ref{ouexam-preamble}) then the mark |<n>| is placed to the \emph{right} of any |<description>|.
 
 The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
+
+The starred variant |\mk*| performs the same function, but does not add the value of |<n>| to the |total| and |subtotal| counters, so can be used, e.g., if several solutions are possible with separate mark schemes.
+
+\emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
 
 \begin{desc}
 |\marks[<description>]{<n>}|\\
@@ -1178,6 +1183,8 @@ bold to its right; the calculated value accounts for all marks given in
 any of the following commands, but only \emph{within} a |solution| environment: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
 |marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
 as with the |\subtotal| and |\total| commands. 
+
+\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters.
 
 \subsubsection{Rules}
 
