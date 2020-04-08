@@ -560,15 +560,26 @@
 	}%
 }
 %
-\newcommand{\solnmarks}[2][\unskip]{%
-	\@update@totals{#2}\marginnote{\hfill\footnotesize\sf %
+% Solnmarks -- rendering marks within solution environments
+\def\solnmarks{\@ifstar\@solnmarks\@@solnmarks}
+% \solnmarks*[]{}, doesn't affect @update@totals
+\newcommand{\@solnmarks}[2][\unskip]{%
+	\@solnmarksbox{#1}{#2}%
+}	
+\newcommand{\@@solnmarks}[2][\unskip]{%
+	\@update@totals{#2}%
+	\@solnmarksbox{#1}{#2}%
+}
+\newcommand{\@solnmarksbox}[2]{%
+	\marginnote{\hfill\footnotesize\sf %
 		\if@switchmarks%
 			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
 		\else%
 			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}%
 		\fi%
 	}%
-}
+}	
+%	
 \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
 \def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
