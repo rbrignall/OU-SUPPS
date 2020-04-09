@@ -122,13 +122,15 @@ This is the default operation for using |ouab.cls|. It produces a table of conte
 This version is designed for booklets that contain (e.g.) a single TMA (although it will let you have more than one assignment in the source). Instead of a table of contents on the front page, it inserts information provided by the first assignment in the |latex| file.
 
 \begin{desc}
-|\documentclass[markcheck]{ouab}|
+|\documentclass[draft]{ouab}|
 \end{desc}
 
-(EXPERIMENTAL) This version can be used to check  that the stated total marks for a question (i.e. the number $n$ in |\question[...]{|$n$|}[...]|) is equal to the number of marks produced by |\marks{...}| in the subquestions. If the numbers do not add up, it interrupts the compilation and reports this. Do not wholly rely on this, as it is an experimental feature!
+Draft mode. In this mode, the system will check that the stated total marks for a question (i.e.\ the number $n$ in |\question[...]{|$n$|}[...]|) is equal to the number of marks produced by |\mk{...}|. If the numbers do not add up, it reports this issue in the PDF at the bottom of the question.
+
+\emph{Note:} Questions that are created with |\question*| that have no mark specified will not be checked by this system, nor will a question with a specified total of 0 marks.
 
 \begin{desc}
-|\documentclass[oneassignment,markcheck]{ouab}|
+|\documentclass[oneassignment,draft]{ouab}|
 \end{desc}
 
 As always, you can combine options and the effects of each option will be seen.
@@ -315,16 +317,13 @@ Marks can be placed anywhere in the document (including inside displayed equatio
 \end{desc}
 Places |<n>| in square brackets in the right hand margin on the line. 
 
+If using the |draft| option, when compiled, \LaTeX\ will check whether the sum of the entries inside |\mk| commands adds up to the parameter |<marks>| specified by the preceding |\question|. This has some limitations (e.g.\ it won't understand |\tfrac{1}{2}|). If the numbers are not the same, a box will be output reporting the discrepancy. 
+
 
 \begin{desc}
 |\marks{<n>}|
 \end{desc}
 A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
-
-If using the experimental |markcheck| option, when compiled, \LaTeX\ will check whether the sum of the entries inside |\marks| and |\mk| commands adds up to the parameter |<marks>| specified by the preceding |\question|. This has some limitations (e.g.\ it won't understand |\tfrac{1}{2}|).
-
-If the numbers are not the same, |markcheck| will cause the compilation to stop and give you information about where the marks do not add up. Press |<enter>| to carry on compiling your tex file.
-
 
 \subsubsection{Multiple choice} 
 
