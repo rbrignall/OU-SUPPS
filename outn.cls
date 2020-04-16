@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2018/05/17 v2.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
 
 \newif\if@specsolns
 \@specsolnsfalse

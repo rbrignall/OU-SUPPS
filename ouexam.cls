@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2018/05/17 v2.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen

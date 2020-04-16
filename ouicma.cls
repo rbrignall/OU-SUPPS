@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouicma}[2018/05/17 v2.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouicma}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
