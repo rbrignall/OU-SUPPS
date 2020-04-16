@@ -1,10 +1,10 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2018/05/17 v2.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
 % Experimental!
-\newif\if@markcheck
-\@markcheckfalse
-\DeclareOption{markcheck}{%
-  \@markchecktrue
+\newif\if@draft
+\@draftfalse
+\DeclareOption{draft}{%
+  \@drafttrue
 }
 \newif\if@oneassignment
 \@oneassignmentfalse
@@ -170,7 +170,10 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{4cm} % lines up number with marks column
-    \fancyfoot[C]{page~\thepage~of~\pageref{LastPage}} % internal right hand pages only
+  \fancyfoot[C]{page~\thepage~of~\pageref{LastPage}} % internal right hand pages only
+  \if@draft%
+    \fancyfoot[RE,RO,LE,LO]{DRAFT}
+  \fi%
 }
 \pagestyle{internalpages}
 
@@ -195,36 +198,44 @@
 \firstassignmenttrue
 
 \def\assignment#1{%
+	\if@draft%
+		\@check@marks%
+		\setcounter{marktarget}{0}%
+	\fi	  
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
-	  \setcounter{question}{0}
+	\setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
   	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 % Version that doesn't add a new page
 \def\samepageassignment#1{%
+	\if@draft% Do checks on marks from previous assignment (if it exists)
+		\@check@marks%
+		\setcounter{marktarget}{0}%
+	\fi%
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
-	  \setcounter{question}{0}
+	\setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
   	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\par\bigskip\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
-
+%
 \def\@assignmentwithcutoff[#1]#2{%
 	\def\@cutoff{\@cutofftext\ #1}
 	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}#1}
-	\if@oneassignment
-		\relax %\@ifnextchar[{\@oneassignmentsubtitle{#1}}{\addtocontents{tma}{\hfill  \textbf{\@cutofftext\ #1}\par\medskip}}
-	\else
-	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}
-	\fi
+	\if@oneassignment%
+		\relax%
+	\else%
+	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}%
+	\fi%
 	\@ifnextchar[{\@assignmentsubtitle}{
 		\if@oneassignment\addtocontents{tma}{\hfill\textbf{\@cutoff}}
 		\else\addtocontents{tma}{\par\medskip}\fi
 		\par\addvspace{\bigskipamount}
 	}
 }
-
+%
 \def\@assignmentnocutoff#1{%
 	\def\@cutoff{\relax}
 	{\large \textbf{\@assignmentname\ #1}}%
@@ -244,7 +255,7 @@
 	\fi
 	\par\addvspace{\bigskipamount}
 }
-
+%
 % Allows cut-off text to be suppressed
 \def\@cutofftext{Cut-off date\ \ }
 \def\@covercutofftext{Cut-off date}
@@ -263,26 +274,40 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question headers
 \newcounter{question}
-
+%
 \def\question{\@ifstar\@question\@@question}
 %
 %% \@question is the version with star: it displays no marks
 \newcommand{\@question}[1][\unskip]{%
+	\if@draft%
+		\@check@marks%
+		\setcounter{marktarget}{0}% 0 suppresses warnings later
+	\fi
 	\stepcounter{question}%
 	\par\addvspace{\bigskipamount}%
 	{\textbf{Question~\thequestion} #1}\nopagebreak\par}
 %
 %% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
 \newcommand{\@@question}[2][\unskip]{%
-	\if@markcheck%experimental system to check marks
-		\ifthenelse{\value{marktarget}=\value{marksum}}{\typeout{Q\thequestion, P\thepage, marks ok}}{\ClassError{ouab}{Q\thequestion, P\thepage, mark mismatch}{Press enter to continue compilation}}
-		\setcounter{marktarget}{#2}		
+	\if@draft%
+		\@check@marks%
 		\setcounter{marksum}{0}
+		\setcounter{marktarget}{#2}
 	\fi
 	\stepcounter{question}%
 	\par\addvspace{\bigskipamount}% 
 	{\textbf{Question~\thequestion} #1}\hspace{12pt}--\hspace{12pt}#2 marks\nopagebreak\par}
-
+%
+\newcommand\@check@marks{
+	\ifnum\c@marktarget=0\relax% Mark of 0 specified: do nothing
+	\else
+		\ifnum\c@marktarget=\c@marksum% Marks match
+			\relax
+		\else% Marks don't match
+			\fbox{\parbox{0.9\textwidth}{\textbf{Draft mode warning}\newline Marks specified: \themarktarget\newline Sum of marks in Question~\thequestion: \themarksum}}
+		\fi
+	\fi
+}
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
 \setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
@@ -298,10 +323,25 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
 \newcommand{\mk}[1]{%
-	\marginnote{\hfill[\textsl{#1}]}
-	\if@markcheck\addtocounter{marksum}{#1}\fi % experimental	
+	\marginnote{\hfill[\textsl{#1}]}%
+	\if@draft\@update@marktarget{#1}\fi%
 }
-\def\marks{\ClassWarning{ouab}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
+% Set up marktarget counter and update mechanism
+\newcounter{marktarget} % stated total of marks
+\newcounter{marksum} % cumulative sum of specified marks
+\def\@update@marktarget#1{%
+ 	\afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
+\def\get@args#1\hfuzz#2\hfuzz{%
+ 	\if\relax\detokenize{#1}\relax
+     	\if\relax\detokenize{#2}\relax
+     	\else%
+        	\addtocounter{marksum}{#2} % Subtract mark from target
+     	\fi%
+  	\else%
+    	\relax
+  	\fi%
+}
+%\def\marks{\ClassWarning{ouab}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 
@@ -336,12 +376,6 @@
 \newenvironment{options}%
 	{\par\medskip\@optiontext\begin{enumerate}[label=\textbf{\Alph*}]}%
 	{\end{enumerate}}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Experimental mark counter
-\if@markcheck
-	\newcounter{marksum} % rolling sum of submarks
-	\newcounter{marktarget} % stated total of marks
-\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
 %% Needed for marginnote package
@@ -477,7 +511,11 @@
 % Line at end of AB
 \let\@oldenddochook\@enddocumenthook
 \def\@enddocumenthook{%
-\par\addvspace{\smallskipamount} \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}%
+	\if@draft%
+		\@check@marks%
+	\fi%
+	\par\addvspace{\smallskipamount}%
+	\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}%
 \@oldenddochook}
 %%
 %% EOF

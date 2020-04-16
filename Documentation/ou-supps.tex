@@ -2,7 +2,7 @@
 % | Typeset this file to document the OU-SUPPS       |
 % +--------------------------------------------------+
 %
-% Copyright (c) 2015-2017 by Robert Brignall for The Open University.
+% Copyright (c) 2015-2020 by Robert Brignall for The Open University.
 % All Rights Reserved.
 %
 % This file is part of the OU-SUPPS distribution.
@@ -47,7 +47,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 1.42\\2016-11-15}
+\date{Version 2.2\\2020-04-16}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -122,13 +122,15 @@ This is the default operation for using |ouab.cls|. It produces a table of conte
 This version is designed for booklets that contain (e.g.) a single TMA (although it will let you have more than one assignment in the source). Instead of a table of contents on the front page, it inserts information provided by the first assignment in the |latex| file.
 
 \begin{desc}
-|\documentclass[markcheck]{ouab}|
+|\documentclass[draft]{ouab}|
 \end{desc}
 
-(EXPERIMENTAL) This version can be used to check  that the stated total marks for a question (i.e. the number $n$ in |\question[...]{|$n$|}[...]|) is equal to the number of marks produced by |\marks{...}| in the subquestions. If the numbers do not add up, it interrupts the compilation and reports this. Do not wholly rely on this, as it is an experimental feature!
+Draft mode. In this mode, the system will check that the stated total marks for a question (i.e.\ the number $n$ in |\question[...]{|$n$|}[...]|) is equal to the number of marks produced by |\mk{...}|. If the numbers do not add up, it reports this issue in the PDF at the bottom of the question.
+
+\emph{Note:} Questions that are created with |\question*| that have no mark specified will not be checked by this system, nor will a question with a specified total of 0 marks.
 
 \begin{desc}
-|\documentclass[oneassignment,markcheck]{ouab}|
+|\documentclass[oneassignment,draft]{ouab}|
 \end{desc}
 
 As always, you can combine options and the effects of each option will be seen.
@@ -315,16 +317,13 @@ Marks can be placed anywhere in the document (including inside displayed equatio
 \end{desc}
 Places |<n>| in square brackets in the right hand margin on the line. 
 
+If using the |draft| option, when compiled, \LaTeX\ will check whether the sum of the entries inside |\mk| commands adds up to the parameter |<marks>| specified by the preceding |\question|. This has some limitations (e.g.\ it won't understand |\tfrac{1}{2}|). If the numbers are not the same, a box will be output reporting the discrepancy. 
 
-\begin{desc}
-|\marks{<n>}|
-\end{desc}
-A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
 
-If using the experimental |markcheck| option, when compiled, \LaTeX\ will check whether the sum of the entries inside |\marks| and |\mk| commands adds up to the parameter |<marks>| specified by the preceding |\question|. This has some limitations (e.g.\ it won't understand |\tfrac{1}{2}|).
-
-If the numbers are not the same, |markcheck| will cause the compilation to stop and give you information about where the marks do not add up. Press |<enter>| to carry on compiling your tex file.
-
+%\begin{desc}
+%|\marks{<n>}|
+%\end{desc}
+%A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
 
 \subsubsection{Multiple choice} 
 
@@ -409,16 +408,10 @@ This is the default operation for using |outn.cls|. It produces a Tutor Notes bo
 |\documentclass[specsolns]{outn}|
 \end{desc}
 
-This version is designed to create a specimen solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\marks| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
-
-\begin{desc}
-|\documentclass[studenttex]{outn}|
-\end{desc}
-
-(EXPERIMENTAL) The idea is that on compilation, as well as producing Tutor Notes (or specimen solutions if |specsolns| is also specified) it produces a compilable |latex| source file called |<filename>-student.tex| that can be compiled by (e.g.) ALs who do not have the \textsf{OU-SUPPS} suite of class files on their machine. This system is still under development, and is subject to some limitations in functionality.
+This version is designed to create a specimen solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\mk| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
 
 
-\subsubsection{Commands to be used in the preamble}
+\subsubsection{Commands to be used in the preamble}\label{outn-preamble}
 \begin{desc}
 |\faculty{...}|
 \end{desc}
@@ -467,6 +460,11 @@ Overrides the internally-specified for the name of the OU logo, currently |OU_Ma
 \LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
 
 \begin{desc}
+|\switchmarks|
+\end{desc}
+This command (which can be used anywhere, but best used in the preamble) defines the various commands for entering marks so that any comments appear to the left of the mark.
+
+\begin{desc}
 |\metadataset{key=value}|  
 \end{desc}
 As an alternative to specifying the above commands individually, they can 
@@ -483,6 +481,7 @@ command; for example:
             multiple choice option text=choices,
             tutor only title={{\bfseries Title for tutor-only environment\par}},
             student only title=Student material only\par,
+            switch marks=true,
             }
 \end{verbatim}
 
@@ -576,22 +575,24 @@ For fuller details of the possibilities with |enumitem|, see the documentation o
 Marks can be placed anywhere in the document (including inside displayed equations). You may need to  compile your |tex| file twice in order for the marks to be correctly aligned. In |specsolns| mode, all the commands in this subsubsection are suppressed in the resulting PDF. In |studenttex| mode, all these commands are suppressed in the outputted |latex| source file.
 
 \begin{desc}
-|\mk[<description>]{<n>}[<voffset>]|
+|\mk[<description>]{<n>}[<voffset>]|\\
+|\mk*[<description>]{<n>}[<voffset>]|
 \end{desc}
 Places |<n>| in the right hand margin on the line. The |<description>| (which could be a short sentence running to several lines) is placed to the right of the mark, but can be omitted (e.g. |\mk{5}|). 
 
+If the |\switchmark| command is issued (see Subsubsection~\ref{outn-preamble}) then the mark |<n>| is placed to the \emph{right} of any |<description>|.
+
 The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
+
+The starred variant |\mk*| performs the same function, but does not add the value of |<n>| to the |total| and |subtotal| counters, so can be used, e.g., if several solutions are possible with separate mark schemes.
 
 \emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
 
 \begin{desc}
-|\marks[<description>]{<n>}|\\
 |\solnmarksplus{<n>}{<description>}|\\
 |\mkplus{<n>}{<description>}|
 \end{desc}
 Some equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. These commands are deprecated, and exist primarily for backward-compatibility. They will be removed in a later release.
-
-\emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
 
 \begin{desc}
 |\subtotal[<description>]{<n>}[<voffset>]|\\
@@ -615,6 +616,8 @@ bold to its right; the calculated value accounts for all marks given in
 any of the following commands: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
 |marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
 as with the |\subtotal| and |\total| commands. 
+
+\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters.
 
 \begin{desc}
 |\setSubtotalHline[<options>]|
@@ -780,6 +783,12 @@ The |\tutororstudent| command takes two arguments; the first argument will only
 be output when the |specsolns| is \emph{not} active, and the second argument 
 will only be output when the |specsolns| \emph{is} active.
 
+\begin{desc}
+|\tutoronlycolor{<color>}|\\
+|\studentonlycolor{<color>}|
+\end{desc}
+These commands set the color of the text in tutor- and student-specific comments and environments. The default is |black| for |\tutoronlycolor|, and the same as |\specsolnscolor| for |\studentonlycolor| (by default, this is |ougreen|).
+
 \subsection{Technical info}
 This section can be omitted unless you need/want to know a bit more about the class file.
 
@@ -877,7 +886,7 @@ This option is available for drafting exams, suppressing the barcode production 
 [This was originally created when the system used the old OU\TeX\ code for barcodes, which relied on a specific font that was not always installed correctly in certain \TeX\ distributions. The new approach provided by the |makebarcode| package instead uses the |\rule| command to draw black and white lines of appropriate sizes.]
 
 
-\subsubsection{Commands to be used in the preamble}
+\subsubsection{Commands to be used in the preamble}\label{ouexam-preamble}
 \begin{desc}
 |\modulecode{...}|
 \end{desc}
@@ -887,6 +896,8 @@ Sets the code of the module (required).
 |\session{...}|
 \end{desc}
 Sets the session code for the exam (required, except for |specimen| and |secondspecimen|). This replaces the deprecated |\conflation{...}| command (although this still works to ensure backwards compatibility).
+
+If |specimen| or |secondspecimen| options are used, |\session{...}| can be used to overwrite the text `Specimen' or `Second Specimen' as appears in the title and footer. For example, you could specify |\session{Third specimen}|.
 
 \begin{desc}
 |\moduletitle{...}|
@@ -957,6 +968,11 @@ Overrides the internally-specified for the name of the OU logo, currently |OU_Ma
 \LaTeX\ files that use \textsf{OU-SUPPS} class files do \emph{not} need the OU logo to compile: if the specified logo file is not present, a placeholder box will be inserted instead.
 
 \begin{desc}
+|\switchmarks|
+\end{desc}
+This command (which can be used anywhere, but best used in the preamble) defines the various commands for entering marks so that any comments appear to the left of the mark. This applies only to marks for solutions.
+
+\begin{desc}
 |\setlength\toppadding{<x>}|
 \end{desc}
 Adjusts the padding at the top of the title page to |<x>|. Default is |0.5cm|, and this should only be changed if you know what you're doing.
@@ -986,6 +1002,7 @@ command; for example:
             multiple choice option text=choices,
             instructions= your instructions here,
             top padding=0.5cm,
+            switch marks=true,
             }
 \end{verbatim}
 
@@ -1042,10 +1059,10 @@ Marks can be placed anywhere in the document (including inside displayed equatio
 \end{desc}
 Places |<n>| in square brackets in the right hand margin on the line. 
 
-\begin{desc}
-|\marks{<n>}|
-\end{desc}
-A synonym for |\mk|, preserved as part of legacy support from the earliest versions of |ouexam.cls|. Because this synonym currently redefines a \TeX\ primitive, this command has been deprecated and will be removed in a future release.
+%\begin{desc}
+%|\marks{<n>}|
+%\end{desc}
+%A synonym for |\mk|, preserved as part of legacy support from the earliest versions of |ouexam.cls|. Because this synonym currently redefines a \TeX\ primitive, this command has been deprecated and will be removed in a future release.
 
 
 \subsubsection{Multiple choice} 
@@ -1098,21 +1115,45 @@ When displayed, the solutions can be formatted in one of two ways:
 
 \emph{Note:} The showing/hiding solutions features of |ouexam| are designed for use by authors when drafting exams, to help you check answers tally up to the corresponding questions. When creating the final version for handover, you will probably want to make two copies of your working file, one to create the exam (with solutions removed), the other to create the solutions (possibly with the questions removed, though this is option except for specimen solutions).
 
+\subsubsection{Customising the \texttt{solution} environment appearance}
+
+The |solution| environment is defined by an environment called |solutionbox|, which is created using the |mdframed| package. It is specified as follows.
+
+\begin{desc}
+|\newmdenv[linewidth=3pt,|\\
+|      topline=false,|\\
+|      bottomline=false,|\\
+|      rightline=false,|\\
+|      innerrightmargin=5.5cm,|\\
+|      innerleftmargin=10pt,|\\
+|      linecolor=black,|\\
+|      backgroundcolor=yellow!10,|\\
+|      frametitle=Solution]{solutionbox}|
+\end{desc}
+
+You can replace this using |\renewmdenv[...]{solutionbox}|. See the |mdframed| package documentation for details.
+
 \subsubsection{Specifying marks within the \texttt{solution} environment}
 
 \begin{desc}
-|\mk[<description>]{<n>}[<voffset>]|
+|\mk[<description>]{<n>}[<voffset>]|\\
+|\mk*[<description>]{<n>}[<voffset>]|
 \end{desc}
 This command can be used to specify marks, as per the format for creating questions. Within the |solution| environment in |[showsolutions]| mode, the numbers are displayed in the right-hand margin in text size |\small|, and without square brackets. Additionally, the optional |<description>| parameter allows users to enter text in the margin, to the right of the |<n>|. 
 
+If the |\switchmark| command is issued (see Subsubsection~\ref{ouexam-preamble}) then the mark |<n>| is placed to the \emph{right} of any |<description>|.
+
 The optional final parameter |[<voffset>]| allows you to move the entire margin note up or down the page. |<voffset>| should be a measure (so needs units, such as |pt|, |cm|, |em| etc). This parameter can be useful when you have multiple margin notes that would otherwise overlap with one another. For example: |\mk[Long discussion]{2}[24pt]|.
 
+The starred variant |\mk*| performs the same function, but does not add the value of |<n>| to the |total| and |subtotal| counters, so can be used, e.g., if several solutions are possible with separate mark schemes.
+
+\emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
+
 \begin{desc}
-|\marks[<description>]{<n>}|\\
 |\solnmarksplus{<n>}{<description>}|\\
 |\mkplus{<n>}{<description>}|
 \end{desc}
-Some deprecated equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. The |\mark| command currently redefines a \TeX\ primitive and will be removed in a future release.
+Some deprecated equivalent commands that produce the same effect as |\mk[<description>]{<n>}|.
 
 
 \begin{desc}
@@ -1137,6 +1178,8 @@ bold to its right; the calculated value accounts for all marks given in
 any of the following commands, but only \emph{within} a |solution| environment: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
 |marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
 as with the |\subtotal| and |\total| commands. 
+
+\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters.
 
 \subsubsection{Rules}
 
@@ -1236,7 +1279,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |ifthen| for internal latex coding
 \item |enumitem|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
-\item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions.
+\item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions. This is only loaded if |showsolutions| is specified, otherwise |xcolor| is loaded on its own.
 \item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.
 \item |makebarcode| for creating the barcode on the front page. Not loaded if |nobarcode| option is specified.
 \item |extsizes| when options |14pt|, |17pt| or |20pt| are used, to handle larger font sizes. 
@@ -1427,10 +1470,10 @@ Marks can be placed anywhere in the document (including inside displayed equatio
 \end{desc}
 Places |<n>| in square brackets in the right hand margin on the line. 
 
-\begin{desc}
-|\marks{<n>}|
-\end{desc}
-A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
+%\begin{desc}
+%|\marks{<n>}|
+%\end{desc}
+%A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
 
 
 \subsubsection{Multiple choice} 

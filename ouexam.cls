@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2018/05/17 v2.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -22,12 +22,17 @@
  \@showsolutionstrue
  \if@specimen
    \@specimensolutionstrue
-  \fi
+ \fi
+ \if@secondspecimen
+   \@specimensolutionstrue
+ \fi
 }
 \DeclareOption{specimensolutions}{%
+ \@specimentrue
  \@specimensolutionstrue
  \@showsolutionstrue
 }
+%
 \newif\if@bigfontneeded
 \@bigfontneededfalse
 \DeclareOption{14pt}{%
@@ -71,7 +76,18 @@
 \RequirePackage{ifthen}
 \RequirePackage[inline]{enumitem}
 \RequirePackage{marginnote}
-\RequirePackage[xcolor]{mdframed}
+\if@showsolutions%
+	\if@specimensolutions%
+		\RequirePackage{xcolor}
+	\else%
+	% Suppressed if not displaying solutions
+	% mdframed uses expl3 which has installation
+	% issues.
+		\RequirePackage[xcolor]{mdframed}
+	\fi%
+\else
+	\RequirePackage{xcolor}
+\fi%
 \RequirePackage{verbatim}
 \RequirePackage{pgfkeys}
 \RequirePackage{ifpdf}
@@ -132,15 +148,15 @@
 \newcommand\examinstructions[1]{\renewcommand\@examinstructions{#1}}
 %
 \def\@session{C}
-\if@specimen
-	\def\@session{Specimen}
+\if@secondspecimen
+	\def\@session{Second specimen}
 \else
-	\if@secondspecimen
-		\def\@session{Second Specimen}
+	\if@specimen
+		\def\@session{Specimen}
 	\fi
 \fi
 %
-\def\@specimensolutionstitle{Solutions to the Specimen Examination Paper}
+\def\@specimensolutionstitle{Solutions to the \@session\ Examination Paper}
 \newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
 %
 \newcommand\conflation[1]{\renewcommand\@session{#1}\ClassWarning{ouexam}{\protect\conflation\space is deprecated. Please use \protect\session\space(same syntax)}} % backwards compatibility
@@ -152,6 +168,10 @@
 %
 \def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%
+\newif\if@switchmarks
+\@switchmarksfalse
+\newcommand\switchmarks{\@switchmarkstrue}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % BARCODE
@@ -208,6 +228,7 @@
    instructions/.store in=\@examinstructions,
    top padding/.code=\setlength\toppadding{#1}, 
    ou logo file base/.store in=\@oulogofilebase,
+   switch marks/.is if=@switchmarks,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
@@ -216,12 +237,26 @@
 % Title page
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Footers for title page (copyright, etc)
+% First, some lengths that depend on whether were SSEP or an exam
+\newlength\@titlefooterleftindent
+\newlength\@titlefooterrightindent
+\if@specimensolutions%
+	\setlength\@titlefooterleftindent{0cm}
+	\setlength\@titlefooterrightindent{-2.5cm}
+\else%
+	\setlength\@titlefooterleftindent{1cm}
+	\setlength\@titlefooterrightindent{-1cm}
+\fi%
 \fancypagestyle{frontpage}{%
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
-    \fancyfoot[L]{\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
-\textbf{\@versionno} }%
+    \fancyfoot[L]{%
+    \begin{adjustwidth}{\@titlefooterleftindent}{\@titlefooterrightindent}%
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
+		\textbf{\@versionno}%
+	\end{adjustwidth}%
+	}%
 }
 \newlength\titletablewidth
 \setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
@@ -289,7 +324,7 @@
     \end{tabular}
     \vspace{20pt}
 	
-    \begin{adjustwidth}{2cm}{1cm}
+    \begin{adjustwidth}{1cm}{1cm}
 	\raggedright
 	\@examinstructions
     \end{adjustwidth}
@@ -336,9 +371,9 @@
     \fancyfoot[LE,RO]{\bfseries\thepage}
 	\fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
 	\if@bigfontneeded %suppress module code on LO to avoid text clashes
-	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
 	\else
-	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{Specimen}\else\if@secondspecimen{Second Specimen}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
 	\fi
   \fi
 }
@@ -518,25 +553,93 @@
   \fi
 }
 %
-\newcommand{\bracketedmarks}[1]{\marginnote{\hfill[\textsl{#1}]\hspace*{3cm}}}
-%OLD:%\newcommand{\solnmarks}[2][\unskip]{\marginnote{\hfill \makebox[2cm][r]{\sf\footnotesize #2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright\sf\footnotesize #1}}}}
-\newcommand{\solnmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill\footnotesize\sf \makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}}}
+\newcommand{\bracketedmarks}[1]{%
+	\marginnote{%
+		\if@switchmarks\if@showsolutions\makebox[3cm][r]{\relax}\fi\fi%
+		\makebox[2cm][r]{[\textsl{#1}]\if@switchmarks\if@showsolutions\hspace{0.5cm}\fi\fi}\hfill%
+	}%
+}
+%
+% Solnmarks -- rendering marks within solution environments
+\def\solnmarks{\@ifstar\@solnmarks\@@solnmarks}
+% \solnmarks*[]{}, doesn't affect @update@totals
+\newcommand{\@solnmarks}[2][\unskip]{%
+	\@solnmarksbox{#1}{#2}%
+}	
+\newcommand{\@@solnmarks}[2][\unskip]{%
+	\@update@totals{#2}%
+	\@solnmarksbox{#1}{#2}%
+}
+\newcommand{\@solnmarksbox}[2]{%
+	\marginnote{\hfill\footnotesize\sf %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
+		\else%
+			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright #1}}%
+		\fi%
+	}%
+}	
+%	
 \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
-\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
+%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 \def\mkplus{\solnmarksplus}
 %
 %% Definition of \total and \subtotal
 \def\total{\@ifstar\@total\@@total}
 \def\subtotal{\@ifstar\@subtotal\@@subtotal}
+% \total*
+\newcommand{\@total}[1][\unskip]{%
+    \marginnote{\sf\bfseries %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{\thetotal\hspace{0.5cm}}%
+     	\else%
+			\makebox[2cm][r]{\thetotal}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}%
+		\fi%
+	}%
+	\nopagebreak\outn@draw@total@rule%
+}%
+% \total[]{}
+\newcommand{\@@total}[2][\unskip]{%
+    \marginnote{\sf\bfseries %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
+     	\else%
+			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}%
+		\fi%
+	}%
+	\nopagebreak\outn@draw@total@rule%
+}
+% \subtotal*
+\newcommand{\@subtotal}[1][\unskip]{%
+    \marginnote{\small\sf\bfseries %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{\thesubtotal\hspace{0.5cm}}%
+     	\else%
+			\makebox[2cm][r]{\thesubtotal}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}%
+		\fi%
+	}%
+	\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+}
+% \subtotal[]{}
+\newcommand{\@@subtotal}[2][\unskip]{%
+   	\marginnote{\small\sf\bfseries %
+		\if@switchmarks%
+			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
+    	\else%
+			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}%
+		\fi%
+	}%
+	\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+}
   % \total*[]
-  \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
+%  \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{\thetotal}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
   % \total[]{}
-  \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+%  \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{#2}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
   % \subtotal*[]
-  \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+%  \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
   % \subtotal[]{}
-  \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{#2}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+%  \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{#2}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
 \ifdraw@total@line
@@ -750,24 +853,31 @@
 
 %%%%%%%%%%%%%%%%%%
 % Solutions environment: need to pull out solutions for spec papers and present differently.
-\newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
-\if@specimensolutions
-  \newenvironment{solution}{%
-	\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-	\def\mk{\solnmarks}%
-  }{}
+%
+\if@showsolutions%
+	\if@specimensolutions%
+		% Don't want to use mdframed here
+		\newenvironment{solution}{%
+			%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+			\def\mk{\solnmarks}%
+  		}{}
+	\else
+		% Regular solutions: use mdframed environment to define box
+		\newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,
+	          innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,
+	          backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
+	    % Now define the wrapper
+	        \newenvironment{solution}{%
+					%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+					\def\mk{\solnmarks}%
+					\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}%
+  				{\end{solutionbox}\end{adjustwidth}}
+	\fi
 \else
-  \if@showsolutions
-    \newenvironment{solution}{%
-	\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-	\def\mk{\solnmarks}%
-	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small%
-  }{\end{solutionbox}\end{adjustwidth}}
-  \else
+	% Suppress anything in the solution environment.
     \newenvironment{solution}
     {\comment}
     {\endcomment}
-  \fi
 \fi
 
 

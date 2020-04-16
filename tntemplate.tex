@@ -2,9 +2,6 @@
 % Options:
 %   specsolns    - mode that produces output with marks, solnmarksplus,
 %                  and remarks suppressed, and text in green.
-%   studenttex   - outputs to tex file \jobname-student.tex the plain
-%                  LaTeX solutions for distribution to ALs with marks
-%                  remarks, etc removed. [EXPERIMENTAL]
 % e.g. use \documentclass[specsolns]{outn}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MODULE/DATE/TIME INFORMATION
@@ -20,6 +17,7 @@
 %\specsolnscolor{blue} % can be used to change text colour in specsolns mode
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
 \oulogofilebase{ou_greyscale_masterlogo_29mm}% Overrides internal OU logo specification
+%\switchmarks % Can be used to place marks to right of comments
 %% alternative way of updating the above information
 %\metadataset{faculty=STEM, 
 %            module title=Title of Module,
@@ -31,6 +29,7 @@
 %            multiple choice option text=choices,
 %            tutor only title={Title for tutor-only environment\par},
 %            student only title=Student material only\par,
+% 			 switch marks, % Does same as \switchmarks
 %            }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
@@ -155,6 +154,9 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
     or \verb!\subtotal*[comment]! \mk 2 
   \item Totals can be calculated automatically using  \verb!\total*! 
     or \verb!\total*[comment]! \mk 3
+
+\subtotal*
+\item Marks that you don't want added to the subtotal/total counter can be inserted using \verb!\mk*! \mk* 2
 \end{enumerate}
 \subtotal*
 

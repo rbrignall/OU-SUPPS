@@ -1,11 +1,6 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2018/05/17 v2.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
 
-\newif\if@studenttex
-\@studenttexfalse
-\DeclareOption{studenttex}{%
-  \@studenttextrue
-}
 \newif\if@specsolns
 \@specsolnsfalse
 \DeclareOption{specsolns}{%
@@ -30,15 +25,9 @@
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
 \RequirePackage{xcolor}
-%\RequirePackage[xcolor]{mdframed}
 \RequirePackage{framed}
 \RequirePackage{pgfkeys}
 \RequirePackage{environ}
-\if@studenttex
-  \RequirePackage{l3regex,l3tl-analysis,l3str}
-  \RequirePackage{answers}
-  \RequirePackage{xparse}
-\fi
 \RequirePackage{verbatim}
 \if@specsolns
   \RequirePackage{caption}
@@ -86,6 +75,10 @@
 \def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
+\newif\if@switchmarks
+\@switchmarksfalse
+\newcommand\switchmarks{\@switchmarkstrue}
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Meta data can be set using \metadataset command, based on pgfkeys
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -102,6 +95,7 @@
    tutor only title/.store in=\@tutoronlytitle,
    student only title/.store in=\@studentonlytitle,
    ou logo file base/.store in=\@oulogofilebase,
+   switch marks/.is if=@switchmarks,
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
@@ -114,7 +108,6 @@
 \fancypagestyle{frontpage}{%
   \fancyhf{} % clear all header and footer fields
   \renewcommand{\headrulewidth}{0pt}
-  %\renewcommand{\footrulewidth}{2pt}%
     \fancyfoot[L]{%
     	\if@specsolns\color{\@specsolnscolor}\fi
     	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}%
@@ -186,10 +179,15 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{4cm} % lines up number with marks column
-    \fancyfoot[C]{%
+    \fancyfoot[R]{%
     	\if@specsolns\color{\@specsolnscolor}\fi
     	page~\thepage~of~\pageref{LastPage}%
 	} % centre bottom of every page except first
+	% Copyright as per front page
+	\fancyfoot[L]{%
+    	\if@specsolns\color{\@specsolnscolor}\fi
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}%
+	}%
 }
 \pagestyle{internalpages}
 
@@ -355,16 +353,22 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Tutor or Student text
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\tutoronly}[1]{#1}
-\newenvironment{tutor}{\@tutoronlytitle}{}
+% For user to specify color:
+\def\@tutorcolor{black}
+\def\@studentcolor{\@specsolnscolor}
+\newcommand\tutoronlycolor[1]{\def\@tutorcolor{#1}}
+\newcommand\studentonlycolor[1]{\def\@studentcolor{#1}}
+%%%
+\newcommand{\tutoronly}[1]{{\color{\@tutorcolor}#1}}
+\newenvironment{tutor}{\color{\@tutorcolor}\@tutoronlytitle}{}
 \newcommand{\studentonly}[1]{}
 \newenvironment{student}{\comment}{\endcomment}
 \if@specsolns
     \AtBeginDocument{
         \renewcommand{\tutoronly}[1]{}
-        \renewcommand{\studentonly}[1]{#1}
+        \renewcommand{\studentonly}[1]{{\color{\@studentcolor}#1}}
         \renewenvironment{tutor}{\comment}{\endcomment}
-        \renewenvironment{student}{\@studentonlytitle}{}
+        \renewenvironment{student}{\color{\@studentcolor}\@studentonlytitle}{}
     }
 \else
     \AtBeginDocument{
@@ -376,9 +380,9 @@
     % #1: for tutors only
     % #2: for students only
     \if@specsolns
-        #2
+        {\color{\@studentcolor}#2}
     \else
-        #1
+        {\color{\@tutorcolor}#1}
     \fi
 }
 
@@ -410,55 +414,127 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks and remarks
 %
-\if@specsolns
-  % suppress everything
-  \newcommand{\bracketedmarks}[2][]{\relax}
-  \newcommand{\solnmarks}[2][]{\relax}
-  \newcommand{\solnmarksplus}[2]{\relax}
-  \newcommand{\remark}[1]{\relax}
-  \newenvironment{longremark}{\comment}{\endcomment}
-\else
-  \newcounter{total}[question]
-  \newcounter{subtotal}[question]
-\def\@update@totals#1{%
-  \afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
-\def\get@args#1\hfuzz#2\hfuzz{%
-  \if\relax\detokenize{#1}\relax
-     \if\relax\detokenize{#2}\relax
-     \else
-        \addtocounter{subtotal}{#2}%
-        \addtocounter{total}{#2}%
-     \fi
-  \else
-    \relax
-  \fi
-}
-  \newcommand{\bracketedmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill \makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}}}
-  \newcommand{\solnmarks}[2][\unskip]{\@update@totals{#2}\marginnote{\hfill\small\sf \makebox[1cm][r]{\sf #2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}}}
-  \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
-  \newcommand{\remark}[1]{\emph{Remark:} #1}
-  \newenvironment{longremark}{\emph{Remarks:}\par}{}
+\if@specsolns%
+  	% suppress everything in specimen solutions
+  	\newcommand{\bracketedmarks}[2][]{\relax}
+  	\newcommand{\solnmarks}[2][]{\relax}
+  	\newcommand{\solnmarksplus}[2]{\relax}
+  	\newcommand{\remark}[1]{\relax}
+  	\newenvironment{longremark}{\comment}{\endcomment}
+\else%
+	% Not specimen solutions
+	% Bracketed marks - not really used in outn
+	\newcommand{\bracketedmarks}[2][\unskip]{%
+		%\@update@totals{#2}% RB commented out 08/04/20: see if anyone notices...
+		\marginnote{\hfill %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}\makebox[1cm][r]{[\textsl{#2}]}%
+			\else%
+				\makebox[1cm][r]{[\textsl{#2}]}\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}%
+			\fi%		
+		}%
+	}
+	% Solnmarks -- the main system for rendering marks in outn
+	\def\solnmarks{\@ifstar\@solnmarks\@@solnmarks}
+	% \solnmarks*[]{}, doesn't affect @update@totals
+	\newcommand{\@solnmarks}[2][\unskip]{%
+		\@solnmarksbox{#1}{#2}%
+	}	
+	\newcommand{\@@solnmarks}[2][\unskip]{%
+		\@update@totals{#2}%
+		\@solnmarksbox{#1}{#2}%
+	}
+	\newcommand{\@solnmarksbox}[2]{%
+		\marginnote{\hfill\small\sf %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}\makebox[1cm][r]{#2}%
+			\else%
+				\makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright #1}}%
+			\fi%
+		}%
+	}	
+	%	
+  	\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
+  	\newcommand{\remark}[1]{\emph{Remark:} #1}
+  	\newenvironment{longremark}{\emph{Remarks:}\par}{}
 \fi
-
+% The standard \mk command is defined in terms of solnmarks.
+% \bracketedmarks is available mainly for compatibility with ouab and ouexam.
+%\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
+\def\mk{\solnmarks}
+\def\mkplus{\solnmarksplus} % Note: doesn't support * mode.
+%
+%
 % definition of \total and \subtotal
 \def\total{\@ifstar\@total\@@total}
 \def\subtotal{\@ifstar\@subtotal\@@subtotal}
-
-\if@specsolns
-    % special solutions mode is active
+%
+\if@specsolns%
+    % specimen solutions mode is active
     \newcommand{\@total}[1][]{\relax}
     \newcommand{\@@total}[2][]{\relax}
     \newcommand{\@subtotal}[1][]{\relax}
     \newcommand{\@@subtotal}[2][]{\relax}
-\else
+\else%
+    \newcounter{total}[question]
+    \newcounter{subtotal}[question]
+    \def\@update@totals#1{%
+      	\afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
+	\def\get@args#1\hfuzz#2\hfuzz{%
+  		\if\relax\detokenize{#1}\relax
+     		\if\relax\detokenize{#2}\relax
+     		\else%
+        		\addtocounter{subtotal}{#2}%
+        		\addtocounter{total}{#2}%
+     		\fi%
+  		\else%
+    		\relax
+  		\fi%
+	}
     % \total*
-    \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{\thetotal}\ Total\ #1}\outn@draw@total@rule}
+    \newcommand{\@total}[1][\unskip]{%
+    	\marginnote{\sf\bfseries %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{\thetotal}%
+     		\else%
+				\makebox[1cm][r]{\thetotal}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}%
+			\fi%
+		}%
+		\nopagebreak\outn@draw@total@rule%
+	}%
     % \total[]{}
-    \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[1cm][r]{#2}\ Total\ #1}\outn@draw@total@rule}
+    \newcommand{\@@total}[2][\unskip]{%
+    	\marginnote{\sf\bfseries %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{#2}%
+     		\else%
+				\makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}%
+			\fi%
+		}%
+		\nopagebreak\outn@draw@total@rule%
+	}
     % \subtotal*
-    \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@subtotal}[1][\unskip]{%
+    	\marginnote{\small\sf\bfseries %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{\thesubtotal}%
+     		\else%
+				\makebox[1cm][r]{\thesubtotal}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}%
+			\fi%
+		}%
+		\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+	}
     % \subtotal[]{}
-    \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[1cm][r]{#2}\ Subtotal\ #1}\setcounter{subtotal}{0}\outn@draw@subtotal@rule}
+    \newcommand{\@@subtotal}[2][\unskip]{%
+    	\marginnote{\small\sf\bfseries %
+			\if@switchmarks%
+				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{#2}%
+     		\else%
+				\makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}%
+			\fi%
+		}%
+		\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+	}
 \fi
 
 % total horizontal rule
@@ -483,9 +559,6 @@
 
 
 %
-\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
-\def\mk{\solnmarks}
-\def\mkplus{\solnmarksplus}
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 \newcommand{\longtextref}[1]{\hfill\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}{\emph{\textbf{#1}}}}}
 \newenvironment{references}{\par{\itshape References}\par}
@@ -675,59 +748,9 @@
 %	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small
 % }
 % {\end{solutionbox}\end{adjustwidth}}
-\if@studenttex
-    \ExplSyntaxOn
-    \NewEnviron{solution}
-     {
-      \def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-      \textbf{Solution}
-      \par
-      \strip_marks:V \BODY
-     }
-     
-    \tl_new:N \l_solution_text_tl
-    \iow_new:N \g_solution_stream
-  
-    \cs_generate_variant:Nn \tl_replace_all:Nnn {NV}
-    \cs_generate_variant:Nn \iow_now:Nn { NV }
-    \str_const:Nx \c_other_eol_str { \cs_to_str:N \^^M }
-    
-    \cs_new_protected:Npn \strip_marks:n #1
-    {
-        \tl_set:Nn \l_solution_text_tl { #1 }
-        \l_solution_text_tl % Send token list to normal output unmodified 
-        %\tl_show_analysis:n { \l_solution_text_tl } % for debugging
-        % Remove all instances of \marks{} commands
-        \regex_replace_all:nnN { \c{marks}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{marks} \w } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{solnmarksplus}\cB\{ [^\}]* \cE\} \cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{solnmarksplus} ^[\}|\{] } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{mk}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{mk} \w } {  } \l_solution_text_tl
-        \regex_replace_all:nnN { \c{remark}\cB\{ [^\}]* \cE\} } {  } \l_solution_text_tl
-        \iow_now:Nx \g_solution_stream {Solution~to~Question~\thequestion}
-        \iow_now:NV \g_solution_stream \l_solution_text_tl % Send modified token list to stream.
-    }
-    \cs_generate_variant:Nn \strip_marks:n { V }
-    
-    \AtBeginDocument{
-      \iow_open:Nn \g_solution_stream { \jobname-student.tex }
-      \def\solnpreamble{\documentclass{article}\usepackage{amsmath}\begin{document}}
-      \iow_now:Nn \g_solution_stream {\documentclass{article}\usepackage{amsmath}\begin{document}}
-    }
-    \AtEndDocument{
-      \iow_now:Nn \g_solution_stream{\end{document}}
-      \iow_close:N \g_solution_stream
-    }
-    \ExplSyntaxOff
-\else %matches \if@studenttex
-  \newenvironment{solution}{}{}
-  %\NewEnviron{solution}
-  %{
-   % \BODY % This doesn't work if verbatim is contained inside too.
-  %}
-\fi
-
+% Dummy environment:
+\newenvironment{solution}{}{}
+%
 %
 %
 %

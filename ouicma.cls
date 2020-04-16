@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouicma}[2018/05/17 v2.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouicma}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
@@ -241,7 +241,7 @@ Personal identifier (PI): \\[20pt]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks
 \newcommand{\mk}[1]{\marginnote{\hfill[\textsl{#1}]}}
-\def\marks{\ClassWarning{ouicma}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
+%\def\marks{\ClassWarning{ouicma}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Boxes for people to write their answers in
 \newcommand{\answerbox}[1][1]{\marginnote{\ \tikz[scale=1.2]{\draw (0,0) grid (#1,1);}}[-10pt]}
