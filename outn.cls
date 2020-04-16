@@ -460,7 +460,7 @@
 \fi
 % The standard \mk command is defined in terms of solnmarks.
 % \bracketedmarks is available mainly for compatibility with ouab and ouexam.
-\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
+%\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
 \def\mk{\solnmarks}
 \def\mkplus{\solnmarksplus} % Note: doesn't support * mode.
 %

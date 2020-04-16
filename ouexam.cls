@@ -582,7 +582,7 @@
 %	
 \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
-\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
+%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 \def\mkplus{\solnmarksplus}
 %
 %% Definition of \total and \subtotal
@@ -858,7 +858,7 @@
 	\if@specimensolutions%
 		% Don't want to use mdframed here
 		\newenvironment{solution}{%
-			\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+			%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
 			\def\mk{\solnmarks}%
   		}{}
 	\else
@@ -868,7 +868,7 @@
 	          backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
 	    % Now define the wrapper
 	        \newenvironment{solution}{%
-					\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
+					%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
 					\def\mk{\solnmarks}%
 					\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}%
   				{\end{solutionbox}\end{adjustwidth}}

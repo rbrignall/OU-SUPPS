@@ -2,7 +2,7 @@
 % | Typeset this file to document the OU-SUPPS       |
 % +--------------------------------------------------+
 %
-% Copyright (c) 2015-2017 by Robert Brignall for The Open University.
+% Copyright (c) 2015-2020 by Robert Brignall for The Open University.
 % All Rights Reserved.
 %
 % This file is part of the OU-SUPPS distribution.
@@ -47,7 +47,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 1.43\\2020-03-31}
+\date{Version 2.2\\2020-04-16}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -320,10 +320,10 @@ Places |<n>| in square brackets in the right hand margin on the line.
 If using the |draft| option, when compiled, \LaTeX\ will check whether the sum of the entries inside |\mk| commands adds up to the parameter |<marks>| specified by the preceding |\question|. This has some limitations (e.g.\ it won't understand |\tfrac{1}{2}|). If the numbers are not the same, a box will be output reporting the discrepancy. 
 
 
-\begin{desc}
-|\marks{<n>}|
-\end{desc}
-A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
+%\begin{desc}
+%|\marks{<n>}|
+%\end{desc}
+%A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
 
 \subsubsection{Multiple choice} 
 
@@ -408,7 +408,7 @@ This is the default operation for using |outn.cls|. It produces a Tutor Notes bo
 |\documentclass[specsolns]{outn}|
 \end{desc}
 
-This version is designed to create a specimen solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\marks| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
+This version is designed to create a specimen solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\mk| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
 
 
 \subsubsection{Commands to be used in the preamble}\label{outn-preamble}
@@ -589,13 +589,10 @@ The starred variant |\mk*| performs the same function, but does not add the valu
 \emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
 
 \begin{desc}
-|\marks[<description>]{<n>}|\\
 |\solnmarksplus{<n>}{<description>}|\\
 |\mkplus{<n>}{<description>}|
 \end{desc}
 Some equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. These commands are deprecated, and exist primarily for backward-compatibility. They will be removed in a later release.
-
-\emph{Warning:} This feature has redefined the \TeX\ primitive |\marks| command. 
 
 \begin{desc}
 |\subtotal[<description>]{<n>}[<voffset>]|\\
@@ -1062,10 +1059,10 @@ Marks can be placed anywhere in the document (including inside displayed equatio
 \end{desc}
 Places |<n>| in square brackets in the right hand margin on the line. 
 
-\begin{desc}
-|\marks{<n>}|
-\end{desc}
-A synonym for |\mk|, preserved as part of legacy support from the earliest versions of |ouexam.cls|. Because this synonym currently redefines a \TeX\ primitive, this command has been deprecated and will be removed in a future release.
+%\begin{desc}
+%|\marks{<n>}|
+%\end{desc}
+%A synonym for |\mk|, preserved as part of legacy support from the earliest versions of |ouexam.cls|. Because this synonym currently redefines a \TeX\ primitive, this command has been deprecated and will be removed in a future release.
 
 
 \subsubsection{Multiple choice} 
@@ -1153,11 +1150,10 @@ The starred variant |\mk*| performs the same function, but does not add the valu
 \emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
 
 \begin{desc}
-|\marks[<description>]{<n>}|\\
 |\solnmarksplus{<n>}{<description>}|\\
 |\mkplus{<n>}{<description>}|
 \end{desc}
-Some deprecated equivalent commands that produce the same effect as |\mk[<description>]{<n>}|. The |\mark| command currently redefines a \TeX\ primitive and will be removed in a future release.
+Some deprecated equivalent commands that produce the same effect as |\mk[<description>]{<n>}|.
 
 
 \begin{desc}
@@ -1474,10 +1470,10 @@ Marks can be placed anywhere in the document (including inside displayed equatio
 \end{desc}
 Places |<n>| in square brackets in the right hand margin on the line. 
 
-\begin{desc}
-|\marks{<n>}|
-\end{desc}
-A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
+%\begin{desc}
+%|\marks{<n>}|
+%\end{desc}
+%A synonym for |\mk|. This command has been deprecated and will be removed in a later release.
 
 
 \subsubsection{Multiple choice} 
