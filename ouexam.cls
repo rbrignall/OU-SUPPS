@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2020/11/20 v2.3 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -51,6 +51,11 @@
 \@nobarcodefalse
 \DeclareOption{nobarcode}{%
 	\@nobarcodetrue
+}
+\newif\if@remoteexam
+\@remoteexamfalse
+\DeclareOption{remote}{%
+	\@remoteexamtrue
 }
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -161,6 +166,8 @@
 %
 \newcommand\conflation[1]{\renewcommand\@session{#1}\ClassWarning{ouexam}{\protect\conflation\space is deprecated. Please use \protect\session\space(same syntax)}} % backwards compatibility
 \newcommand\session[1]{\renewcommand\@session{#1}}
+\def\@submitby{\relax}
+\newcommand\submitby[1][23:59 BST]{\DeclareRobustCommand\@submitby{Submit by:\ #1}}
 \def\@suppno{\relax} % default
 \newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
 \def\@versionno{\relax} % default blank
@@ -309,18 +316,25 @@
     	\vspace*{-10pt}
     	\@moduletitle\newline
     	
-    	\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline
+    	{\if@remoteexam
+	  {\@examday\ \@exammonth\ \@examyear\hfill \@submitby\newline}
+	\else
+	  {\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline}
+	\fi}
     	\rule{\titletablewidth}{1pt}
     	
     	\nointerlineskip\vspace{12pt}
-    	{\if@showsolutions
-    	  {\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill} %Equates to \Large in 12pt, \LARGE in 11pt
-    	\else
-    	  {\hfill Time allowed:\ \@timeallowed\hfill}
+	{\if@remoteexam
+	  {\relax}
+	\else
+     	  {\if@showsolutions
+    	    {\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill} %Equates to \Large in 12pt, \LARGE in 11pt
+    	  \else
+	    {\hfill Time allowed:\ \@timeallowed\hfill}
+	  \fi}
+    	  \nointerlineskip\vspace{12pt}
+    	  \rule{\titletablewidth}{1pt}
     	\fi}
-    	
-    	\nointerlineskip\vspace{12pt}
-    	\rule{\titletablewidth}{1pt}
     \end{tabular}
     \vspace{20pt}
 	
@@ -368,13 +382,23 @@
   \if@specimensolutions %only show page numbers for specimen solutions
 	\fancyfoot[C]{page~\thepage~of~\pageref{LastPage}}
   \else %not specimen solutions
-    \fancyfoot[LE,RO]{\bfseries\thepage}
+     \if@remoteexam
+	\fancyfoot[R]{\bfseries\thepage~of~\pageref{LastPage}}
+	\fancyfoot[C]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries CONTINUED}{}} 
+	\if@bigfontneeded %display only module code on L to avoid text clashes
+	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\fi\fi}  
+	\else
+	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
+	\fi
+    \else
+ 	\fancyfoot[LE,RO]{\bfseries\thepage}
 	\fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
 	\if@bigfontneeded %suppress module code on LO to avoid text clashes
 	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
 	\else
-	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
 	\fi
+     \fi
   \fi
 }
 \pagestyle{internalpages}
