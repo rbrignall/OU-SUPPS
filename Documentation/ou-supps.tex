@@ -47,7 +47,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 2.2\\2020-04-16}
+\date{Version 2.21\\2020-11-20}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -885,6 +885,17 @@ This option is available for drafting exams, suppressing the barcode production 
 
 [This was originally created when the system used the old OU\TeX\ code for barcodes, which relied on a specific font that was not always installed correctly in certain \TeX\ distributions. The new approach provided by the |makebarcode| package instead uses the |\rule| command to draw black and white lines of appropriate sizes.]
 
+\begin{desc}
+|\documentclass[remote]{ouexam}|
+\end{desc}
+
+This option changes the formatting of the exam to make it more suitable for remote `print at home' examinations. The main changes are that it:
+\begin{itemize}
+	\item Removes the time of the exam, and the `Time allowed:' line on the front page.
+	\item Adds a |\submitby| command to insert an upload deadline (see next subsubsection)
+	\item Modifies the footer on pages 2 onwards, to make it clearer to students at-a-glance whether they have printed all pages correctly.
+\end{itemize}
+
 
 \subsubsection{Commands to be used in the preamble}\label{ouexam-preamble}
 \begin{desc}
@@ -902,7 +913,7 @@ If |specimen| or |secondspecimen| options are used, |\session{...}| can be used 
 \begin{desc}
 |\moduletitle{...}|
 \end{desc}
-Sets the title (i.e./ name) of the module (required).
+Sets the title (i.e.\ name) of the module (required).
 
 \begin{desc}
 |\specimensolutionstitle{...}|
@@ -954,6 +965,12 @@ Sets the name for the faculty (appears in |specimensolutions| mode only). The de
 \end{desc}
 Changes the text that appears at the top of multi-choice questions (optional, default is `Options:'). Does not need to be in the preamble, so you can change the text for options part-way through the document.
 
+\begin{desc}
+|\submitby[<time>]|
+\end{desc}
+With the |remote| option selected, this command adds `Submit by: 23:59 BST' to the front page for remote exams that have a fixed deadline. The time (default `23:59 BST') can be changed with the optional parameter |[<time>]|.
+
+If |\submitby| is not used with the |remote| exam option, then the text `Submit by:' does not appear on the cover page.
 
 \begin{desc}
 |\examinstructions{...}|
