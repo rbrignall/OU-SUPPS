@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2020/11/20 v2.3 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2020/11/20 v2.31 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -332,7 +332,7 @@
     	  \else
 	    {\hfill Time allowed:\ \@timeallowed\hfill}
 	  \fi}
-    	  \nointerlineskip\vspace{12pt}
+    	  \par\nointerlineskip\vspace{12pt}
     	  \rule{\titletablewidth}{1pt}
     	\fi}
     \end{tabular}
