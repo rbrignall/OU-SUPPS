@@ -47,7 +47,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 2.21\\2020-11-20}
+\date{Version 2.3\\2021-02-10}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -369,7 +369,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |array| extends the |array| and |tabular| environments.
 \item |amsmath| loaded with the |fleqn| option to left-align displayed mathematics.
 \item |amssymb| extra mathematical symbols
-\item |lastpage| for knowing how many pages the document contains
+\item |zref-user|, |zref-lastpage| for knowing how many pages the document contains
 \item |ifthen| for internal latex coding
 \item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
 \item |marginnote| for handling marks, etc in the margin.
@@ -803,7 +803,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |array| extends the |array| and |tabular| environments.
 \item |amsmath| loaded with the |fleqn| option to left-align displayed mathematics.
 \item |amssymb| extra mathematical symbols
-\item |lastpage| for knowing how many pages the document contains
+\item |zref-user|, |zref-lastpage| for knowing how many pages the document contains
 \item |ifthen| for internal latex coding
 \item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
@@ -1111,6 +1111,18 @@ The optional parameter |<line spacing>| can be used to increase the spacing betw
 \end{desc}
 This command can be used within  |inlineoptions| to leave a `blank' in the list of options. This is particularly useful on the final line if you have fewer |\item|s left than the specified number of |<columns>|.
 
+\subsubsection{Pagination}
+As well as the usual commands such as |\pagebreak|, it is possible to specify different page breaks depending on whether |showsolutions| is enabled or not.
+\begin{desc}
+|\questionbreak|
+\end{desc}
+Inserts a |\pagebreak| command when the |showsolutions| option is not specified.
+
+\begin{desc}
+|\solutionbreak|
+\end{desc}
+Inserts a |\pagebreak| command when the |showsolutions| option is specified.
+
 
 \subsection{Creating solutions}
 
@@ -1263,6 +1275,20 @@ Users who prefer to use |\pgfkeys| directly may use, for example,
 
 |\pgfkeys{/ourule,default,moveleft=-3cm,color=red!40!white}|
 
+
+\subsubsection{Pagination}
+As well as the usual commands such as |\pagebreak|, it is possible to specify different page breaks depending on whether |showsolutions| is enabled or not.
+\begin{desc}
+|\questionbreak|
+\end{desc}
+Inserts a |\pagebreak| command when the |showsolutions| option is not specified.
+
+\begin{desc}
+|\solutionbreak|
+\end{desc}
+Inserts a |\pagebreak| command when the |showsolutions| option is specified.
+
+
 \subsection{Alternative method to create solutions}
 If you prefer not to have solutions appearing in-line with the questions, an alternative method is to place all solutions at the end. You should not use this method for creating specimen solutions.
 
@@ -1292,7 +1318,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |array| extends the |array| and |tabular| environments.
 \item |amsmath| loaded with the |fleqn| option to left-align displayed mathematics.
 \item |amssymb| extra mathematical symbols
-\item |lastpage| for knowing how many pages the document contains
+\item |zref-user|, |zref-lastpage| for knowing how many pages the document contains
 \item |ifthen| for internal latex coding
 \item |enumitem|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
@@ -1550,7 +1576,7 @@ Places a 2.4cm $\times$ 1.2cm wide answer box in the right-hand margin. The opti
 \item |array| extends the |array| and |tabular| environments.
 \item |amsmath| loaded with the |fleqn| option to left-align displayed mathematics.
 \item |amssymb| extra mathematical symbols
-\item |lastpage| for knowing how many pages the document contains
+\item |zref-user|, |zref-lastpage| for knowing how many pages the document contains
 \item |ifthen| for internal latex coding
 \item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
 \item |marginnote| for handling marks, etc in the margin.
