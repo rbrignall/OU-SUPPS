@@ -1,7 +1,7 @@
 %% Note that lines beginning with a % sign are ignored by LaTeX
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2020/11/20 v2.31 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2021/02/10 v2.4 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -77,7 +77,7 @@
 \RequirePackage{amssymb}
 \RequirePackage[fleqn]{amsmath}
 \RequirePackage{amsthm}
-\RequirePackage{lastpage}
+\RequirePackage[user,lastpage]{zref}
 \RequirePackage{ifthen}
 \RequirePackage[inline]{enumitem}
 \RequirePackage{marginnote}
@@ -370,9 +370,6 @@
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Code for "TURN OVER" text to appear on all odd pages (except the last page)
-\def\LastPagenum{\@ifundefined{r@LastPage}{0}{\expandafter
-\expandafter\expandafter\@cdr
-\csname r@LastPage\endcsname\@nil\null} }
 %% Set up footer info
 \fancypagestyle{internalpages}{%
   \fancyhf{} % clear all header and footer fields
@@ -380,11 +377,11 @@
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{\dimexpr\marginparsep+2cm} % lines up number with marks column
   \if@specimensolutions %only show page numbers for specimen solutions
-	\fancyfoot[C]{page~\thepage~of~\pageref{LastPage}}
+	\fancyfoot[C]{page~\thepage~of~\zpageref{LastPage}}
   \else %not specimen solutions
      \if@remoteexam
-	\fancyfoot[R]{\bfseries\thepage~of~\pageref{LastPage}}
-	\fancyfoot[C]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries CONTINUED}{}} 
+	\fancyfoot[R]{\bfseries\thepage~of~\zpageref{LastPage}}
+	\fancyfoot[C]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries CONTINUED}}
 	\if@bigfontneeded %display only module code on L to avoid text clashes
 	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\fi\fi}  
 	\else
@@ -392,7 +389,7 @@
 	\fi
     \else
  	\fancyfoot[LE,RO]{\bfseries\thepage}
-	\fancyfoot[CO]{\ifthenelse{\not \value{page}=\LastPagenum}{\bfseries TURN OVER}{}} % internal right hand pages only
+	\fancyfoot[CO]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries TURN OVER}}% internal right hand pages only
 	\if@bigfontneeded %suppress module code on LO to avoid text clashes
 	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
 	\else
@@ -851,7 +848,7 @@
 % NOTICE at end of exam paper
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % \putendtext command allows hook to be placed
-% before enddochook (e.g. to insert blank pages at the end)
+% before AtEndDocument (e.g. to insert blank pages at the end)
 \def\@endtext{[END OF QUESTION PAPER]}
 \newcommand\putendtext{%
 	{\par\bigskip\centering \bfseries%
@@ -860,8 +857,7 @@
 	\def\@endtext{\relax}
 }
 
-\let\@oldenddochook\@enddocumenthook
-\def\@enddocumenthook{%
+\AtEndDocument{%
 \par\bigskip\centering \bfseries%
 \if@specimensolutions
 	\relax
@@ -872,7 +868,7 @@
 		\@endtext	
 	\fi
 \fi
-\@oldenddochook}
+}%
 %%
 
 %%%%%%%%%%%%%%%%%%
