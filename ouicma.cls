@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouicma}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouicma}[2021/02/10 v2.3 (Robert Brignall, all rights reserved)]
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
@@ -14,7 +14,7 @@
 \RequirePackage{array}
 \RequirePackage[fleqn]{amsmath}
 \RequirePackage{amssymb}
-\RequirePackage{lastpage}
+\RequirePackage[user,lastpage]{zref}
 \RequirePackage{ifthen}
 \RequirePackage{tikz}
 \RequirePackage{enumitem}
@@ -196,10 +196,7 @@ Personal identifier (PI): \\[20pt]
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{4cm} % lines up with full width on front page
-    %\fancyhead[RE, RO]{\textbf\thepage}%
-    \fancyfoot[C]{page~\thepage~of~\pageref{LastPage}} % internal right hand pages only
-    %\fancyfoot[RE,RO]{\bfseries\thepage}
-    %\fancyfoot[LE,LO]{\bfseries\@modulecode\ \@exammonth\ \@examyear}  
+  \fancyfoot[C]{page~\thepage~of~\zpageref{LastPage}} % internal right hand pages only
 }
 \pagestyle{internalpages}
 
@@ -418,9 +415,8 @@ Personal identifier (PI): \\[20pt]
 %
 % notice at end of document
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\let\@oldenddochook\@enddocumenthook
-\def\@enddocumenthook{%
+\AtEndDocument{%
 \par\bigskip\centering \bfseries%
 	 [End of questions]
-\@oldenddochook}
+}%
 %%
