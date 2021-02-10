@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2021/02/10 v2.3 (Robert Brignall, all rights reserved)]
 
 \newif\if@specsolns
 \@specsolnsfalse
@@ -20,7 +20,7 @@
 \RequirePackage[fleqn]{amsmath}
 \RequirePackage{amsthm}
 \RequirePackage{amssymb}
-\RequirePackage{lastpage}
+\RequirePackage[user,lastpage]{zref}
 \RequirePackage{ifthen}
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
@@ -181,7 +181,7 @@
   \fancyfootoffset[RE,RO]{4cm} % lines up number with marks column
     \fancyfoot[R]{%
     	\if@specsolns\color{\@specsolnscolor}\fi
-    	page~\thepage~of~\pageref{LastPage}%
+    	page~\thepage~of~\zpageref{LastPage}%
 	} % centre bottom of every page except first
 	% Copyright as per front page
 	\fancyfoot[L]{%
@@ -758,10 +758,8 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Line at end of AB
-\let\@oldenddochook\@enddocumenthook
-\def\@enddocumenthook{%
-\par\ourule
-\@oldenddochook}
-
+\AtEndDocument{%
+\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}%
+}%
 %%
 %% EOF

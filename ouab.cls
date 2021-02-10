@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2020/04/16 v2.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2021/02/10 v2.3 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@draft
 \@draftfalse
@@ -24,7 +24,7 @@
 \RequirePackage[fleqn]{amsmath}
 \RequirePackage{amsthm}
 \RequirePackage{amssymb}
-\RequirePackage{lastpage}
+\RequirePackage[user,lastpage]{zref}
 \RequirePackage{ifthen}
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
@@ -170,7 +170,7 @@
   \renewcommand{\headrulewidth}{0pt}
   \renewcommand{\footrulewidth}{0pt}%
   \fancyfootoffset[RE,RO]{4cm} % lines up number with marks column
-  \fancyfoot[C]{page~\thepage~of~\pageref{LastPage}} % internal right hand pages only
+  \fancyfoot[C]{page~\thepage~of~\zpageref{LastPage}} % internal right hand pages only
   \if@draft%
     \fancyfoot[RE,RO,LE,LO]{DRAFT}
   \fi%
@@ -509,13 +509,12 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Line at end of AB
-\let\@oldenddochook\@enddocumenthook
-\def\@enddocumenthook{%
+\AtEndDocument{%
 	\if@draft%
 		\@check@marks%
 	\fi%
 	\par\addvspace{\smallskipamount}%
 	\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}%
-\@oldenddochook}
+}%
 %%
 %% EOF
