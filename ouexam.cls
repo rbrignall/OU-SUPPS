@@ -1,5 +1,3 @@
-%% Note that lines beginning with a % sign are ignored by LaTeX
-
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{ouexam}[2021/02/10 v2.4 (Robert Brignall, all rights reserved)]
 
@@ -680,6 +678,10 @@
                        {\@outn@subtotal@hline@height}%
 \fi%
 }
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Newpage commands
+\newcommand{\solutionbreak}{\if@showsolutions\newpage\fi}
+\newcommand{\questionbreak}{\if@showsolutions\else\newpage\fi}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
 %% Needed for marginnote package
