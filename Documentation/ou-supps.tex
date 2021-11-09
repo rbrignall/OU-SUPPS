@@ -849,7 +849,7 @@ This is the default operation for using |ouexam.cls| for setting exam papers. An
 |\documentclass[specimen]{ouexam}|
 \end{desc}
 
-This version is designed for specimen exam papers. The formatting on the front page is changed, and certain commands (e.g.\ |\examtime|) are not required.
+This version is designed for specimen exam papers. The formatting on the front page is changed, and certain commands (e.g.\ |\examtime|) are not required. See Subsection~\ref{subsec-specs} for full details on creating specimen papers.
 
 \begin{desc}
 |\documentclass[secondspecimen]{ouexam}|
@@ -1029,7 +1029,7 @@ command; for example:
             }
 \end{verbatim}
 
-\subsection{Creating questions}
+\subsection{Creating questions}\label{subsec-ouexam-questions}
 The internal counter used for generating questions is |question|. 
 
 \subsubsection{Question syntax}
@@ -1130,7 +1130,17 @@ Inserts a |\pagebreak| command when the |showsolutions| option is not specified.
 Inserts a |\pagebreak| command when the |showsolutions| option is specified.
 
 
-\subsection{Creating solutions}
+
+%
+%
+%
+%
+%
+%
+%
+\subsection{Creating solutions to live exams}\label{subsec-ouexam-solutions}
+
+For creating solutions to real exams (as opposed to specimen solutions, whose presentation is different and should be handled as in Subsection~\ref{subsec-specs}), the |solution| environment is provided as a wrapper, so that both the exam and its solutions can (in theory) be generated from the same single tex file (by specifying |showsolutions| or not). 
 
 \begin{desc}
 |\begin{solution}|\\
@@ -1294,7 +1304,12 @@ Inserts a |\pagebreak| command when the |showsolutions| option is not specified.
 \end{desc}
 Inserts a |\pagebreak| command when the |showsolutions| option is specified.
 
-
+%
+%
+%
+%
+%
+%
 \subsection{Alternative method to create solutions}
 If you prefer not to have solutions appearing in-line with the questions, an alternative method is to place all solutions at the end. You should not use this method for creating specimen solutions.
 
@@ -1310,6 +1325,89 @@ Solutions can then be created using the |\question| command to create questions,
 
 \emph{Important note:} Contents after the |\solutions| flag will be displayed irrespective of whether the |showsolutions| option is specified in the preamble. However, you may want to specify |showsolutions| in order to adjust the formatting of the cover page.
 
+
+%
+%
+%
+%
+%
+%
+\subsection{Creating specimens and specimen solutions}\label{subsec-specs}
+
+The process of creating specimen exams is broadly similar to that of creating exams, with some specific requirements in the preamble. On the other hand, creating solutions to specimen exams is different from the processes used for creating solutions to live exams (shown above), since the resulting formatting must be of suitable quality for student use.
+
+\subsubsection{Setting up the preamble for specimen exams}
+
+Since specimen papers and their solutions do not have dates and times associated with them, the preamble for these documents is different. Here is a typical (minimal) example for a specimen exam.
+
+\begin{desc}
+|\documentclass[specimen]{ouexam}|\\
+|\modulecode{Mxyz}|\\
+|\moduletitle{Title of Module}|\\
+|\timeallowed{3 hours}|\\
+|\copyrightyear{2016}|\\
+|\examinstructions{%|\\
+|\textbf{Instructions}|\\
+| |\\
+|Insert module-specific examination instructions here|\\
+|}|\\
+|\begin{document}|
+\end{desc}
+
+For the second specimen exam, one can use the |secondspecimen| option.
+\begin{desc}
+|\documentclass[secondspecimen]{ouexam}|	
+\end{desc}
+The result of this command is to insert the text `Second specimen' at the top of the cover page, and in the footer of all internal pages. This can also be achieved using the following.
+\begin{desc}
+|\documentclass[specimen]{ouexam}|\\
+|\session{Second specimen}|
+\end{desc}
+
+This method can also be used to create, e.g., a `Third specimen' by making the obvious changes.
+
+\subsubsection{Setting up the preamble for specimen solutions}
+
+The following illustrates a typical preamble for specimen solutions documents.
+
+\begin{desc}
+|\documentclass[specimensolutions]{ouexam}|\\
+|\modulecode{Mxyz}|\\
+|\moduletitle{Title of Module}|\\
+|\copyrightyear{2016}|\\
+|\begin{document}|
+\end{desc}
+
+For solutions to the second specimen exam, one can use the options |secondspecimen| and |showsolutions|.
+\begin{desc}
+|\documentclass[secondspecimen,showsolutions]{ouexam}|
+\end{desc}
+The result of this command is to change the title to `Mxyz Solutions to the Second specimen Examination Paper' at the top of the first page. This can also be achieved using the following.
+\begin{desc}
+|\documentclass[specimensolutions]{ouexam}|\\
+|\specimensolutionstitle{Solutions to the Second specimen Examination Paper}|
+\end{desc}
+
+This method can also be used to create, e.g., solutions to the `Third specimen' by making the obvious changes.
+
+\subsubsection{Formatting the internal text of specimens and solutions}
+
+The process for formatting the questions of a Specimen examination paper are identical to those described in Subsection~\ref{subsec-ouexam-questions}.
+
+The process for formatting the solutions in a |specimensolutions| document do not need to follow the guidelines laid out in Subsection~\ref{subsec-ouexam-solutions}. In particular, it is not necessary to use the |solution| environment (although if you use this, it will cause no harm to your document). All that is required is the |\question| command, and then you start typing:
+\begin{desc}
+|\question|\\
+|Write your solution to the question here|	
+\end{desc}
+
+Generally speaking, one does not include marks or part marks in specimen solutions, but if you need to do this, then you can use the |\mk| command as specified in previous sections.
+
+
+%
+%
+%
+%
+%
 \subsection{Technical info}
 This section can be omitted unless you need/want to know a bit more about the class file.
 
