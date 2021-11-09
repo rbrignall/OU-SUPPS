@@ -322,16 +322,18 @@
     	\rule{\titletablewidth}{1pt}
     	
     	\nointerlineskip\vspace{12pt}
-	{\if@remoteexam
-	  {\relax}
-	\else
-     	  {\if@showsolutions
-    	    {\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill} %Equates to \Large in 12pt, \LARGE in 11pt
-    	  \else
-	    {\hfill Time allowed:\ \@timeallowed\hfill}
-	  \fi}
+     	{\if@showsolutions
+    	  {\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill} %Equates to \Large in 12pt, \LARGE in 11pt
     	  \par\nointerlineskip\vspace{12pt}
     	  \rule{\titletablewidth}{1pt}
+    	\else
+	  {\if@remoteexam
+	    {\relax}
+	  \else
+	    {\hfill Time allowed:\ \@timeallowed\hfill}
+    	    \par\nointerlineskip\vspace{12pt}
+    	    \rule{\titletablewidth}{1pt}
+	  \fi}
     	\fi}
     \end{tabular}
     \vspace{20pt}
