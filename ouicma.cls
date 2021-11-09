@@ -20,6 +20,7 @@
 \RequirePackage{enumitem}
 \RequirePackage{mdframed}
 \RequirePackage{marginnote}
+\RequirePackage{iftex}
 %%
 
 %\def\contentsname{}

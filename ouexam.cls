@@ -93,7 +93,7 @@
 \fi%
 \RequirePackage{verbatim}
 \RequirePackage{pgfkeys}
-\RequirePackage{ifpdf}
+\RequirePackage{iftex}
 \if@nobarcode
 	\relax
 \else

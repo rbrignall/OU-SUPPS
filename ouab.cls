@@ -29,7 +29,7 @@
 \RequirePackage[inline,shortlabels]{enumitem}
 \RequirePackage{marginnote}
 \RequirePackage{pgfkeys}
-\RequirePackage{ifpdf}
+\RequirePackage{iftex}
 \RequirePackage[labelsep=quad]{caption} % Fixes figure captions to OU style
 %%
 %%

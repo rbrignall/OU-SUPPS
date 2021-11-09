@@ -27,6 +27,7 @@
 \RequirePackage{xcolor}
 \RequirePackage{framed}
 \RequirePackage{pgfkeys}
+\RequirePackage{iftex}
 \RequirePackage{environ}
 \RequirePackage{verbatim}
 \if@specsolns
