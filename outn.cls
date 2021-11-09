@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2021/02/10 v2.3 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2021/11/09 v2.3.2 (Robert Brignall, all rights reserved)]
 
 \newif\if@specsolns
 \@specsolnsfalse
@@ -27,6 +27,7 @@
 \RequirePackage{xcolor}
 \RequirePackage{framed}
 \RequirePackage{pgfkeys}
+\RequirePackage{iftex}
 \RequirePackage{environ}
 \RequirePackage{verbatim}
 \if@specsolns
@@ -358,16 +359,19 @@
 \def\@studentcolor{\@specsolnscolor}
 \newcommand\tutoronlycolor[1]{\def\@tutorcolor{#1}}
 \newcommand\studentonlycolor[1]{\def\@studentcolor{#1}}
-%%%
 \newcommand{\tutoronly}[1]{{\color{\@tutorcolor}#1}}
 \newenvironment{tutor}{\color{\@tutorcolor}\@tutoronlytitle}{}
+\newcommand{\remark}[1]{{\color{\@tutorcolor}\emph{Remark:} #1}}
+\newenvironment{longremark}{\color{\@tutorcolor}\emph{Remarks:}\par}{}
 \newcommand{\studentonly}[1]{}
 \newenvironment{student}{\comment}{\endcomment}
 \if@specsolns
     \AtBeginDocument{
         \renewcommand{\tutoronly}[1]{}
+        \renewcommand{\remark}[1]{}
         \renewcommand{\studentonly}[1]{{\color{\@studentcolor}#1}}
         \renewenvironment{tutor}{\comment}{\endcomment}
+        \renewenvironment{longremark}{\comment}{\endcomment}
         \renewenvironment{student}{\color{\@studentcolor}\@studentonlytitle}{}
     }
 \else
@@ -402,7 +406,7 @@
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
-\setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
+\setlist[enumerate]{align=left,leftmargin=!,labelwidth=4ex,labelsep*=1.0ex}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*)}
 %%
@@ -412,15 +416,13 @@
 \setlist*[enumerate*,1]{label=(\roman*), ref=(\roman*)}
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Marks and remarks
+%% Marks
 %
 \if@specsolns%
   	% suppress everything in specimen solutions
   	\newcommand{\bracketedmarks}[2][]{\relax}
   	\newcommand{\solnmarks}[2][]{\relax}
   	\newcommand{\solnmarksplus}[2]{\relax}
-  	\newcommand{\remark}[1]{\relax}
-  	\newenvironment{longremark}{\comment}{\endcomment}
 \else%
 	% Not specimen solutions
 	% Bracketed marks - not really used in outn
@@ -455,8 +457,6 @@
 	}	
 	%	
   	\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
-  	\newcommand{\remark}[1]{\emph{Remark:} #1}
-  	\newenvironment{longremark}{\emph{Remarks:}\par}{}
 \fi
 % The standard \mk command is defined in terms of solnmarks.
 % \bracketedmarks is available mainly for compatibility with ouab and ouexam.

@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2021/02/10 v2.4 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2021/11/09 v2.4.2 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -44,6 +44,10 @@
 \DeclareOption{20pt}{%
  \@bigfontneededtrue
  \def\@txtsize{20pt}
+}
+\newif\if@smallmargins
+\DeclareOption{smallmargins}{%
+  \@smallmarginstrue
 }
 \newif\if@nobarcode
 \@nobarcodefalse
@@ -93,7 +97,7 @@
 \fi%
 \RequirePackage{verbatim}
 \RequirePackage{pgfkeys}
-\RequirePackage{ifpdf}
+\RequirePackage{iftex}
 \if@nobarcode
 	\relax
 \else
@@ -292,6 +296,9 @@
   	\@makestandardtitle
      \fi
   \end{adjustwidth}
+    \if@smallmargins% Adjust geometry for future pages
+      \newgeometry{a4paper,left=1cm,right=4cm,top=1cm,bottom=3cm,marginparwidth=5cm,nohead,asymmetric}%
+    \fi%
 }
 %%
 \def\@makestandardtitle{%
@@ -322,16 +329,18 @@
     	\rule{\titletablewidth}{1pt}
     	
     	\nointerlineskip\vspace{12pt}
-	{\if@remoteexam
-	  {\relax}
-	\else
-     	  {\if@showsolutions
-    	    {\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill} %Equates to \Large in 12pt, \LARGE in 11pt
-    	  \else
-	    {\hfill Time allowed:\ \@timeallowed\hfill}
-	  \fi}
+     	{\if@showsolutions
+    	  {\hfill \textbf{\fontsize{17.28}{22}\selectfont ***SOLUTIONS***}\hfill} %Equates to \Large in 12pt, \LARGE in 11pt
     	  \par\nointerlineskip\vspace{12pt}
     	  \rule{\titletablewidth}{1pt}
+    	\else
+	  {\if@remoteexam
+	    {\relax}
+	  \else
+	    {\hfill Time allowed:\ \@timeallowed\hfill}
+    	    \par\nointerlineskip\vspace{12pt}
+    	    \rule{\titletablewidth}{1pt}
+	  \fi}
     	\fi}
     \end{tabular}
     \vspace{20pt}
@@ -340,8 +349,7 @@
 	\raggedright
 	\@examinstructions
     \end{adjustwidth}
-    \newpage
-}
+    \clearpage}
 %%
 \def\@makespecimensolutionstitle{%
     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
@@ -397,8 +405,7 @@
   \fi
 }
 \pagestyle{internalpages}
-
-
+%
 \setcounter{secnumdepth}{3}
 
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
@@ -421,8 +428,8 @@
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
-\setlist[enumerate]{align=left,leftmargin=8mm,labelsep*=0pt}
-\setlist[itemize]{align=left,leftmargin=8mm,labelsep*=-1mm}
+\setlist[enumerate]{align=left,leftmargin=!,labelwidth=4ex,labelsep*=1.0ex}
+\setlist[itemize]{align=left,leftmargin=!,labelwidth=4ex,labelsep*=-0.25ex}
 \setlist[enumerate,1]{label=(\alph*), ref=(\alph*)}
 \setlist[enumerate,2]{label=(\roman*), ref=(\roman*),leftmargin=9mm}
 %%
