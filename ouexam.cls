@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2021/08/24 v2.4.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2021/11/09 v2.4.2 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
