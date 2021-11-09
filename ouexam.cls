@@ -45,6 +45,10 @@
  \@bigfontneededtrue
  \def\@txtsize{20pt}
 }
+\newif\if@smallmargins
+\DeclareOption{smallmargins}{%
+  \@smallmarginstrue
+}
 \newif\if@nobarcode
 \@nobarcodefalse
 \DeclareOption{nobarcode}{%
@@ -292,6 +296,9 @@
   	\@makestandardtitle
      \fi
   \end{adjustwidth}
+    \if@smallmargins% Adjust geometry for future pages
+      \newgeometry{a4paper,left=1cm,right=4cm,top=1cm,bottom=3cm,marginparwidth=5cm,nohead,asymmetric}%
+    \fi%
 }
 %%
 \def\@makestandardtitle{%
@@ -342,8 +349,7 @@
 	\raggedright
 	\@examinstructions
     \end{adjustwidth}
-    \newpage
-}
+    \clearpage}
 %%
 \def\@makespecimensolutionstitle{%
     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
@@ -399,8 +405,7 @@
   \fi
 }
 \pagestyle{internalpages}
-
-
+%
 \setcounter{secnumdepth}{3}
 
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
