@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2021/11/09 v2.3.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2021/11/16 v2.3.3 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@draft
 \@draftfalse
@@ -296,7 +296,8 @@
 	\fi
 	\stepcounter{question}%
 	\par\addvspace{\bigskipamount}% 
-	{\textbf{Question~\thequestion} #1}\hspace{12pt}--\hspace{12pt}#2 marks\nopagebreak\par}
+	\def\@marktext{\ifnum#2=1 mark \else marks\fi}
+	{\textbf{Question~\thequestion} #1}\hspace{12pt}--\hspace{12pt}#2 \@marktext\nopagebreak\par}
 %
 \newcommand\@check@marks{
 	\ifnum\c@marktarget=0\relax% Mark of 0 specified: do nothing
