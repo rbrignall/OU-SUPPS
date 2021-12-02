@@ -47,7 +47,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 2.4\\2021-11-09}
+\date{Version 2.4.1\\2021-12-02}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -912,9 +912,11 @@ Sets the code of the module (required).
 \begin{desc}
 |\session{...}|
 \end{desc}
-Sets the session code for the exam (required, except for |specimen| and |secondspecimen|). This replaces the deprecated |\conflation{...}| command (although this still works to ensure backwards compatibility).
+Optional. Sets the session code for the exam (required, except for |specimen| and |secondspecimen|). This replaces the deprecated |\conflation{...}| command (although this still works to ensure backwards compatibility).
 
 If |specimen| or |secondspecimen| options are used, |\session{...}| can be used to overwrite the text `Specimen' or `Second Specimen' as appears in the title and footer. For example, you could specify |\session{Third specimen}|.
+
+In a regular exam paper, if no |\session{...}| command is issued, then the slash is removed following the module code and no session information is given.
 
 \begin{desc}
 |\moduletitle{...}|
