@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2021/11/09 v2.4.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2021/12/02 v2.4.3 (Robert Brignall, all rights reserved)]
 
 %% Handles options 
 \newif\if@specimen
@@ -154,12 +154,12 @@
 \def\@examinstructions{No special instructions specified.}
 \newcommand\examinstructions[1]{\renewcommand\@examinstructions{#1}}
 %
-\def\@session{C}
+\def\@session{\relax}
 \if@secondspecimen
-	\def\@session{Second specimen}
+	\def\@session{/Second specimen}
 \else
 	\if@specimen
-		\def\@session{Specimen}
+		\def\@session{/Specimen}
 	\fi
 \fi
 %
@@ -167,7 +167,7 @@
 \newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
 %
 \newcommand\conflation[1]{\renewcommand\@session{#1}\ClassWarning{ouexam}{\protect\conflation\space is deprecated. Please use \protect\session\space(same syntax)}} % backwards compatibility
-\newcommand\session[1]{\renewcommand\@session{#1}}
+\newcommand\session[1]{\renewcommand\@session{/#1}}
 \def\@submitby{\relax}
 \newcommand\submitby[1][23:59 BST]{\DeclareRobustCommand\@submitby{Submit by:\ #1}}
 \def\@suppno{\relax} % default
@@ -314,7 +314,7 @@
               \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
             }%
      &
-    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}}}\\ %Equates to \Huge in 12pt
+    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\/\@session}}}\\ %Equates to \Huge in 12pt
      &
     	\raggedright\bfseries Module Examination \@examyear \newline
     	
