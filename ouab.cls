@@ -11,6 +11,17 @@
 \DeclareOption{oneassignment}{%
   \@oneassignmenttrue
 }
+%
+% accessibility warnings
+%
+\newif\if@ousupps@accessibility@warnings
+\@ousupps@accessibility@warningsfalse
+\DeclareOption{accessibility-warnings}{%
+   \@ousupps@accessibility@warningstrue
+}
+\DeclareOption{a-w}{%
+   \@ousupps@accessibility@warningstrue
+}
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
@@ -70,6 +81,18 @@
 %
 \def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%
+\def\@uniqueID{}
+\newcommand\uniqueID[1]{\DeclareRobustCommand\@uniqueID{#1}}
+%
+\def\@figuredescription{}
+\newcommand\figuredescription[1]{\global\def\@figuredescription{#1}}
+\AtBeginEnvironment{figure}{%
+   \global\def\@figuredescription{}%
+}
+\AtBeginEnvironment{figure*}{%
+   \global\def\@figuredescription{}%
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Meta data can be set using \metadataset command, based on pgfkeys
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -88,6 +111,7 @@
    instructions/.store in=\@abinstructions,
    no cut off date/.code = \nocutoffdate,
    ou logo file base/.store in=\@oulogofilebase,
+   unique ID/.code=\uniqueID{#1},
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
@@ -508,14 +532,114 @@
     }
   }%
 %
+
+%
+% accessibility warnings
+%
+\newcommand{\ouabPrintAW}{}
+\newif\if@ousupps@accessibility@warnings@printed
+\@ousupps@accessibility@warnings@printedfalse
+
+\if@ousupps@accessibility@warnings%
+ \typeout{ouab: accessibility warnings switch active}
+ \renewcommand{\ouabPrintAW}{%
+  \@ousupps@accessibility@warnings@printedtrue%
+  \subsection*{Accessibility warnings summary}\@starttoc{aws}}
+ %
+ % command to output accessibility warning message
+ %
+ \newcommand{\ousupps@accessibility@warning@message}[2]{%
+  %
+  % \ousupps@accessibility@warning@message{<warning NUMBER>}{<warning MESSAGE>}
+  %
+  \marginnote{\fbox{\fbox{\parbox{5cm}{\small\emph{AW#1: #2}}}}}%
+  \addcontentsline{aws}{subsubsection}{AW#1: #2}%
+  \typeout{ouab: accessibility warning, AW#1: #2}
+ }
+ %
+ % AW1: list levels need to be <=2 for the VLE
+ %
+ \AtBeginEnvironment{enumerate}{%
+  \ifnum\the\@enumdepth>1%
+   \ousupps@accessibility@warning@message{1}{list depth (enumerate) more than 2}%
+  \fi
+  \ifnum\the\@itemdepth>1%
+   \ousupps@accessibility@warning@message{1}{list depth (enumerate) more than 2}%
+  \fi
+ }
+ \AtBeginEnvironment{itemize}{%
+  \ifnum\the\@enumdepth>1%
+   \ousupps@accessibility@warning@message{1}{list depth (itemize) more than 2}%
+  \fi
+  \ifnum\the\@itemdepth>1%
+   \ousupps@accessibility@warning@message{1}{list depth (itemize) more than 2}%
+  \fi
+ }
+ %
+ % AW3, AW4: tabular environment checks
+ %
+ \BeforeBeginEnvironment{tabular}{%
+  %
+  % AW3: tabular in math environment
+  %
+  \ifmmode%
+   \ousupps@accessibility@warning@message{3}{tabular in math mode}%
+  \else
+   %
+   % AW4: tabular without table/table* wrapping body
+   %
+   \def\@tempa{table}%
+   \ifx\@tempa\@currenvir\relax
+   \else
+    \def\@tempa{table*}%
+    \ifx\@tempa\@currenvir\relax
+    \else
+     \ousupps@accessibility@warning@message{4}{tabular not in table nor in table*}%
+    \fi
+   \fi
+  \fi
+ }
+ %
+ % AW 5: figure description empty
+ %
+ \AfterEndEnvironment{figure}{%
+  \ifx\@figuredescription\@empty%
+   \ousupps@accessibility@warning@message{5}{no figure description given}%
+  \fi
+ }
+ \AfterEndEnvironment{figure*}{%
+  \ifx\@figuredescription\@empty%
+   \ousupps@accessibility@warning@message{5}{no figure description given}%
+  \fi
+ }
+\fi
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Line at end of AB
 \AtEndDocument{%
-	\if@draft%
-		\@check@marks%
-	\fi%
-	\par\addvspace{\smallskipamount}%
-	\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}%
+ \if@draft%
+  \@check@marks%
+ \fi%
+ \par\addvspace{\smallskipamount}%
+ \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}%
+ %
+ % accessibility warnings
+ %
+ \if@ousupps@accessibility@warnings%
+  %
+  % AW2: unique ID not specified
+  %
+  \ifx\@uniqueID\@empty%
+   \ousupps@accessibility@warning@message{2}{unique ID not specified}%
+  \fi
+  %
+  % check if \ouabPrintAW has been called, and if not, then output summary
+  %
+  \if@ousupps@accessibility@warnings@printed\relax%
+  \else
+   \ouabPrintAW%
+  \fi
+ \fi
 }%
 %%
 %% EOF

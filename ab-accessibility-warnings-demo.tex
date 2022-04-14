@@ -1,0 +1,141 @@
+\documentclass[a-w]{ouab}
+
+\metadataset{faculty=STEM,
+ module code=MXXX,
+ module title=Title of Module,
+ document title=ouab aw demo,
+ document subtitle=accessibility warnings demonstration,
+ presentation=yyyy,
+ copyright year=1999,
+ supp no=3.14159,
+ version no=1.12,
+ multiple choice option text=choices,
+ no cut off date,
+ instructions=some specific instructions,
+}
+
+\abinstructions{%
+ Module-specific instructions for the front page.
+}
+
+\begin{document}
+\maketitle
+
+\tma*{01}[Covers units A and B]
+
+\section*{Accessibility warnings: list demonstrations}
+\question[(essay question)]{25}
+\emph{This question is about nothing in particular.}
+\begin{enumerate}
+ \item Another item
+       \begin{itemize}
+        \item second level itemize
+        \item second level itemize
+       \end{itemize}
+       \begin{enumerate}
+        \item Sub sub\mk{2}
+        \item Sub sub question that runs a long time until it goes over to a second
+              line\mk{2}
+              \begin{enumerate}
+               \item third level list; not rendered VLE
+               \item third level list; not rendered VLE
+              \end{enumerate}
+        \item Sub sub question that runs a long time until it goes over to a second
+              line\mk{2}
+              \begin{itemize}
+               \item third level list; not rendered VLE
+               \item third level list; not rendered VLE
+              \end{itemize}
+       \end{enumerate}
+\end{enumerate}
+
+itemize list test warning demonstration
+\begin{itemize}
+ \item first level
+       \begin{enumerate}
+        \item second level
+        \item second level
+       \end{enumerate}
+       \begin{itemize}
+        \item second level
+              \begin{itemize}
+               \item third level
+               \item third level
+              \end{itemize}
+              \begin{enumerate}
+               \item third level
+               \item third level
+               \item third level
+                     \begin{enumerate}
+                      \item fourth level
+                      \item fourth level
+                     \end{enumerate}
+              \end{enumerate}
+       \end{itemize}
+\end{itemize}
+
+\section*{Accessibility warnings: tabular demonstrations}
+Equations should not contain \texttt{tabular} environments.
+\[
+ \begin{tabular}{cc}
+  1 & 2 \\
+  3 & 4
+ \end{tabular}
+\]
+the following tabular is \emph{not} in math mode.
+
+\begin{tabular}{cc}
+ 1 & 2 \\
+ 3 & 4
+\end{tabular}
+
+tabular in table
+\begin{table}[!htb]
+ \centering
+ \begin{tabular}{cc}
+  1 & 2 \\
+  3 & 4
+ \end{tabular}
+\end{table}
+
+tabular in table*
+\begin{table*}[!htb]
+ \centering
+ \begin{tabular}{cc}
+  1 & 2 \\
+  3 & 4
+ \end{tabular}
+\end{table*}
+
+\section*{Accessibility warnings: figure descriptions}
+
+Figure without description
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=3cm]{example-image-a}
+ \caption{caption}
+\end{figure}
+
+Figure \emph{with} description
+\begin{figure}[!htb]
+ \centering
+ \includegraphics[width=3cm]{example-image-a}
+ \figuredescription{the letter A}
+ \caption{caption}
+\end{figure}
+
+Figure* without description
+\begin{figure*}[!htb]
+ \centering
+ \includegraphics[width=3cm]{example-image-b}
+ \caption{caption}
+\end{figure*}
+
+Figure \emph{with} description
+\begin{figure*}[!htb]
+ \centering
+ \includegraphics[width=3cm]{example-image-b}
+ \figuredescription{the letter B}
+ \caption{caption}
+\end{figure*}
+\end{document}
