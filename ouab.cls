@@ -30,7 +30,9 @@
 \RequirePackage{marginnote}
 \RequirePackage{pgfkeys}
 \RequirePackage{iftex}
-\RequirePackage[labelsep=quad]{caption} % Fixes figure captions to OU style
+\RequirePackage{caption} % Fixes figure captions to OU style
+\captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25}}
+
 %%
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -155,7 +157,7 @@
 \par\medskip
 \end{adjustwidth}
 %
-\begin{adjustwidth}{\logospace}{-\logospace} 
+\begin{adjustwidth}{\logospace}{-\logospace}
   \@abinstructions
 \end{adjustwidth}
 %
@@ -182,7 +184,7 @@
 
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
-\raggedbottom                
+\raggedbottom
 \parindent 0pt
 \parskip 6pt
 \setlength{\mathindent}{20pt}\relax
@@ -201,7 +203,7 @@
 	\if@draft%
 		\@check@marks%
 		\setcounter{marktarget}{0}%
-	\fi	  
+	\fi	
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	\setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
@@ -222,7 +224,7 @@
 }
 %
 \def\@assignmentwithcutoff[#1]#2{%
-	\def\@cutoff{\@cutofftext\ #1}
+	\def\@cutoff{\@cutofftext #1}
 	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}#1}
 	\if@oneassignment%
 		\relax%
@@ -230,8 +232,11 @@
 	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}%
 	\fi%
 	\@ifnextchar[{\@assignmentsubtitle}{
-		\if@oneassignment\addtocontents{tma}{\hfill\textbf{\@cutoff}}
-		\else\addtocontents{tma}{\par\medskip}\fi
+		\if@oneassignment%
+        \addtocontents{tma}{\hfill\textbf{\@cutoff}}
+		\else%
+        \addtocontents{tma}{\par\medskip}
+        \fi%
 		\par\addvspace{\bigskipamount}
 	}
 }
@@ -240,16 +245,18 @@
 	\def\@cutoff{\relax}
 	{\large \textbf{\@assignmentname\ #1}}%
 	\if@oneassignment
-		\relax 
+		\relax
 	\else
 	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #1}
 	\fi
 	\@ifnextchar[{\@assignmentsubtitle}{\addtocontents{tma}{\par\medskip}\par\addvspace{\bigskipamount}}
 }
 
+
+
 \def\@assignmentsubtitle[#1]{%
 	\if@oneassignment
-		\addtocontents{tma}{\textbf{#1\hfill\@cutoff} \par\medskip}
+		\addtocontents{tma}{\parbox[t]{\dimexpr\textwidth-0.45\textwidth}{\raggedright\textbf{#1}}\hfill\parbox[t]{\dimexpr0.45\textwidth}{\hfill\textbf{\@cutoff}} \par\medskip}
 	\else
 		\addtocontents{tma}{\newline\protect\makebox[1cm][l]{}#1\par\medskip}
 	\fi
@@ -257,7 +264,7 @@
 }
 %
 % Allows cut-off text to be suppressed
-\def\@cutofftext{Cut-off date\ \ }
+\def\@cutofftext{Cut-off~date~~}
 \def\@covercutofftext{Cut-off date}
 \def\nocutoffdate{\def\@cutofftext{See module website for the cut-off date.}\def\@covercutofftext{\relax}}
 
@@ -287,7 +294,7 @@
 	\par\addvspace{\bigskipamount}%
 	{\textbf{Question~\thequestion} #1}\nopagebreak\par}
 %
-%% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
+%% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display.
 \newcommand{\@@question}[2][\unskip]{%
 	\if@draft%
 		\@check@marks%
@@ -371,7 +378,7 @@
   \def\noitem{\hfil\egroup\penalty50 \hfill%
     \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
-}{\hfil\egroup\par}  
+}{\hfil\egroup\par}
 
 % Normal options: this is just using enumitem features with enumerate.
 \newenvironment{options}%
@@ -435,7 +442,7 @@
           }%
         }%
       \endgroup
-    }  
+    }
   }
   {% Older versions of marginnote
     \long\def\@mn@@@marginnote[#1]#2[#3]{%
