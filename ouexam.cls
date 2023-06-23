@@ -175,7 +175,7 @@
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %
-\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
 \newif\if@switchmarks
@@ -268,7 +268,7 @@
 	}%
 }
 \newlength\titletablewidth
-\setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
+\setlength\titletablewidth{\dimexpr\textwidth-3cm} % width of RH column on front page
 \newlength\toppadding
 \setlength\toppadding{0cm} % allows users to adjust space at top if desired
 %%
@@ -306,15 +306,15 @@
     	\fontsize{14.4}{18}\selectfont % Equates to \large in 12pt for most of the title page
      \fi
      \hfill\ \setbarcode\par\bigskip % New location for longer barcodes
-     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+     \begin{tabular}{@{}p{6.5cm}@{}p{\titletablewidth}@{}}%
         \vspace{-0.7cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[width=3.6cm]{\@oulogofile}%
+              \includegraphics[]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
+              \fbox{\parbox[t][17.5mm][c]{53.7mm}{\centering OU Logo}}%
             }%
      &
-    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\/\@session}}}\\ %Equates to \Huge in 12pt
+    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}}}\\ %Equates to \Huge in 12pt
      &
     	\raggedright\bfseries Module Examination \@examyear \newline
     	
@@ -352,12 +352,12 @@
     \clearpage}
 %%
 \def\@makespecimensolutionstitle{%
-    \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+    \begin{tabular}{@{}p{6.5cm}@{}p{\titletablewidth}@{}}%
         \vspace{-0.3cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[width=3.6cm]{\@oulogofile}%
+              \includegraphics[]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
+              \fbox{\parbox[t][17.5mm][c]{53.7mm}{\centering OU Logo}}%
             }%
     &
 	\if@bigfontneeded
