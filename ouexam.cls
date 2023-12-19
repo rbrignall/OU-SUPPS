@@ -1,7 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2021/12/02 v2.4.3 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2023/12/19 v2.5 (Robert Brignall, all rights reserved)]
 
-%% Handles options 
+%% Handles options
 \newif\if@specimen
 \@specimenfalse
 \DeclareOption{specimen}{%
@@ -58,6 +58,7 @@
 \@remoteexamfalse
 \DeclareOption{remote}{%
 	\@remoteexamtrue
+	\@nobarcodetrue
 }
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -83,6 +84,8 @@
 \RequirePackage{ifthen}
 \RequirePackage[inline]{enumitem}
 \RequirePackage{marginnote}
+\RequirePackage{caption} % Fixes figure captions to OU style
+\captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25}}
 \if@showsolutions%
 	\if@specimensolutions%
 		\RequirePackage{xcolor}
@@ -125,7 +128,7 @@
 \newcommand\examday[1]{\renewcommand\@examday{#1}}
 \newcommand\exammonth[1]{\renewcommand\@exammonth{#1}}
 \newcommand\examyear[1]{\renewcommand\@examyear{#1}}
-\if@specimen 
+\if@specimen
 	\def\@examtime{\relax}
 	\def\@examday{\relax}
 	\def\@exammonth{\relax}
@@ -175,7 +178,15 @@
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %
-\def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
+\if@specimensolutions
+  \def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
+  \def\@logow{4.0cm}
+  \def\@logoh{1.29cm}
+\else
+  \def\@oulogofilebase{OU_Compact_LOGO_BLACK_40mm}
+  \def\@logow{2.37cm}
+  \def\@logoh{4.0cm}
+\fi
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
 \newif\if@switchmarks
@@ -191,7 +202,13 @@
 %
 \def\@examcode{\relax} % default blank
 \if@nobarcode % Set by nobarcode option to class as override
-	\newcommand\examcode[1]{\relax}
+	\if@remoteexam
+	  \newcommand\examcode[1]{%
+	    \DeclareRobustCommand\@examcode{#1}
+	  }
+ 	\else
+	  \newcommand\examcode[1]{\relax}
+	\fi
 \else
 	\newlength\barcodewidth
 	\newcommand\examcode[1]{%
@@ -212,6 +229,20 @@
 \par
     \textsf{\@examcode}%
   }%
+  \fi
+}
+ \def\setqpid
+{%
+  \if@remoteexam
+    \if@specimen\relax%
+    \else%
+      \if@secondspecimen\relax%
+      \else
+        \footnotesize \hfill QP ID: \@examcode
+      \fi
+    \fi
+  \else
+    \relax
   \fi
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -235,7 +266,7 @@
    faculty/.store in=\@faculty,
    multiple choice option text/.store in=\@optiontext,
    instructions/.store in=\@examinstructions,
-   top padding/.code=\setlength\toppadding{#1}, 
+   top padding/.code=\setlength\toppadding{#1},
    ou logo file base/.store in=\@oulogofilebase,
    switch marks/.is if=@switchmarks,
 }
@@ -253,7 +284,7 @@
 	\setlength\@titlefooterleftindent{0cm}
 	\setlength\@titlefooterrightindent{-2.5cm}
 \else%
-	\setlength\@titlefooterleftindent{1cm}
+	\setlength\@titlefooterleftindent{0cm}
 	\setlength\@titlefooterrightindent{-1cm}
 \fi%
 \fancypagestyle{frontpage}{%
@@ -262,13 +293,17 @@
   \renewcommand{\footrulewidth}{0pt}%
     \fancyfoot[L]{%
     \begin{adjustwidth}{\@titlefooterleftindent}{\@titlefooterrightindent}%
-    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
-		\textbf{\@versionno}%
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}
+		\if@specimensolutions\relax \else\\
+        	{\footnotesize You have been provided with this question paper for your personal use, either for end-of-module assessment or (if you downloaded this paper from the OUSA website) to help you prepare for a future exam. You are not permitted to pass on this question paper, or any of its contents, to any website, online service, social media platform or any individual or organisation, as this is an infringement of the University's copyright and a disciplinary offence under Section SD 1.2 of the University's Code of Practice for Student Discipline.}\\
+	        \setqpid
+		\fi
+		\textbf{\@versionno}\hfill \textbf{\@suppno}%
 	\end{adjustwidth}%
 	}%
 }
 \newlength\titletablewidth
-\setlength\titletablewidth{\dimexpr\textwidth-3cm} % width of RH column on front page
+\setlength\titletablewidth{\dimexpr\textwidth-1cm} % width of RH column on front page
 \newlength\toppadding
 \setlength\toppadding{0cm} % allows users to adjust space at top if desired
 %%
@@ -287,8 +322,11 @@
   \def\@oulogofile{\@oulogofilebase.eps}
 \fi%
 %%
+  \if@specimensolutions\relax\else
+    \newgeometry{left=2cm,right=6cm,top=1cm,bottom=5.5cm,footskip=4.94mm,marginparwidth=5cm,nohead,asymmetric}
+  \fi
   \thispagestyle{frontpage}%
-  \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted 
+  \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted
   \begin{adjustwidth}{0pt}{-3.5cm} % N.B. positive measurements increase margins!
      \if@specimensolutions%
   	\@makespecimensolutionstitle
@@ -296,9 +334,12 @@
   	\@makestandardtitle
      \fi
   \end{adjustwidth}
-    \if@smallmargins% Adjust geometry for future pages
-      \newgeometry{a4paper,left=1cm,right=4cm,top=1cm,bottom=3cm,marginparwidth=5cm,nohead,asymmetric}%
-    \fi%
+  \if@specimensolutions\relax\else
+    \restoregeometry
+  \fi
+  \if@smallmargins% Adjust geometry for future pages
+    \newgeometry{a4paper,left=1cm,right=4cm,top=1cm,bottom=3cm,marginparwidth=5cm,nohead,asymmetric}%
+  \fi%
 }
 %%
 \def\@makestandardtitle{%
@@ -306,16 +347,16 @@
     	\fontsize{14.4}{18}\selectfont % Equates to \large in 12pt for most of the title page
      \fi
      \hfill\ \setbarcode\par\bigskip % New location for longer barcodes
-     \begin{tabular}{@{}p{6.5cm}@{}p{\titletablewidth}@{}}%
+     \begin{tabular}{@{}p{4cm}@{}p{\titletablewidth}@{}}%
         \vspace{-0.7cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[]{\@oulogofile}%
+              \includegraphics[scale=1.0]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][17.5mm][c]{53.7mm}{\centering OU Logo}}%
+              \fbox{\parbox[t][\@logoh][c]{\@logow}{\centering OU Logo}}%
             }%
      &
-    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}}}\\ %Equates to \Huge in 12pt
-     &
+    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\/\@session}}}\newline
+
     	\raggedright\bfseries Module Examination \@examyear \newline
     	
     	\vspace*{-10pt}
@@ -326,7 +367,7 @@
 	\else
 	  {\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline}
 	\fi}
-    	\rule{\titletablewidth}{1pt}
+    	%\rule{\titletablewidth}{1pt}
     	
     	\nointerlineskip\vspace{12pt}
      	{\if@showsolutions
@@ -345,19 +386,19 @@
     \end{tabular}
     \vspace{20pt}
 	
-    \begin{adjustwidth}{1cm}{1cm}
+    %\begin{adjustwidth}{1cm}{1cm}
 	\raggedright
 	\@examinstructions
-    \end{adjustwidth}
+    %\end{adjustwidth}
     \clearpage}
 %%
 \def\@makespecimensolutionstitle{%
-    \begin{tabular}{@{}p{6.5cm}@{}p{\titletablewidth}@{}}%
+    \begin{tabular}{@{}p{4.6cm}@{}p{\titletablewidth}@{}}%
         \vspace{-0.3cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[]{\@oulogofile}%
+              \includegraphics[width=4.0cm]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][17.5mm][c]{53.7mm}{\centering OU Logo}}%
+              \fbox{\parbox[t][\@logoh][c]{\@logow}{\centering OU Logo}}%
             }%
     &
 	\if@bigfontneeded
@@ -389,15 +430,15 @@
 	\fancyfoot[R]{\bfseries\thepage~of~\zpageref{LastPage}}
 	\fancyfoot[C]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries CONTINUED}}
 	\if@bigfontneeded %display only module code on L to avoid text clashes
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\fi\fi}  
+	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\fi\fi}
 	\else
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
 	\fi
     \else
  	\fancyfoot[LE,RO]{\bfseries\thepage}
 	\fancyfoot[CO]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries TURN OVER}}% internal right hand pages only
 	\if@bigfontneeded %suppress module code on LO to avoid text clashes
-	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
 	\else
 	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
 	\fi
@@ -410,7 +451,7 @@
 
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
-\raggedbottom                
+\raggedbottom
 \parindent 0pt
 \parskip 6pt
 \setlength{\mathindent}{20pt}\relax
@@ -466,7 +507,7 @@
   \def\noitem{\hfil\egroup\penalty50 \hfill%
     \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
-}{\hfil\egroup\par}  
+}{\hfil\egroup\par}
 
 % Normal options: this is just using enumitem features with enumerate.
 \newenvironment{options}%
@@ -542,7 +583,7 @@
                    {\@outn@rule@height}%
   \fi
 }
- 
+
 % reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
 \newcommand{\outn@draw@rule}[4]{%
         % #1: moveleft
@@ -747,7 +788,7 @@
           }%
         }%
       \endgroup
-    }  
+    }
   }
   {% Older versions of marginnote
     \long\def\@mn@@@marginnote[#1]#2[#3]{%
@@ -908,8 +949,3 @@
     {\comment}
     {\endcomment}
 \fi
-
-
-
-
-
