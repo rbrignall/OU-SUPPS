@@ -197,7 +197,7 @@
 
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
-\raggedbottom                
+\raggedbottom
 \parindent 0pt
 \parskip 6pt
 \setlength{\mathindent}{20pt}\relax
@@ -231,8 +231,10 @@
 }
 
 \def\@assignmentwithcutoff[#1]#2{%
+\begin{adjustwidth}{0cm}{-5cm}
 	\def\@cutoff{\@cutofftext\ #1}
 	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}#1}
+\end{adjustwidth}
 	\@ifnextchar[{\@assignmentsubtitle}{
 		\par\addvspace{\bigskipamount}
 	}
@@ -244,7 +246,7 @@
 	\@ifnextchar[{\@assignmentsubtitle}{\par\addvspace{\bigskipamount}}
 }
 
-% This does nothing except add some space, 
+% This does nothing except add some space,
 % but means structure is identical to ouab.cls.
 \def\@assignmentsubtitle[#1]{%
 	\par\addvspace{\bigskipamount}
@@ -334,7 +336,7 @@
                    {\@outn@rule@height}%
   \fi
 }
- 
+
 % reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
 \newcommand{\outn@draw@rule}[4]{%
         % #1: moveleft
@@ -399,7 +401,7 @@
 \newcommand{\@question}[1][\unskip]{%
 	\refstepcounter{question}
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1}\nopagebreak\par}
-% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
+% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display.
 \newcommand{\@@question}[2][\unskip]{%
 	\refstepcounter{question}
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1} -- #2 marks\nopagebreak\par}
@@ -601,7 +603,7 @@
   \def\noitem{\hfil\egroup\penalty50 \hfill%
     \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
-}{\hfil\egroup\par}  
+}{\hfil\egroup\par}
 
 % Normal options: this is just using enumitem features with enumerate.
 \newenvironment{options}%
@@ -665,7 +667,7 @@
           }%
         }%
       \endgroup
-    }  
+    }
   }
   {% Older versions of marginnote
     \long\def\@mn@@@marginnote[#1]#2[#3]{%
