@@ -137,13 +137,14 @@
 \@modulecode\ \@moduletitle}
 
 \bigskip\bigskip\bigskip
-\textbf{\Huge \@modulecode}\newline
-\rule{\titletablewidth}{1pt}
-
-\bigskip\bigskip\textbf{\Huge \@abtitle\hfill\@abyear}
 \end{tabular}
-\if@subtitle\par\bigskip\textbf{\large \@absubtitle}\fi
 
+\textbf{\Huge \@modulecode}\newline
+\rule{\totalwidth}{1pt}
+\begin{adjustwidth}{0mm}{-40mm}
+\bigskip\bigskip\textbf{\Huge \@abtitle\hfill\@abyear}
+
+\if@subtitle\par\bigskip\textbf{\large \@absubtitle}\fi
 \medskip\rule{\totalwidth}{1pt}
 
 \if@oneassignment
@@ -157,6 +158,7 @@
 \par\medskip
   \rule{\totalwidth}{2pt}
 \par\medskip
+\end{adjustwidth}
 %
   \@abinstructions
 %
@@ -183,7 +185,7 @@
 
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
-\raggedbottom                
+\raggedbottom
 \parindent 0pt
 \parskip 6pt
 \setlength{\mathindent}{20pt}\relax
@@ -202,7 +204,7 @@
 	\if@draft%
 		\@check@marks%
 		\setcounter{marktarget}{0}%
-	\fi	  
+	\fi	
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	\setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
@@ -241,7 +243,7 @@
 	\def\@cutoff{\relax}
 	{\large \textbf{\@assignmentname\ #1}}%
 	\if@oneassignment
-		\relax 
+		\relax
 	\else
 	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #1}
 	\fi
@@ -288,7 +290,7 @@
 	\par\addvspace{\bigskipamount}%
 	{\textbf{Question~\thequestion} #1}\nopagebreak\par}
 %
-%% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
+%% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display.
 \newcommand{\@@question}[2][\unskip]{%
 	\if@draft%
 		\@check@marks%
@@ -372,7 +374,7 @@
   \def\noitem{\hfil\egroup\penalty50 \hfill%
     \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
-}{\hfil\egroup\par}  
+}{\hfil\egroup\par}
 
 % Normal options: this is just using enumitem features with enumerate.
 \newenvironment{options}%
@@ -436,7 +438,7 @@
           }%
         }%
       \endgroup
-    }  
+    }
   }
   {% Older versions of marginnote
     \long\def\@mn@@@marginnote[#1]#2[#3]{%
