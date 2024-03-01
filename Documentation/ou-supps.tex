@@ -130,12 +130,17 @@ Draft mode. In this mode, the system will check that the stated total marks for 
 \emph{Note:} Questions that are created with |\question*| that have no mark specified will not be checked by this system, nor will a question with a specified total of 0 marks.
 
 \begin{desc}
+|\documentclass[accessibility-warnings]{ouab}|\\
+|\documentclass[a-w]{ouab}|
+\end{desc}
+
+This will output \emph{accessibility warnings} to the pdf and to the log file. Full details of the warnings are given in Section~\ref{sec:accessibility-warnings}.
+
+\begin{desc}
 |\documentclass[oneassignment,draft]{ouab}|
 \end{desc}
 
 As always, you can combine options and the effects of each option will be seen.
-
-
 
 \subsubsection{Commands to be used in the preamble}
 \begin{desc}
@@ -207,6 +212,11 @@ Overrides the internally-specified for the name of the OU logo, currently |OU_Ma
 
 
 \begin{desc}
+|\uniqueID{...}|
+\end{desc}
+Command that specifies the unique ID of the document; this information will not be used in the pdf version, but is essential for uploading to the VLE. The ID of the document must always begin with an upper case X. An example ID is Xmst125tma01.
+
+\begin{desc}
 |\metadataset{key=value}|  
 \end{desc}
 As an alternative to specifying the above commands individually, they can 
@@ -225,6 +235,7 @@ command; for example:
             multiple choice option text=choices,
             no cut off date,
             instructions=some specific instructions,
+            unique ID=Xidofdocument,
             }
 \end{verbatim}
 \subsection{Creating assignments}
@@ -1729,6 +1740,7 @@ for the |metadataset| command in each of the |OU|-based class files.
 	\cmidrule{2-5}
 	|document subtitle|           & \metakeyavailable &                   & \metakeyavailable &                   \\
 	|no cut off date|             & \metakeyavailable &                   &                   &                   \\
+	|unique ID|                   & \metakeyavailable &                   &                   &                   \\
 	%\cmidrule{2-5}
 	|session|                     &                   & \metakeyavailable &                   &                   \\
 	|specimen solutions title|    &                   & \metakeyavailable &                   &                   \\
@@ -1748,6 +1760,50 @@ for the |metadataset| command in each of the |OU|-based class files.
 	|student only title|          &                   &                   &                   & \metakeyavailable \\
 	\bottomrule
 \end{longtable}
+\pagebreak
+
+\section{Accessibility warnings}\label{sec:accessibility-warnings}
+
+|ouab.cls| supports the option |accessibility-warnings| and the shorter, equivalent, version |a-w|.
+
+\begin{desc}
+ |\documentclass[accessibility-warnings]{ouab}|\\
+ |\documentclass[a-w]{ouab}|
+\end{desc}
+
+This will output accessibility-based warnings to the pdf and to the log file.
+Any warnings you receive will need to be addressed by someone before converting
+your document to VLE format. If you do not receive any warnings, it does not guarantee that
+your document will convert to VLE format without issue.
+
+\begin{desc}
+ |\ouabPrintAW|
+\end{desc}
+
+By default, a summary of the accessibility warnings are printed at the
+\emph{end} of the document. The command |ouabPrintAW| is available if you would
+like to specify the precise location of where the summary of accessibility
+warnings are printed.
+
+Details of the warnings are as follows.
+
+\begin{description}
+ \item[AW1] list depth is $>2$ which means that you have specified an |enumerate| or
+  an |itemize| environment at a depth of greater than $2$; the VLE supports a
+  maximum list depth of $2$.
+ \item[AW2] you have not specified a |uniqueID| for your document; the VLE needs this
+  in order to identify your document. The unique ID should begin with an upper
+  case X. An example ID specification is |\uniqueID{Xmst125tma01}|.
+ \item[AW3] |tabular| environments will not render in math mode in the VLE; use, for
+  example, |array| instead.
+ \item[AW4] |tabular| environment is not within either |table| nor |table*|
+  environment; this is fixed easily by wrapping your |tabular| environment in
+  either of these environments.
+ \item[AW5] figure description has \emph{not} been given for the |figure| or |figure*|
+  environment. Use the |\figuredescription{<description goes here>}| to specify
+  your figure description.
+\end{description}
+
 \pagebreak
 \section{Moving from OUTeX}
 
