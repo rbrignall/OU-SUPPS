@@ -94,6 +94,13 @@
     \@hidequestionstrue
   \fi
 \fi
+\if@showsolutions
+  \def\solonly#1{#1}
+  \def\qponly#1{\relax}
+\else
+  \def\solonly#1{\relax}
+  \def\qponly#1{#1}
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
@@ -202,7 +209,6 @@
 \def\@submitby{\relax}
 \newcommand\submitby[1][23:59 BST]{\DeclareRobustCommand\@submitby{Submit by:\ #1}}
 \def\@suppno{\relax} % default
-
 \newcommand{\suppno}{\@dblarg\@setsuppno}
 \def\@setsuppno[#1]#2{
   \if@specimensolutions

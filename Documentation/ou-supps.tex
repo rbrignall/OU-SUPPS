@@ -1371,6 +1371,20 @@ Users who prefer to use |\pgfkeys| directly may use, for example,
 |\pgfkeys{/ourule,default,moveleft=-3cm,color=red!40!white}|
 
 
+\subsection{Specifying questions and solutions in the same file}
+
+In order to enable two PDF files to be produced from a single source (see earlier, including the class file options |showsolutions|, |specimensolutions|, |solutionsonly| and |qp-and-ss|, among others), various commands are available to apply text or commands depending on which build mode is being used. The two generic commands are as follows.
+
+\begin{desc}
+|\qponly{...}|\\
+|\solonly{...}|\\
+\end{desc}
+
+The contents of |\qponly| will be applied and/or displayed only when |showsolutions|, |solutionsonly| or |specimensolutions| is \emph{not} specified.
+
+The contents of |\solonly| will be applied and/or displayed only when |showsolutions|, |solutionsonly| or |specimensolutions| is specified.
+
+
 \subsubsection{Pagination}
 As well as the usual commands such as |\pagebreak|, it is possible to specify different page breaks depending on whether |showsolutions| is enabled or not.
 \begin{desc}
