@@ -1,7 +1,7 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{ouexam}[2021/12/02 v2.4.3 (Robert Brignall, all rights reserved)]
 
-%% Handles options 
+%% Handles options
 \newif\if@specimen
 \@specimenfalse
 \DeclareOption{specimen}{%
@@ -83,6 +83,8 @@
 \RequirePackage{ifthen}
 \RequirePackage[inline]{enumitem}
 \RequirePackage{marginnote}
+\RequirePackage{caption} % Fixes figure captions to OU style
+\captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25}}
 \if@showsolutions%
 	\if@specimensolutions%
 		\RequirePackage{xcolor}
@@ -125,7 +127,7 @@
 \newcommand\examday[1]{\renewcommand\@examday{#1}}
 \newcommand\exammonth[1]{\renewcommand\@exammonth{#1}}
 \newcommand\examyear[1]{\renewcommand\@examyear{#1}}
-\if@specimen 
+\if@specimen
 	\def\@examtime{\relax}
 	\def\@examday{\relax}
 	\def\@exammonth{\relax}
@@ -235,7 +237,7 @@
    faculty/.store in=\@faculty,
    multiple choice option text/.store in=\@optiontext,
    instructions/.store in=\@examinstructions,
-   top padding/.code=\setlength\toppadding{#1}, 
+   top padding/.code=\setlength\toppadding{#1},
    ou logo file base/.store in=\@oulogofilebase,
    switch marks/.is if=@switchmarks,
 }
@@ -288,7 +290,7 @@
 \fi%
 %%
   \thispagestyle{frontpage}%
-  \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted 
+  \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted
   \begin{adjustwidth}{0pt}{-3.5cm} % N.B. positive measurements increase margins!
      \if@specimensolutions%
   	\@makespecimensolutionstitle
@@ -389,15 +391,15 @@
 	\fancyfoot[R]{\bfseries\thepage~of~\zpageref{LastPage}}
 	\fancyfoot[C]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries CONTINUED}}
 	\if@bigfontneeded %display only module code on L to avoid text clashes
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\fi\fi}  
+	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\fi\fi}
 	\else
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
 	\fi
     \else
  	\fancyfoot[LE,RO]{\bfseries\thepage}
 	\fancyfoot[CO]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries TURN OVER}}% internal right hand pages only
 	\if@bigfontneeded %suppress module code on LO to avoid text clashes
-	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
+	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
 	\else
 	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
 	\fi
@@ -410,7 +412,7 @@
 
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
-\raggedbottom                
+\raggedbottom
 \parindent 0pt
 \parskip 6pt
 \setlength{\mathindent}{20pt}\relax
@@ -466,7 +468,7 @@
   \def\noitem{\hfil\egroup\penalty50 \hfill%
     \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
-}{\hfil\egroup\par}  
+}{\hfil\egroup\par}
 
 % Normal options: this is just using enumitem features with enumerate.
 \newenvironment{options}%
@@ -542,7 +544,7 @@
                    {\@outn@rule@height}%
   \fi
 }
- 
+
 % reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
 \newcommand{\outn@draw@rule}[4]{%
         % #1: moveleft
@@ -747,7 +749,7 @@
           }%
         }%
       \endgroup
-    }  
+    }
   }
   {% Older versions of marginnote
     \long\def\@mn@@@marginnote[#1]#2[#3]{%
@@ -908,8 +910,3 @@
     {\comment}
     {\endcomment}
 \fi
-
-
-
-
-
