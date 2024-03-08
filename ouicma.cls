@@ -98,7 +98,7 @@ Personal identifier (PI): \\[20pt]
 }
 \newcommand\declaration[1]{\DeclareRobustCommand\@oudeclaration{#1}}
 %
-\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -146,12 +146,12 @@ Personal identifier (PI): \\[20pt]
   \thispagestyle{frontpage}
   \vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
-  \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
+  \begin{tabular}{@{}p{6.5cm}@{}p{11.5cm}@{}}
   \vspace{1.5cm}
   \IfFileExists{\@oulogofile}{%
-    \includegraphics[width=3.5cm]{\@oulogofile}%
+    \includegraphics[]{\@oulogofile}%
   }{%
-    \fbox{\parbox[t][2cm][c]{3.5cm}{\centering OU Logo}}%
+    \fbox{\parbox[t][17.5mm][c]{53.7mm}{\centering OU Logo}}%
   }%
 &
 \vspace{1.5cm}\textbf{\@faculty\newline
@@ -159,14 +159,16 @@ Personal identifier (PI): \\[20pt]
 
 \bigskip\bigskip\bigskip
 \textbf{\Huge \@modulecode}\newline
-\rule{12.5cm}{1pt}
+\rule{10.5cm}{1pt}
 
 \bigskip\bigskip\textbf{\Huge \@outitle}
 \par\bigskip\textbf{\large \@ousubtitle}
 
-\medskip\rule{12.5cm}{1pt}
+\medskip\rule{10.5cm}{1pt}
 
-\medskip\textbf{Covers \@coversmaterialin\hfill Cut-off date: \@cutoffdate}
+\medskip\textbf{Covers \@coversmaterialin}
+
+\medskip\textbf{Cut-off date: \@cutoffdate}
 
 \nointerlineskip\vspace{12pt}
 \end{tabular}

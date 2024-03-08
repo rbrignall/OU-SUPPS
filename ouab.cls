@@ -130,7 +130,12 @@
 \textbf{\@versionno} }%
 }
 \newlength{\logospace}
-\setlength{\logospace}{4.1cm}
+\setlength{\logospace}{6.5cm}
+\newlength\titletablewidth
+\setlength\titletablewidth{10.5cm} % width of RH column on front page
+\newlength\totalwidth
+\setlength\totalwidth{\dimexpr\logospace+\titletablewidth} % width of RH column on front page
+
 \renewcommand{\maketitle}{
 %% First, set up PDF metadata
  \pdfinfo{
@@ -146,26 +151,27 @@
 %%
   \thispagestyle{frontpage}
   %\vspace{2cm}
-\begin{adjustwidth}{0cm}{-\logospace}
-  \begin{tabular}{@{}p{\logospace}@{}p{\textwidth}@{}}
+  \begin{tabular}{@{}p{\logospace}@{}p{\titletablewidth}@{}}
   \vspace{0.2cm}%
   \IfFileExists{\@oulogofile}{%
-    \includegraphics[width=3.3cm]{\@oulogofile}%
+    \includegraphics[]{\@oulogofile}%
   }{%
-    \fbox{\parbox[t][2cm][c]{3.3cm}{\centering OU Logo}}%
+    \fbox{\parbox[t][17.5mm][c]{53.7mm}{\centering OU Logo}}%
   }%
 &
 \vspace{0.2cm}\textbf{\@faculty\newline
 \@modulecode\ \@moduletitle}
 
 \bigskip\bigskip\bigskip
+\end{tabular}
+
 \textbf{\Huge \@modulecode}\newline
-\rule{\textwidth}{1pt}
-
+\rule{\totalwidth}{1pt}
+\begin{adjustwidth}{0mm}{-40mm}
 \bigskip\bigskip\textbf{\Huge \@abtitle\hfill\@abyear}
-\if@subtitle\par\bigskip\textbf{\large \@absubtitle}\fi
 
-\medskip\rule{\textwidth}{1pt}
+\if@subtitle\par\bigskip\textbf{\large \@absubtitle}\fi
+\medskip\rule{\totalwidth}{1pt}
 
 \if@oneassignment
 \medskip
@@ -175,15 +181,12 @@
 %inserts list of TMA/CMA entries
 \@starttoc{tma}
 \nointerlineskip
-\end{tabular}
 \par\medskip
-  \rule{\dimexpr\textwidth+\logospace}{2pt}
+  \rule{\totalwidth}{2pt}
 \par\medskip
 \end{adjustwidth}
 %
-\begin{adjustwidth}{\logospace}{-\logospace}
   \@abinstructions
-\end{adjustwidth}
 %
   \newpage
 }

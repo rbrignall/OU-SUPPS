@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2021/12/02 v2.4.3 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2023/12/19 v2.5 (Robert Brignall, all rights reserved)]
 
 %% Handles options
 \newif\if@specimen
@@ -58,6 +58,7 @@
 \@remoteexamfalse
 \DeclareOption{remote}{%
 	\@remoteexamtrue
+	\@nobarcodetrue
 }
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -177,7 +178,15 @@
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %
-\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\if@specimensolutions
+  \def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
+  \def\@logow{4.0cm}
+  \def\@logoh{1.29cm}
+\else
+  \def\@oulogofilebase{OU_Compact_LOGO_BLACK_40mm}
+  \def\@logow{2.37cm}
+  \def\@logoh{4.0cm}
+\fi
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
 \newif\if@switchmarks
@@ -193,7 +202,13 @@
 %
 \def\@examcode{\relax} % default blank
 \if@nobarcode % Set by nobarcode option to class as override
-	\newcommand\examcode[1]{\relax}
+	\if@remoteexam
+	  \newcommand\examcode[1]{%
+	    \DeclareRobustCommand\@examcode{#1}
+	  }
+ 	\else
+	  \newcommand\examcode[1]{\relax}
+	\fi
 \else
 	\newlength\barcodewidth
 	\newcommand\examcode[1]{%
@@ -214,6 +229,20 @@
 \par
     \textsf{\@examcode}%
   }%
+  \fi
+}
+ \def\setqpid
+{%
+  \if@remoteexam
+    \if@specimen\relax%
+    \else%
+      \if@secondspecimen\relax%
+      \else
+        \footnotesize \hfill QP ID: \@examcode
+      \fi
+    \fi
+  \else
+    \relax
   \fi
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -255,7 +284,7 @@
 	\setlength\@titlefooterleftindent{0cm}
 	\setlength\@titlefooterrightindent{-2.5cm}
 \else%
-	\setlength\@titlefooterleftindent{1cm}
+	\setlength\@titlefooterleftindent{0cm}
 	\setlength\@titlefooterrightindent{-1cm}
 \fi%
 \fancypagestyle{frontpage}{%
@@ -264,8 +293,12 @@
   \renewcommand{\footrulewidth}{0pt}%
     \fancyfoot[L]{%
     \begin{adjustwidth}{\@titlefooterleftindent}{\@titlefooterrightindent}%
-    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
-		\textbf{\@versionno}%
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}
+		\if@specimensolutions\relax \else\\
+        	{\footnotesize You have been provided with this question paper for your personal use, either for end-of-module assessment or (if you downloaded this paper from the OUSA website) to help you prepare for a future exam. You are not permitted to pass on this question paper, or any of its contents, to any website, online service, social media platform or any individual or organisation, as this is an infringement of the University's copyright and a disciplinary offence under Section SD 1.2 of the University's Code of Practice for Student Discipline.}\\
+	        \setqpid
+		\fi
+		\textbf{\@versionno}\hfill \textbf{\@suppno}%
 	\end{adjustwidth}%
 	}%
 }
@@ -289,6 +322,9 @@
   \def\@oulogofile{\@oulogofilebase.eps}
 \fi%
 %%
+  \if@specimensolutions\relax\else
+    \newgeometry{left=2cm,right=6cm,top=1cm,bottom=5.5cm,footskip=4.94mm,marginparwidth=5cm,nohead,asymmetric}
+  \fi
   \thispagestyle{frontpage}%
   \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted
   \begin{adjustwidth}{0pt}{-3.5cm} % N.B. positive measurements increase margins!
@@ -298,9 +334,12 @@
   	\@makestandardtitle
      \fi
   \end{adjustwidth}
-    \if@smallmargins% Adjust geometry for future pages
-      \newgeometry{a4paper,left=1cm,right=4cm,top=1cm,bottom=3cm,marginparwidth=5cm,nohead,asymmetric}%
-    \fi%
+  \if@specimensolutions\relax\else
+    \restoregeometry
+  \fi
+  \if@smallmargins% Adjust geometry for future pages
+    \newgeometry{a4paper,left=1cm,right=4cm,top=1cm,bottom=3cm,marginparwidth=5cm,nohead,asymmetric}%
+  \fi%
 }
 %%
 \def\@makestandardtitle{%
@@ -308,16 +347,16 @@
     	\fontsize{14.4}{18}\selectfont % Equates to \large in 12pt for most of the title page
      \fi
      \hfill\ \setbarcode\par\bigskip % New location for longer barcodes
-     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+     \begin{tabular}{@{}p{4cm}@{}p{\titletablewidth}@{}}%
         \vspace{-0.7cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[width=3.6cm]{\@oulogofile}%
+              \includegraphics[scale=1.0]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
+              \fbox{\parbox[t][\@logoh][c]{\@logow}{\centering OU Logo}}%
             }%
      &
-    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\/\@session}}}\\ %Equates to \Huge in 12pt
-     &
+    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\/\@session}}}\newline
+
     	\raggedright\bfseries Module Examination \@examyear \newline
     	
     	\vspace*{-10pt}
@@ -328,7 +367,7 @@
 	\else
 	  {\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline}
 	\fi}
-    	\rule{\titletablewidth}{1pt}
+    	%\rule{\titletablewidth}{1pt}
     	
     	\nointerlineskip\vspace{12pt}
      	{\if@showsolutions
@@ -347,19 +386,19 @@
     \end{tabular}
     \vspace{20pt}
 	
-    \begin{adjustwidth}{1cm}{1cm}
+    %\begin{adjustwidth}{1cm}{1cm}
 	\raggedright
 	\@examinstructions
-    \end{adjustwidth}
+    %\end{adjustwidth}
     \clearpage}
 %%
 \def\@makespecimensolutionstitle{%
-    \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+    \begin{tabular}{@{}p{4.6cm}@{}p{\titletablewidth}@{}}%
         \vspace{-0.3cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[width=3.6cm]{\@oulogofile}%
+              \includegraphics[width=4.0cm]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
+              \fbox{\parbox[t][\@logoh][c]{\@logow}{\centering OU Logo}}%
             }%
     &
 	\if@bigfontneeded

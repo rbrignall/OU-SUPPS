@@ -76,7 +76,7 @@
   \captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25,color=\@specsolnscolor}}
 \fi
 %
-\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
 \newif\if@switchmarks
@@ -152,10 +152,10 @@
 %
   %\vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
-  \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
+  \begin{tabular}{@{}p{6.5cm}@{}p{11.5cm}@{}}
   \vspace{0.2cm}
   \IfFileExists{\@oulogofile}{%
-    \includegraphics[width=3.5cm]{\@oulogofile}%
+    \includegraphics[]{\@oulogofile}%
   }{%
     \fbox{\parbox[t][2cm][c]{3.5cm}{\centering OU Logo}}%
   }%
@@ -234,8 +234,10 @@
 }
 
 \def\@assignmentwithcutoff[#1]#2{%
+\begin{adjustwidth}{0cm}{-5cm}
 	\def\@cutoff{\@cutofftext\ #1}
 	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}#1}
+\end{adjustwidth}
 	\@ifnextchar[{\@assignmentsubtitle}{
 		\par\addvspace{\bigskipamount}
 	}
