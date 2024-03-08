@@ -5,7 +5,7 @@
 
 \newif\if@showsolutions
 \@showsolutionsfalse
-\DeclareOption{exam-and-ss}{%
+\DeclareOption{qp-and-ss}{%
     \ifx\buildmode\undefined
       \immediate\write18{%
         pdflatex --jobname="\jobname"
@@ -28,6 +28,7 @@
 \newif\if@secondspecimen
 \@secondspecimenfalse
 \DeclareOption{secondspecimen}{%
+  \ExecuteOptions{specimen}
   \@secondspecimentrue
 }
 \newif\if@specimensolutions
@@ -47,9 +48,6 @@
 \DeclareOption{@showsolutions}{%
  \@showsolutionstrue
  \if@specimen
-   \@specimensolutionstrue
- \fi
- \if@secondspecimen
    \@specimensolutionstrue
  \fi
 }
@@ -157,18 +155,10 @@
 	\def\@exammonth{\relax}
 	\def\@examyear{\relax}
 \else
-	\if@secondspecimen
-		\def\@examtime{\relax}
-		\def\@examday{\relax}
-		\def\@exammonth{\relax}
-		\def\@examyear{\relax}
-		
-	\else
-		\newcommand\@examtime{\@latex@error{No \noexpand\examtime specified}\@ehc}
-		\newcommand\@examday{\@latex@error{No \noexpand\examday specified}\@ehc}
-		\newcommand\@exammonth{\@latex@error{No \noexpand\exammonth specified}\@ehc}
-		\newcommand\@examyear{\@latex@error{No \noexpand\examyear specified}\@ehc}
-	\fi
+    \newcommand\@examtime{\@latex@error{No \noexpand\examtime specified}\@ehc}
+    \newcommand\@examday{\@latex@error{No \noexpand\examday specified}\@ehc}
+    \newcommand\@exammonth{\@latex@error{No \noexpand\exammonth specified}\@ehc}
+    \newcommand\@examyear{\@latex@error{No \noexpand\examyear specified}\@ehc}
 \fi
 %
 \newcommand\timeallowed[1]{\renewcommand\@timeallowed{#1}}
@@ -259,10 +249,7 @@
   \if@remoteexam
     \if@specimen\relax%
     \else%
-      \if@secondspecimen\relax%
-      \else
-        \footnotesize \hfill QP ID: \@examcode
-      \fi
+      \footnotesize \hfill QP ID: \@examcode
     \fi
   \else
     \relax
@@ -449,23 +436,23 @@
   \if@specimensolutions %only show page numbers for specimen solutions
 	\fancyfoot[C]{page~\thepage~of~\zpageref{LastPage}}
   \else %not specimen solutions
-     \if@remoteexam
-	\fancyfoot[R]{\bfseries\thepage~of~\zpageref{LastPage}}
-	\fancyfoot[C]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries CONTINUED}}
-	\if@bigfontneeded %display only module code on L to avoid text clashes
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\fi\fi}
-	\else
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
-	\fi
-    \else
- 	\fancyfoot[LE,RO]{\bfseries\thepage}
-	\fancyfoot[CO]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries TURN OVER}}% internal right hand pages only
-	\if@bigfontneeded %suppress module code on LO to avoid text clashes
-	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
-	\else
-	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
-	\fi
-     \fi
+    \if@remoteexam
+	  \fancyfoot[R]{\bfseries\thepage~of~\zpageref{LastPage}}
+	  \fancyfoot[C]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries CONTINUED}}
+	  \if@bigfontneeded %display only module code on L to avoid text clashes
+	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\fi}
+	  \else
+	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else{\@exammonth\ \@examyear}\fi}
+	  \fi
+    \else % not remote exam
+ 	  \fancyfoot[LE,RO]{\bfseries\thepage}
+	  \fancyfoot[CO]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries TURN OVER}}% internal right hand pages only
+	  \if@bigfontneeded %suppress module code on LO to avoid text clashes
+	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else{\@exammonth\ \@examyear}\fi}
+	  \else
+	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else{\@exammonth\ \@examyear}\fi}
+	  \fi
+    \fi
   \fi
 }
 \pagestyle{internalpages}
