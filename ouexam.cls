@@ -35,13 +35,13 @@
 \@specimensolutionsfalse
 \DeclareOption{showsolutions}{%
  % true unless \buildmode not defined or \buildmode=1
- \ifnum\ifx\buildmode\undefined 0\else\ifnum\buildmode=1 0\else1\fi\fi=1
+ \ifnum\ifx\buildmode\undefined 1\else\ifnum\buildmode=1 0\else1\fi\fi=1
    \ExecuteOptions{@showsolutions}
  \fi
 }
 \DeclareOption{specimensolutions}{%
  \@specimentrue
- \ifnum\ifx\buildmode\undefined 0\else\ifnum\buildmode=1 0\else1\fi\fi=1
+ \ifnum\ifx\buildmode\undefined 1\else\ifnum\buildmode=1 0\else1\fi\fi=1
    \ExecuteOptions{@showsolutions}
  \fi
 }
