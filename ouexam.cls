@@ -170,16 +170,20 @@
 \def\@examinstructions{No special instructions specified.}
 \newcommand\examinstructions[1]{\renewcommand\@examinstructions{#1}}
 %
+\def\@foottext{%
+  \if@specimen
+    \if@secondspecimen{Second specimen}%
+    \else{Specimen}%
+    \fi
+  \else{\@exammonth\ \@examyear}%
+  \fi
+}
 \def\@session{\relax}
-\if@secondspecimen
-	\def\@session{/Second specimen}
-\else
-	\if@specimen
-		\def\@session{/Specimen}
-	\fi
+\if@specimen
+	\def\@session{/\@foottext}
 \fi
 %
-\def\@specimensolutionstitle{Solutions to the \@session\ Examination Paper}
+\def\@specimensolutionstitle{Solutions to the \@foottext\ Examination Paper}
 \newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
 %
 \newcommand\conflation[1]{\renewcommand\@session{#1}\ClassWarning{ouexam}{\protect\conflation\space is deprecated. Please use \protect\session\space(same syntax)}} % backwards compatibility
@@ -440,17 +444,17 @@
 	  \fancyfoot[R]{\bfseries\thepage~of~\zpageref{LastPage}}
 	  \fancyfoot[C]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries CONTINUED}}
 	  \if@bigfontneeded %display only module code on L to avoid text clashes
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\fi}
+	    \fancyfoot[L]{\bfseries\@modulecode\if@specimen{\ \@foottext}\fi}
 	  \else
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else{\@exammonth\ \@examyear}\fi}
+	    \fancyfoot[L]{\bfseries\@modulecode\ \@foottext}
 	  \fi
     \else % not remote exam
  	  \fancyfoot[LE,RO]{\bfseries\thepage}
 	  \fancyfoot[CO]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries TURN OVER}}% internal right hand pages only
 	  \if@bigfontneeded %suppress module code on LO to avoid text clashes
-	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else{\@exammonth\ \@examyear}\fi}
+	    \fancyfoot[RE]{\bfseries\@modulecode\ \@foottext}
 	  \else
-	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else{\@exammonth\ \@examyear}\fi}
+	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \@foottext}
 	  \fi
     \fi
   \fi
