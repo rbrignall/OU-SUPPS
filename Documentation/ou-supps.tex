@@ -887,11 +887,20 @@ Version for second specimen exam papers. Formatting on the front page and requir
 This version creates a solution booklet. Formatting on the front page is changed, and the contents of |solution| environments gets displayed.
 
 \begin{desc}
+|\documentclass[solutionsonly]{ouexam}|
+\end{desc}
+
+This version works in the same way as |showsolutions|, but it also suppresses the contents of any |questionblock| environments.
+
+
+\begin{desc}
 |\documentclass[specimensolutions]{ouexam}|\\
 |\documentclass[specimen,showsolutions]{ouexam}|
 \end{desc}
 
-The |showsolutions| option can be used alongside the |specimen| option to provide model solutions for specimen exams formatted in a style expected by LTS. The major changes in this mode are the formatting of teh title, footer information, and text within the |solutions| environment will be displayed without additional formatting. The |specimensolutions| option is an alias for |specimen,showsolutions|.
+The |showsolutions| option can be used alongside the |specimen| option to provide model solutions for specimen exams formatted in a style expected by LTS. The major changes in this mode are the formatting of the title, footer information, and text within the |solutions| environment will be displayed without additional formatting. The |specimensolutions| option is an alias for |specimen,showsolutions|.
+
+By default, text inside |questionblock| environments will be suppressed when producing specimen solutions.
 
 \begin{desc}
 |\documentclass[14pt]{ouexam}|
@@ -925,7 +934,7 @@ This option changes the formatting of the exam to make it more suitable for remo
 \end{itemize}
 
 \begin{desc}
-|\documentclass[exam-and-ss]{outn}|
+|\documentclass[qp-and-ss]{outn}|
 \end{desc}
 
 This version will \emph{attempt to} generate both the question paper and solutions as separate PDFs. If your document is called |file.tex|, then the question paper will be created in |file.pdf|, and the solutions will be created in |file-ss.pdf|.
@@ -935,6 +944,12 @@ When you compile the document with this option, the class file will instigate tw
 \qquad|pdflatex --shell-escape file.tex|
 
 Note: most text editors can be configured to include |--shell-escape| in the compilation instructions: check the documentation of your editor for details.
+
+\begin{desc}
+|\documentclass[solutionsonly,qp-and-ss]{outn}|
+\end{desc}
+
+Using both the |solutionsonly| and |qp-and-ss| options will result in the generation of a question paper (without solutions displayed), and a solutions file (without the contents of |questionblock| environments displayed) from a single compilation.
 
 \begin{desc}
 |\documentclass[specimen,qp-and-ss]{outn}|
@@ -1080,6 +1095,14 @@ The internal counter used for generating questions is |question|.
 \end{desc}
 Creates a question. The parameter |<description>| is optional, and can be used to provide additional information about the question in its header line. 
 
+\begin{desc}
+|\begin{questionblock}|\\
+|...|\\
+|\end{questionblock}|	
+\end{desc}
+This environment applies no formatting to its contents, but can be used as a wrapper to the question text. The contents of all such environments is hidden when the |solutionsonly| or |specimensolutions| options are specified.
+
+If you do not want to use |solutionsonly|, then you do not need to use the |questionblock| environment.
 
 \subsubsection{Subquestions}
 To create subquestions, use the standard \LaTeX\ |enumerate| environment.
@@ -1193,13 +1216,15 @@ Enter the contents of solutions inside the |solution| environment. This is simpl
 
 The text inside the |solution| environment is \emph{only} displayed when one of the |showsolutions| or the |specimensolutions| options is specified in the preamble. 
 
+Note, if you nest a |solution| environment inside a |questionblock| environment, then the contents of the |solution| environment will \emph{not be visible} if you specify the |solutionsonly| or |specimensolutions| options.
+
 When displayed, the solutions can be formatted in one of two ways:
 \begin{description}
 \item[{|[specimensolutions]| or |[specimen,showsolutions]|:}] The text is displayed without further formatting.
-\item[{|[showsolutions]|:}] The text of the solutions is set to |\small|, and placed on a beige background with a thick black line on the left, to indicate the scope of the solution.
+\item[{|[showsolutions]| or |[solutionsonly]|:}] The text of the solutions is set to |\small|, and placed on a beige background with a thick black line on the left, to indicate the scope of the solution.
 \end{description}
 
-\emph{Note:} The showing/hiding solutions features of |ouexam| are designed for use by authors when drafting exams, to help you check answers tally up to the corresponding questions. When creating the final version for handover, you will probably want to make two copies of your working file, one to create the exam (with solutions removed), the other to create the solutions (possibly with the questions removed, though this is option except for specimen solutions).
+\emph{Note:} The features of |ouexam| that enable showing/hiding of solutions and questions can be used to create an exam and its solutions from a single source file. However, it is not necessary to do this, and you may prefer instead to work with two separate documents from the outset.
 
 \subsubsection{Customising the \texttt{solution} environment appearance}
 
