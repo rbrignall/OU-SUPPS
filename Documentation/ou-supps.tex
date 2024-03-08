@@ -1203,21 +1203,32 @@ When displayed, the solutions can be formatted in one of two ways:
 
 \subsubsection{Customising the \texttt{solution} environment appearance}
 
-The |solution| environment is defined by an environment called |solutionbox|, which is created using the |mdframed| package. It is specified as follows.
+The |solution| environment is defined by an environment called |solutionbox|, which is created using the |tcolorbox| package. It is specified as follows.
 
 \begin{desc}
-|\newmdenv[linewidth=3pt,|\\
-|      topline=false,|\\
-|      bottomline=false,|\\
-|      rightline=false,|\\
-|      innerrightmargin=5.5cm,|\\
-|      innerleftmargin=10pt,|\\
-|      linecolor=black,|\\
-|      backgroundcolor=yellow!10,|\\
-|      frametitle=Solution]{solutionbox}|
+|\newtcolorbox{solutionbox}{|\\
+|      colframe=black,|\\
+|      arc=0pt,|\\
+|      toprule=-.2pt,|\\
+|      rightrule=-.2pt,|\\
+|      bottomrule=-.2pt,|\\
+|      leftrule=3pt,|\\
+|      width=\textwidth,|\\
+|      left=10pt,|\\
+|      grow to left by=13pt,|\\
+|      right=5.5cm,|\\
+|  	   add to width=5.5cm,|\\
+|      fonttitle=\bfseries,|\\
+|      title=Solution,|\\
+|      coltitle=black,|\\
+|      attach title to upper,|\\
+|      after title={\par\medskip},|\\
+|      colback=yellow!10,|\\
+|      parbox=false|\\
+|}|
 \end{desc}
 
-You can replace this using |\renewmdenv[...]{solutionbox}|. See the |mdframed| package documentation for details.
+You can replace this using |\renewtcolorbox{solutionbox}{...}|. See the |tcolorbox| package documentation for details.
 
 \subsubsection{Specifying marks within the \texttt{solution} environment}
 
@@ -1467,7 +1478,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |ifthen| for internal latex coding
 \item |enumitem|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
-\item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions. This is only loaded if |showsolutions| is specified, otherwise |xcolor| is loaded on its own.
+\item |tcolorbox| to provide formatting for coloured boxes to display solutions. This is only loaded if |showsolutions| is specified.
 \item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.
 \item |makebarcode| for creating the barcode on the front page. Not loaded if |nobarcode| option is specified.
 \item |extsizes| when options |14pt|, |17pt| or |20pt| are used, to handle larger font sizes. 
@@ -1726,7 +1737,6 @@ Places a 2.4cm $\times$ 1.2cm wide answer box in the right-hand margin. The opti
 \item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
 \item |marginnote| for handling marks, etc in the margin.
 \item |tikz| to draw boxes in the margin.
-\item |mdframed| to format the question headers.
 \end{itemize}
 
 
