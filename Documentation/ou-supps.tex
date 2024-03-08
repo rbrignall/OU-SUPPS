@@ -419,8 +419,19 @@ This is the default operation for using |outn.cls|. It produces a Tutor Notes bo
 |\documentclass[specsolns]{outn}|
 \end{desc}
 
-This version is designed to create a specimen solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\mk| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
+This version is designed to create a Specimen Solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\mk| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
 
+\begin{desc}
+|\documentclass[tn-and-ss]{outn}|
+\end{desc}
+
+This version will \emph{attempt to} generate both Tutor Notes, and Specimen Solutions, as separate PDFs. If your document is called |file.tex|, then the Tutor Notes will be created in |file.pdf|, and the Specimen Solutions will be created in |file-ss.pdf|.
+
+When you compile the document with this option, the class file will instigate two further compilations of your document, one with the |specsolns| option and a different |jobname|. In order for this functionality to succeed, you will typically have to invoke |pdflatex| with the additional option |--shell-escape|, for example:
+
+\qquad|pdflatex --shell-escape file.tex|
+
+Note: most text editors can be configured to include |--shell-escape| in the compilation instructions: check the documentation of your editor for details.
 
 \subsubsection{Commands to be used in the preamble}\label{outn-preamble}
 \begin{desc}

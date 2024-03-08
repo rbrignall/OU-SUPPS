@@ -3,6 +3,23 @@
 
 \newif\if@specsolns
 \@specsolnsfalse
+
+\DeclareOption{tn-and-ss}{%
+    \ifx\conditionmacro\undefined
+      \immediate\write18{%
+        pdflatex --jobname="\jobname"
+        "\gdef\string\conditionmacro{1}\string\input\space\jobname"
+      }%
+      \immediate\write18{%
+        pdflatex --jobname="\jobname-ss"
+        "\gdef\string\conditionmacro{2}\string\input\space\jobname"
+      }%
+      \expandafter\stop
+    \fi
+    \ifnum\conditionmacro=1\relax\fi
+    \ifnum\conditionmacro=2 \@specsolnstrue\fi
+}
+
 \DeclareOption{specsolns}{%
   \@specsolnstrue
 }
@@ -346,8 +363,8 @@
         % #2: width
         % #3: color
         % #4: height
-    \par\bigskip\nobreak % don't break a page here
-    \moveleft#1\vbox{% we want the rule to protrude on the left
+  \par\bigskip\nobreak % don't break a page here
+  \moveleft#1\vbox{% we want the rule to protrude on the left
     \hsize=#2% correct the length
     \kern\the\prevdepth % don't take into account the depth of the preceding line
     \kern\baselineskip % space before the rule
