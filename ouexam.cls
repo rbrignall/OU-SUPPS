@@ -112,10 +112,8 @@
 		\RequirePackage{xcolor}
 	\else%
 	% Suppressed if not displaying solutions
-	% mdframed uses expl3 which has installation
-	% issues.
-		\RequirePackage[xcolor]{mdframed}
-	\fi%
+        \RequirePackage{tcolorbox}
+    \fi%
 \else
 	\RequirePackage{xcolor}
 \fi%
@@ -940,26 +938,27 @@
 %
 \if@showsolutions%
 	\if@specimensolutions%
-		% Don't want to use mdframed here
+		% Don't want to use tcolorbox here
 		\newenvironment{solution}{%
 			%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
 			\def\mk{\solnmarks}%
   		}{}
 	\else
-		% Regular solutions: use mdframed environment to define box
-		\newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,
-	          innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,
-	          backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
+		% Regular solutions: use tcolorbox environment to define box
+        \newtcolorbox{solutionbox}{%
+            colframe=black,arc=0pt,toprule=-.2pt,rightrule=-.2pt,bottomrule=-.2pt,leftrule=3pt,
+            width=\textwidth,left=10pt,grow to left by=13pt,right=5.5cm,add to width=5.5cm,
+            fonttitle=\bfseries,title=Solution,coltitle=black,attach title to upper,after title={\par\medskip},
+            colback=yellow!10,parbox=false}
 	    % Now define the wrapper
-	        \newenvironment{solution}{%
-					%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-					\def\mk{\solnmarks}%
-					\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}%
-  				{\end{solutionbox}\end{adjustwidth}}
-	\fi
+	    \newenvironment{solution}{%
+            \def\mk{\solnmarks}%
+            \begin{solutionbox}\raggedright\small}%
+            {\end{solutionbox}}
+    \fi
 \else
 	% Suppress anything in the solution environment.
     \newenvironment{solution}
-    {\comment}
-    {\endcomment}
+        {\comment}
+        {\endcomment}
 \fi
