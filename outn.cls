@@ -1,27 +1,34 @@
 \NeedsTeXFormat{LaTeX2e}
 \ProvidesClass{outn}[2021/11/09 v2.3.2 (Robert Brignall, all rights reserved)]
 
+\newif\if@tnandss
+\@tnandssfalse
 \newif\if@specsolns
 \@specsolnsfalse
 
 \DeclareOption{tn-and-ss}{%
-    \ifx\conditionmacro\undefined
+    \@tnandsstrue
+    \ifx\buildmode\undefined
       \immediate\write18{%
         pdflatex --jobname="\jobname"
-        "\gdef\string\conditionmacro{1}\string\input\space\jobname"
+        "\gdef\string\buildmode{1}\string\input\space\jobname"
       }%
       \immediate\write18{%
         pdflatex --jobname="\jobname-ss"
-        "\gdef\string\conditionmacro{2}\string\input\space\jobname"
+        "\gdef\string\buildmode{2}\string\input\space\jobname"
       }%
       \expandafter\stop
     \fi
-    \ifnum\conditionmacro=1\relax\fi
-    \ifnum\conditionmacro=2 \@specsolnstrue\fi
+    \ifnum\buildmode=1\relax\fi
+    \ifnum\buildmode=2 \@specsolnstrue\fi
 }
 
 \DeclareOption{specsolns}{%
-  \@specsolnstrue
+  \if@tnandss
+    \relax
+  \else
+    \@specsolnstrue
+  \fi
 }
 
 \ProcessOptions\relax
