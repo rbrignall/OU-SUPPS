@@ -17,8 +17,8 @@
       }%
       \expandafter\stop
     \fi
-    \ifnum\buildmode=1\relax\fi
-    \ifnum\buildmode=2\ExecuteOptions{@showsolutions}\fi
+    \ifnum\buildmode=1\relax\fi %Question paper
+    \ifnum\buildmode=2\@showsolutionstrue\fi %Solutions
 }
 \newif\if@specimen
 \@specimenfalse
@@ -33,23 +33,27 @@
 }
 \newif\if@specimensolutions
 \@specimensolutionsfalse
+\newif\if@hidequestions
+\@hidequestionsfalse
+\DeclareOption{solutionsonly}{%
+%
+ \ifnum\ifx\buildmode\undefined 1\else\ifnum\buildmode=1 0\else1\fi\fi=1
+   \@hidequestionstrue
+ \fi
+ \ExecuteOptions{@showsolutions}
+}
 \DeclareOption{showsolutions}{%
  % true unless \buildmode not defined or \buildmode=1
- \ifnum\ifx\buildmode\undefined 1\else\ifnum\buildmode=1 0\else1\fi\fi=1
-   \ExecuteOptions{@showsolutions}
- \fi
+ \ExecuteOptions{@showsolutions}
 }
 \DeclareOption{specimensolutions}{%
  \@specimentrue
- \ifnum\ifx\buildmode\undefined 1\else\ifnum\buildmode=1 0\else1\fi\fi=1
-   \ExecuteOptions{@showsolutions}
- \fi
+ \ExecuteOptions{@showsolutions}
 }
 \DeclareOption{@showsolutions}{%
- \@showsolutionstrue
- \if@specimen
-   \@specimensolutionstrue
- \fi
+  \ifnum\ifx\buildmode\undefined 1\else\ifnum\buildmode=1 0\else1\fi\fi=1
+    \@showsolutionstrue
+  \fi
 }
 %
 \newif\if@bigfontneeded
@@ -82,6 +86,15 @@
 	\@nobarcodetrue
 }
 \ProcessOptions\relax
+%%
+%% Some option postprocessing:
+\if@specimen
+  \if@showsolutions
+    \@specimensolutionstrue
+    \@hidequestionstrue
+  \fi
+\fi
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -479,6 +492,12 @@
 \newcommand{\@question}[1][]{\refstepcounter{question}\par\bigskip{\bfseries \questiontext~\thequestion}\ #1\nopagebreak\par\nobreak\@afterheading}
 \newcommand{\question}[1]{\@question #1}
 
+%% Question wrapper environment
+\if@hidequestions%
+    \newenvironment{questionblock}{\comment}{\endcomment}
+\else
+    \newenvironment{questionblock}{}{}
+\fi
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
 \setlist[enumerate]{align=left,leftmargin=!,labelwidth=4ex,labelsep*=1.0ex}

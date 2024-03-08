@@ -3,9 +3,10 @@
 %  remote           For remote exam papers
 %  specimen			For specimen exam papers
 %  secondspecimen	For 2nd specimen exam
-%  showsolutions		Produces solution booklet
+%  showsolutions	Produces solution booklet
+%  solutionsonly    Solution booklet with questions suppressed
 %  specimensolutions SSEP ("specimen,showsolutions" achieves the same)
-%  qp-and-ss      Builds QP and solutions in separate
+%  qp-and-ss        Builds QP and solutions in separate
 %                   PDFs from single compilation.
 % See documentation for other options, usage, etc.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,13 +15,13 @@
 \modulecode{MST124}
 \session{C} % Can be omitted if "specimen" or "secondspecimen" options are on
 \moduletitle{Title of Module}
-\examcode{MST1241706F1PV1} % Generates barcode
+%\examcode{MST1241706F1PV1} % Generates barcode
 \examtime{10:00\,am -- 1:00\,pm}
 \examday{Tuesday 7}
-\exammonth{October}
-\examyear{2016}
+\exammonth{June}
+\examyear{2024}
 \timeallowed{3 hours}
-\copyrightyear{2023} %Optional: same as \examyear if omitted
+\copyrightyear{2024} %Optional: same as \examyear if omitted
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
 %\oulogofilebase{OU_Compact_LOGO_BLACK_40mm}% Overrides internal OU logo specification
 %\switchmarks % Can be used to place marks to right of comments
@@ -62,7 +63,12 @@ Insert module-specific examination instructions here
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \question[optional space for title]
-The first question.\mk{12}
+% Questions can be wrapped inside the `questionblock' environment
+% This allows you to suppress them when producing solutions, using
+% the `solutionsonly' option.
+\begin{questionblock}
+The first question.\mk{12}	
+\end{questionblock}
 
 \begin{solution}
 Solutions can be placed in-line, to generate solution files from the same source.\mk{3}
@@ -83,15 +89,17 @@ Rather than automatically adding up marks, you can specify a total or subtotal:
 \total*
 \end{solution}
 
+
 \question
-The second question.\mk{3}
+\begin{questionblock}
+The second question.\mk{3}	
+\end{questionblock}
 
 \begin{solution}
 Solutions can be placed in-line, to generate solution files from the same source.\mk[Be generous!]{3}
 \end{solution}
 
 \question[(example of creating subquestions)]
-
 \begin{enumerate}
 \item Use the standard enumerate environment.\mk{3}
 \item \begin{enumerate}
@@ -100,6 +108,7 @@ Solutions can be placed in-line, to generate solution files from the same source
 \begin{solution}
 Solutions can be created per sub-question, or per sub-sub-question, or after the entire question.\mk{2}
 
+Note that if you insert solutions per subquestion, then you cannot use the `solutionsonly' features.
 \end{solution}
 \end{enumerate}
 \end{enumerate}
