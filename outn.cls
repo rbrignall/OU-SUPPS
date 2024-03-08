@@ -30,8 +30,11 @@
 \RequirePackage{iftex}
 \RequirePackage{environ}
 \RequirePackage{verbatim}
+\RequirePackage{caption}
+  \captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25}}
 \if@specsolns
   \RequirePackage{caption}
+  \captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25,color=\@specsolnscolor}}
 \fi
 
 
@@ -70,7 +73,7 @@
 \newcommand\specsolnscolor[1]{\def\@specsolnscolor{#1}}
 \if@specsolns
   \AtBeginDocument{\color{\@specsolnscolor}}
-  \captionsetup{font={color=\@specsolnscolor}}
+  \captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25,color=\@specsolnscolor}}
 \fi
 %
 \def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
@@ -364,7 +367,7 @@
 \newcommand{\tutoronly}[1]{{\color{\@tutorcolor}#1}}
 \newenvironment{tutor}{\color{\@tutorcolor}\@tutoronlytitle}{}
 \newcommand{\remark}[1]{{\color{\@tutorcolor}\emph{Remark:} #1}}
-\newenvironment{longremark}{\color{\@tutorcolor}\emph{Remarks:}\par}{}
+\newenvironment{longremark}{\vspace{0.25\baselineskip}\par\color{\@tutorcolor}\emph{Remarks}\\[3pt]}{\par}
 \newcommand{\studentonly}[1]{}
 \newenvironment{student}{\comment}{\endcomment}
 \if@specsolns
@@ -563,7 +566,7 @@
 %
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 \newcommand{\longtextref}[1]{\hfill\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}{\emph{\textbf{#1}}}}}
-\newenvironment{references}{\par{\itshape References}\par}
+\newenvironment{references}{\vspace{0.25\baselineskip}\par{\itshape References}\\[3pt]}{\par}
 %\newcommand{\textref}[1]{\hfill\begin{framed}\emph{\textbf{#1}}\end{framed}}
 %\newcommand{\textref}[1]{%
  % \setlength{\@tempdima}{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}%
