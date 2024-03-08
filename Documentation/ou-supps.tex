@@ -924,6 +924,23 @@ This option changes the formatting of the exam to make it more suitable for remo
 	\item Modifies the footer on pages 2 onwards, to make it clearer to students at-a-glance whether they have printed all pages correctly.
 \end{itemize}
 
+\begin{desc}
+|\documentclass[exam-and-ss]{outn}|
+\end{desc}
+
+This version will \emph{attempt to} generate both the question paper and solutions as separate PDFs. If your document is called |file.tex|, then the question paper will be created in |file.pdf|, and the solutions will be created in |file-ss.pdf|.
+
+When you compile the document with this option, the class file will instigate two further compilations of your document, one with the |showsolutions| option and a different |jobname|. In order for this functionality to succeed, you will typically have to invoke |pdflatex| with the additional option |--shell-escape|, for example:
+
+\qquad|pdflatex --shell-escape file.tex|
+
+Note: most text editors can be configured to include |--shell-escape| in the compilation instructions: check the documentation of your editor for details.
+
+\begin{desc}
+|\documentclass[specimen,qp-and-ss]{outn}|
+\end{desc}
+
+Using both the |specimen| and |qp-and-ss| options will result in the generation of a SEP and SSEP from a single compilation.
 
 \subsubsection{Commands to be used in the preamble}\label{ouexam-preamble}
 \begin{desc}

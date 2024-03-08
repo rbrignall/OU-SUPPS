@@ -2,6 +2,24 @@
 \ProvidesClass{ouexam}[2023/12/19 v2.5 (Robert Brignall, all rights reserved)]
 
 %% Handles options
+
+\newif\if@showsolutions
+\@showsolutionsfalse
+\DeclareOption{exam-and-ss}{%
+    \ifx\buildmode\undefined
+      \immediate\write18{%
+        pdflatex --jobname="\jobname"
+        "\gdef\string\buildmode{1}\string\input\space\jobname"
+      }%
+      \immediate\write18{%
+        pdflatex --jobname="\jobname-ss"
+        "\gdef\string\buildmode{2}\string\input\space\jobname"
+      }%
+      \expandafter\stop
+    \fi
+    \ifnum\buildmode=1\relax\fi
+    \ifnum\buildmode=2\ExecuteOptions{@showsolutions}\fi
+}
 \newif\if@specimen
 \@specimenfalse
 \DeclareOption{specimen}{%
@@ -12,11 +30,21 @@
 \DeclareOption{secondspecimen}{%
   \@secondspecimentrue
 }
-\newif\if@showsolutions
 \newif\if@specimensolutions
-\@showsolutionsfalse
 \@specimensolutionsfalse
 \DeclareOption{showsolutions}{%
+ % true unless \buildmode not defined or \buildmode=1
+ \ifnum\ifx\buildmode\undefined 0\else\ifnum\buildmode=1 0\else1\fi\fi=1
+   \ExecuteOptions{@showsolutions}
+ \fi
+}
+\DeclareOption{specimensolutions}{%
+ \@specimentrue
+ \ifnum\ifx\buildmode\undefined 0\else\ifnum\buildmode=1 0\else1\fi\fi=1
+   \ExecuteOptions{@showsolutions}
+ \fi
+}
+\DeclareOption{@showsolutions}{%
  \@showsolutionstrue
  \if@specimen
    \@specimensolutionstrue
@@ -24,11 +52,6 @@
  \if@secondspecimen
    \@specimensolutionstrue
  \fi
-}
-\DeclareOption{specimensolutions}{%
- \@specimentrue
- \@specimensolutionstrue
- \@showsolutionstrue
 }
 %
 \newif\if@bigfontneeded
