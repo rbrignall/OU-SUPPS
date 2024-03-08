@@ -202,7 +202,15 @@
 \def\@submitby{\relax}
 \newcommand\submitby[1][23:59 BST]{\DeclareRobustCommand\@submitby{Submit by:\ #1}}
 \def\@suppno{\relax} % default
-\newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
+
+\newcommand{\suppno}{\@dblarg\@setsuppno}
+\def\@setsuppno[#1]#2{
+  \if@specimensolutions
+    \DeclareRobustCommand\@suppno{#1}
+  \else
+    \DeclareRobustCommand\@suppno{#2}
+  \fi
+}
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %

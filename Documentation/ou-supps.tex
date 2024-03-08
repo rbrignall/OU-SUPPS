@@ -1008,9 +1008,11 @@ Sets the date for copyright, used in the footer on the front page (optional, def
 
 
 \begin{desc}
-|\suppno{...}| %can be omitted for "DRAFT"
+|\suppno[<ssep supp no>]{...}| %can be omitted for "DRAFT"
 \end{desc}
-Sets the SUPP number for |specimen| and |secondspecimen| options, mainly used by DPU/LTS (optional, default is blank).
+Sets the SUPP code for |specimen|, |secondspecimen| and |specimensolutions| options, mainly used by DPU/LTS (optional, default is blank).
+
+The optional parameter |<ssep supp no>| allows you to specify a second SUPP code, and if present will be used for specimen solutions. The code in braces is applied to the specimen paper itself, and in any case where the optional parameter is omitted.
 
 \begin{desc}
 |\versionno{...}| %optional
