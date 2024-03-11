@@ -730,47 +730,27 @@ The optional parameter |<line spacing>| can be used to increase the spacing betw
 \end{desc}
 This command can be used within  |inlineoptions| to leave a `blank' in the list of options. This is particularly useful on the final line if you have fewer |\item|s left than the specified number of |<columns>|.
 
-\subsection{Comments for tutors or students}
+\subsection{Producing tutor notes and specimen solutions from one file}
 
-Since the same |latex| source is expected to produce both tutor notes and (using |specsolns| mode) specimen solutions, commands are provided for comments to appear to tutors and/or students.
-
-\emph{Warning: These commands are still under development and syntax/appearance is still liable to change in future.}
+|outn| is designed to be able to produce Tutor Notes and Specimen Solutions from a single tex file, using the class files options |specsolns| or |tn-and-ss| (see earlier). Various commands are available to apply comments, text or commands depending on which type of file is being produced.
 
 \begin{desc}
-|\textref{<description>}|
-\end{desc}
-
-Inserts |<description>| in bold and italics, in a right-aligned box. Primarily expected to be used for references to texts or handbooks.
-
-
-\begin{desc}
+|\tnonly{<commands/text>}|\\
+|\tutoronly{<commands/text>}|\\
 |\remark{<text>}|
+\end{desc}
+Commands, text, and anything else inside |\tnonly| command and related commands will only output when the |specsolns| option is \emph{not} active.
+
+\begin{desc}
+|\begin{tutor}|\\
+| <content>|\\
+|\end{tutor}|\\[5pt]
 |\begin{longremark}<text>\end{longremark}|
 \end{desc}
+Any content within the |tutor| or |longremark| environments will only
+output when the |specsolns| option is \emph{not} active.\label{outn:tnonly}
 
-Provides a command and environment in which to write text that is visible only in the tutornotes (i.e.\ it is suppressed in |specsolns| mode). The |longremark| environment is designed for longer paragraphs of explanation.
-
-\emph{Warning: Do not use the |longremark| environment inside the |solutions| environment! In certain modes this will cause errors relating to verbatim mode.}
-
-\begin{desc}
-|\begin{references}<text>\end{references}|  
-\end{desc}
-
-Provides an environment for references; it typesets the word `References' in italics on its own line, with the |<text>| in normal font.
-
-\begin{desc}
-|\tutoronly{<commands/text>}|
-\end{desc}
-Commands, text, and anything else (e.g |\pagebreak|) passed to the |\tutoronly| command will only
-output to tutor notes when the |specsolns| option is \emph{not} active.
-
-\begin{desc}
-|\begin{tutor}|
-| <content>|
-|\end{tutor}|
-\end{desc}
-Any content within the |\tutor| environment will only
-output to tutor notes when the |specsolns| option is \emph{not} active.\label{outn:tutoronly}
+\emph{Warning: Do not use the |tutor| or |longremark| environments inside the |solutions| environment! In certain modes this will cause errors relating to verbatim mode.}
 
 \begin{desc}
 |\tutoronlytitle{<title for tutor only environment>}|
@@ -779,14 +759,15 @@ Sets the title for the |tutor| environment; the title, by default, will output
 |{\bfseries For tutors only:}\par| but this can be changed using |\tutoronlytitle|. 
 
 \begin{desc}
+|\ssonly{<commands/text>}|\\
 |\studentonly{<commands/text>}|
 \end{desc}
-Commands, text, and anything else passed to the |\studentonly| command will only
-output to student notes when the |specsolns| option \emph{is} active.\label{outn:studentonly}
+Commands, text, and anything else inside |\ssonly| will only
+output when the |specsolns| option \emph{is} active.\label{outn:ssonly}
 
 \begin{desc}
-|\begin{student}|
-|<content>|
+|\begin{student}|\\
+|<content>|\\
 |\end{student}|
 \end{desc}
 Any content within the |\student| environment will only
@@ -799,9 +780,10 @@ Sets the title for the |student| environment; the title, by default, will output
 |{\bfseries For students only:}\par| but this can be changed using |\studentonlytitle|. 
 
 \begin{desc}
+|\tnorss{<to the tutor>}{<to the student>}|\\
 |\tutororstudent{<to the tutor>}{<to the student>}|  
 \end{desc}
-The |\tutororstudent| command takes two arguments; the first argument will only
+The |\tnorss| command takes two arguments; the first argument will only
 be output when the |specsolns| is \emph{not} active, and the second argument 
 will only be output when the |specsolns| \emph{is} active.
 
@@ -810,6 +792,44 @@ will only be output when the |specsolns| \emph{is} active.
 |\studentonlycolor{<color>}|
 \end{desc}
 These commands set the color of the text in tutor- and student-specific comments and environments. The default is |black| for |\tutoronlycolor|, and the same as |\specsolnscolor| for |\studentonlycolor| (by default, this is |ougreen|).
+
+
+\subsubsection{Pagination}
+As well as the usual commands such as |\pagebreak|, it is possible to specify different page breaks depending on whether |specsolns| is enabled or not.
+\begin{desc}
+|\tnpagebreak|
+\end{desc}
+Inserts a |\pagebreak| command when the |specsolns| option is not specified.
+
+\begin{desc}
+|\sspagebreak|
+\end{desc}
+Inserts a |\pagebreak| command when the |specsolns| option is specified.
+
+\begin{desc}
+|\tnnewpage|
+\end{desc}
+Inserts a |\newpage| command when the |specsolns| option is not specified.
+
+\begin{desc}
+|\ssnewpage|
+\end{desc}
+Inserts a |\newpage| command when the |specsolns| option is specified.
+
+
+\subsubsection{Referencing}
+\begin{desc}
+|\textref{<description>}|
+\end{desc}
+
+Inserts |<description>| in bold and italics, in a right-aligned box. Primarily expected to be used for references to texts or handbooks. Applies in both tn and ss modes.
+
+
+\begin{desc}
+|\begin{references}<text>\end{references}|  
+\end{desc}
+
+Provides an environment for references; it typesets the word `References' in italics on its own line, with the |<text>| in normal font. Applies in both tn and ss modes.
 
 \subsection{Technical info}
 This section can be omitted unless you need/want to know a bit more about the class file.
@@ -1377,25 +1397,37 @@ In order to enable two PDF files to be produced from a single source (see earlie
 
 \begin{desc}
 |\qponly{...}|\\
-|\solonly{...}|\\
+|\ssonly{...}|\\
 \end{desc}
 
 The contents of |\qponly| will be applied and/or displayed only when |showsolutions|, |solutionsonly| or |specimensolutions| is \emph{not} specified.
 
-The contents of |\solonly| will be applied and/or displayed only when |showsolutions|, |solutionsonly| or |specimensolutions| is specified.
+The contents of |\ssonly| will be applied and/or displayed only when |showsolutions|, |solutionsonly| or |specimensolutions| is specified.
 
 
 \subsubsection{Pagination}
 As well as the usual commands such as |\pagebreak|, it is possible to specify different page breaks depending on whether |showsolutions| is enabled or not.
 \begin{desc}
+|\qppagebreak|\\
 |\questionbreak|
 \end{desc}
 Inserts a |\pagebreak| command when the |showsolutions| option is not specified.
 
 \begin{desc}
+|\sspagebreak|\\
 |\solutionbreak|
 \end{desc}
 Inserts a |\pagebreak| command when the |showsolutions| option is specified.
+
+\begin{desc}
+|\qpnewpage|
+\end{desc}
+Inserts a |\newpage| command when the |showsolutions| option is not specified.
+
+\begin{desc}
+|\ssnewpage|
+\end{desc}
+Inserts a |\newpage| command when the |showsolutions| option is specified.
 
 %
 %
