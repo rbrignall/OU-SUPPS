@@ -448,9 +448,15 @@ Sets the code of the module (required).
 Sets the title (i.e./ name) of the module (required).
 
 \begin{desc}
-|\tntitle{...}|
+|\tntitle[<ss title>]{<tn title>}|
 \end{desc}
-Sets the title for the Tutor Notes/Specimen Solutions (required).
+Sets the title for the Tutor Notes/Specimen Solutions (required). If the optional parameter |<ss title>| is specified, this is used in |specsolns| mode (so the tutornotes and specimen solutions can have separate titles).
+
+\begin{desc}
+|\sstitle{<ss title>}|	
+\end{desc}
+ In |specsolns| mode, this will set the title for the specimen solutions. \emph{Note:} If present, the title specified in this command will always override the optional parameter set in |\tntitle|.
+ 
 
 \begin{desc}
 |\tnyear{...}|

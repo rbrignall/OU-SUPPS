@@ -83,8 +83,32 @@
 \def\@copyrightyear{\@tnyear}
 \newcommand\copyrightyear[1]{\def\@copyrightyear{#1}}
 %
-\newcommand\tntitle[1]{\renewcommand\@tntitle{#1}}
+% Title of document:
+% Can be handled by \tntitle[A]{B}
+% Or \tntitle{B}\sstitle{A}
+% \sstitle overrules optional \tntitle parameter
+\newif\if@sstitle
+\@sstitlefalse
+\newcommand{\sstitle}[1]{%
+  \@sstitletrue
+  \if@specsolns%
+    \renewcommand\@tntitle{#1}
+  \else%
+    \relax
+  \fi%
+}%
+%
 \newcommand\@tntitle{\@latex@error{No \noexpand\tntitle specified}\@ehc}
+\newcommand{\tntitle}{\@dblarg\@settntitle}
+\def\@settntitle[#1]#2{
+  \if@specsolns%
+    \if@sstitle\relax%
+    \else\renewcommand\@tntitle{#1}\fi
+  \else%
+    \renewcommand\@tntitle{#2}
+  \fi%
+}
+%
 % title for tutor only environment
 \newcommand\tutoronlytitle[1]{\renewcommand\@tutoronlytitle{#1}}
 \newcommand\@tutoronlytitle{{\bfseries For tutors only:}\par}
