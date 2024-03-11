@@ -449,14 +449,18 @@
 %
 \if@specsolns%
   	% suppress everything in specimen solutions
-  	\newcommand{\bracketedmarks}[2][]{\relax}
-  	\newcommand{\solnmarks}[2][]{\relax}
-  	\newcommand{\solnmarksplus}[2]{\relax}
+  	\newcommand*{\bracketedmarks}{\@ifstar\@relaxcmdA\@relaxcmdA}
+  	\newcommand*{\solnmarks}{\@ifstar\@relaxcmdA\@relaxcmdA}
+  	\newcommand*{\solnmarksplus}{\@ifstar\@relaxcmdB\@relaxcmdB}
+    % Two flavours of \@relaxcmd depending on parameters
+    % \@relaxopt handles final optional spacing parameter if supplied 
+    \newcommand{\@relaxcmdA}[2][]{\@relaxopt}
+    \newcommand{\@relaxcmdB}[2]{\@relaxopt}
+    \newcommand{\@relaxopt}[1][]{\relax}
 \else%
 	% Not specimen solutions
 	% Bracketed marks - not really used in outn
 	\newcommand{\bracketedmarks}[2][\unskip]{%
-		%\@update@totals{#2}% RB commented out 08/04/20: see if anyone notices...
 		\marginnote{\hfill %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}\makebox[1cm][r]{[\textsl{#2}]}%
@@ -489,7 +493,6 @@
 \fi
 % The standard \mk command is defined in terms of solnmarks.
 % \bracketedmarks is available mainly for compatibility with ouab and ouexam.
-%\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
 \def\mk{\solnmarks}
 \def\mkplus{\solnmarksplus} % Note: doesn't support * mode.
 %
