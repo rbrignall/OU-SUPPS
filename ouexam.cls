@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2023/12/19 v2.5 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2024/03/11 v2.6 (Robert Brignall, all rights reserved)]
 
 %% Handles options
 

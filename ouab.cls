@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2021/11/16 v2.3.3 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2024/03/11 v2.4 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@draft
 \@draftfalse
