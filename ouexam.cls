@@ -95,10 +95,10 @@
   \fi
 \fi
 \if@showsolutions
-  \def\solonly#1{#1}
+  \def\ssonly#1{#1}
   \def\qponly#1{\relax}
 \else
-  \def\solonly#1{\relax}
+  \def\ssonly#1{\relax}
   \def\qponly#1{#1}
 \fi
 
@@ -687,7 +687,6 @@
 %	
 \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
 \def\mk{\bracketedmarks}
-%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 \def\mkplus{\solnmarksplus}
 %
 %% Definition of \total and \subtotal
@@ -758,8 +757,12 @@
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Newpage commands
-\newcommand{\solutionbreak}{\if@showsolutions\newpage\fi}
-\newcommand{\questionbreak}{\if@showsolutions\else\newpage\fi}
+\newcommand{\sspagebreak}{\if@showsolutions\pagebreak\fi}
+\newcommand{\solutionbreak}{\sspagebreak}
+\newcommand{\qppagebreak}{\if@showsolutions\else\pagebreak\fi}
+\newcommand{\questionbreak}{\qppagebreak}
+\newcommand{\ssnewpage}{\if@showsolutions\newpage\fi}
+\newcommand{\qpnewpage}{\if@showsolutions\else\newpage\fi}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
 %% Needed for marginnote package
