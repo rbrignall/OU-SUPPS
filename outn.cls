@@ -591,16 +591,6 @@
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 \newcommand{\longtextref}[1]{\hfill\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}{\emph{\textbf{#1}}}}}
 \newenvironment{references}{\vspace{0.25\baselineskip}\par{\itshape References}\\[3pt]}{\par}
-%\newcommand{\textref}[1]{\hfill\begin{framed}\emph{\textbf{#1}}\end{framed}}
-%\newcommand{\textref}[1]{%
- % \setlength{\@tempdima}{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}%
- % \sbox{\@tempboxa}{#1}%
- % \ifdim\wd\@tempboxa>\@tempdima
- %   \hfill\fbox{\parbox{\@tempdima}{\raggedleft{\em\bfseries#1}}}%
- % \else
- %   \hfill\fbox{\em\bfseries#1}%
-%\fi
-%}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
@@ -769,14 +759,6 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Solutions
-
-%\newmdenv[linewidth=0pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,frametitle=Solution to \thequestion]{solutionbox}
-%
-%\newenvironment{solution}{%
-%	\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-%	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small
-% }
-% {\end{solutionbox}\end{adjustwidth}}
 % Dummy environment:
 \newenvironment{solution}{}{}
 %

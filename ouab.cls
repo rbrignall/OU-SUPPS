@@ -209,7 +209,6 @@
 
 \setcounter{secnumdepth}{3}
 
-%\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
 \raggedbottom
 \parindent 0pt
@@ -376,7 +375,6 @@
     	\relax
   	\fi%
 }
-%\def\marks{\ClassWarning{ouab}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 
@@ -543,8 +541,8 @@
   }%
 %
 
-%
-% accessibility warnings
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Accessibility Warnings
 %
 \newcommand{\ouabPrintAW}{}
 \newif\if@ousupps@accessibility@warnings@printed

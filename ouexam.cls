@@ -147,9 +147,6 @@
 \fi
 
 %%
-
-
-%\renewcommand{\baselinestretch}{1.3}
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
@@ -406,7 +403,6 @@
 	\else
 	  {\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline}
 	\fi}
-    	%\rule{\titletablewidth}{1pt}
     	
     	\nointerlineskip\vspace{12pt}
      	{\if@showsolutions
@@ -425,10 +421,8 @@
     \end{tabular}
     \vspace{20pt}
 	
-    %\begin{adjustwidth}{1cm}{1cm}
 	\raggedright
 	\@examinstructions
-    %\end{adjustwidth}
     \clearpage}
 %%
 \def\@makespecimensolutionstitle{%
@@ -488,7 +482,6 @@
 %
 \setcounter{secnumdepth}{3}
 
-%\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
 \raggedbottom
 \parindent 0pt
@@ -744,14 +737,6 @@
 	}%
 	\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
 }
-  % \total*[]
-%  \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{\thetotal}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
-  % \total[]{}
-%  \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{#2}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
-  % \subtotal*[]
-%  \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
-  % \subtotal[]{}
-%  \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{#2}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
 \ifdraw@total@line%
@@ -973,7 +958,6 @@
 	\if@specimensolutions%
 		% Don't want to use tcolorbox here
 		\newenvironment{solution}{%
-			%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
 			\def\mk{\solnmarks}%
   		}{}
 	\else
