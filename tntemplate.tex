@@ -169,7 +169,7 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
 \begin{enumerate}
   \item The lines after a \verb!subtotal! command can be customized using
     the \verb!\setSubtotalHline[<options>]! command, the \verb!<options>! 
-    are \verb!moveleft!, \verb!width!, \verb!height!, \verb!color!, 
+    are \verb!moveleft!, \verb!movedown!, \verb!width!, \verb!height!, \verb!color!, 
     and \verb!draw line!. 
     These options can be used in any combination (and should probably be set once in the preamble); for example, 
     \begin{itemize}
@@ -184,8 +184,8 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
         \setSubtotalHline[moveleft=-2cm,width=.5\textwidth]
 
         \subtotal*
-      \item \verb!\setSubtotalHline[color=green]!
-        \setSubtotalHline[color=green] \mk{2}
+      \item \verb!\setSubtotalHline[color=green,movedown=20pt]!
+        \setSubtotalHline[color=green,movedown=20pt] \mk{2}
 
         \subtotal{3}
       \item \verb!\setSubtotalHline[moveleft=0pt,height=5pt,color=orange]!
@@ -214,8 +214,8 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
         \setTotalHline[moveleft=2cm,width=.75\textwidth]
 
         \total*
-      \item \verb!\setTotalHline[color=purple]!
-        \setTotalHline[color=purple] 
+      \item \verb!\setTotalHline[color=purple,movedown=1cm]!
+        \setTotalHline[color=purple,movedown=1cm] 
 
         \total{3}
       \item \verb!\setTotalHline[moveleft=0pt,height=.5pt,color=yellow]!
@@ -245,9 +245,9 @@ Now, when using simply \verb!\ourule!, the output is:
 
 \ourule
 
-And then you can overwrite certain aspects as you see fit, for example \verb!\ourule[color=blue]!
+And then you can overwrite certain aspects as you see fit, for example \verb!\ourule[color=blue,movedown=-1cm]!
 
-\ourule[color=blue]
+\ourule[color=blue,movedown=0.5cm]
 
     \end{itemize}
 \end{enumerate}

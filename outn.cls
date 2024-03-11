@@ -328,10 +328,12 @@
  /totalhline/.is family, /totalhline,
  default/.style =
   {moveleft=.1\textwidth,
+   movedown=0pt,
    width=1.5\textwidth,
    height=2pt,
    color=black},
    moveleft/.estore in=\@outn@total@hline@move@left,
+   movedown/.estore in=\@outn@total@hline@move@down,
    width/.estore in=\@outn@total@hline@width,
    height/.estore in=\@outn@total@hline@height,
    color/.estore in=\@outn@total@hline@color,
@@ -339,10 +341,12 @@
  /subtotalhline/.is family, /subtotalhline,
  default/.style =
   {moveleft=.1\textwidth,
+   movedown=0pt,
    width=1.5\textwidth,
    height=1pt,
    color=black},
    moveleft/.estore in=\@outn@subtotal@hline@move@left,
+   movedown/.estore in=\@outn@subtotal@hline@move@down,
    width/.estore in=\@outn@subtotal@hline@width,
    height/.estore in=\@outn@subtotal@hline@height,
    color/.estore in=\@outn@subtotal@hline@color,
@@ -350,6 +354,7 @@
  /ourule/.is family, /ourule,
  default/.style = /totalhline/default,
    moveleft/.estore in=\@outn@rule@move@left,
+   movedown/.estore in=\@outn@rule@move@down,
    width/.estore in=\@outn@rule@width,
    height/.estore in=\@outn@rule@height,
    color/.estore in=\@outn@rule@color,
@@ -385,16 +390,19 @@
                    {\@outn@rule@width}%
                    {\@outn@rule@color}%
                    {\@outn@rule@height}%
+                   {\@outn@rule@move@down}%
   \fi
 }
 
 % reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
-\newcommand{\outn@draw@rule}[4]{%
+\newcommand{\outn@draw@rule}[5]{%
         % #1: moveleft
         % #2: width
         % #3: color
         % #4: height
+        % #5: movedown
   \par\nobreak % don't break a page here
+  \vspace{#5}%
   \moveleft#1\vbox{% we want the rule to protrude on the left
     \hsize=#2% correct the length
     \kern\the\prevdepth % don't take into account the depth of the preceding line
@@ -604,6 +612,7 @@
                        {\@outn@total@hline@width}%
                        {\@outn@total@hline@color}%
                        {\@outn@total@hline@height}%
+                       {\@outn@total@hline@move@down}%
 \fi%
 }
 
@@ -614,6 +623,7 @@
                        {\@outn@subtotal@hline@width}%
                        {\@outn@subtotal@hline@color}%
                        {\@outn@subtotal@hline@height}%
+                       {\@outn@subtotal@hline@move@down}%
 \fi%
 }
 
