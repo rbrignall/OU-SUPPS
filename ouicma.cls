@@ -263,7 +263,7 @@ Personal identifier (PI): \\[20pt]
 \newenvironment{inlineoptions}[2][1]{%
 % #1 is the optional line spacing stretch. Default is 1
 % #2 is the number of columns
-  \par\medskip\@optiontext
+  \par\medskip\@optiontext\vspace{\dimexpr\baselineskip-#1\baselineskip}
     \setcounter{enumi}{0}%
   \dimen0 \linewidth%
   \divide\dimen0 by #2\relax%
