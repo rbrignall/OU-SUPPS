@@ -388,37 +388,41 @@
 \def\@studentcolor{\@specsolnscolor}
 \newcommand\tutoronlycolor[1]{\def\@tutorcolor{#1}}
 \newcommand\studentonlycolor[1]{\def\@studentcolor{#1}}
-\newcommand{\tutoronly}[1]{{\color{\@tutorcolor}#1}}
-\newenvironment{tutor}{\color{\@tutorcolor}\@tutoronlytitle}{}
-\newcommand{\remark}[1]{{\color{\@tutorcolor}\emph{Remark:} #1}}
-\newenvironment{longremark}{\vspace{0.25\baselineskip}\par\color{\@tutorcolor}\emph{Remarks}\\[3pt]}{\par}
-\newcommand{\studentonly}[1]{}
-\newenvironment{student}{\comment}{\endcomment}
-\if@specsolns
-    \AtBeginDocument{
-        \renewcommand{\tutoronly}[1]{}
-        \renewcommand{\remark}[1]{}
-        \renewcommand{\studentonly}[1]{{\color{\@studentcolor}#1}}
-        \renewenvironment{tutor}{\comment}{\endcomment}
-        \renewenvironment{longremark}{\comment}{\endcomment}
-        \renewenvironment{student}{\color{\@studentcolor}\@studentonlytitle}{}
-    }
-\else
-    \AtBeginDocument{
-        \renewcommand{\studentonly}[1]{}
-        \renewenvironment{student}{\comment}{\endcomment}
-    }
-\fi
-\newcommand{\tutororstudent}[2]{%
-    % #1: for tutors only
-    % #2: for students only
-    \if@specsolns
-        {\color{\@studentcolor}#2}
-    \else
-        {\color{\@tutorcolor}#1}
-    \fi
+%
+\AtBeginDocument{
+  \if@specsolns
+    \newcommand{\tnonly}[1]{\relax}
+    \newcommand{\remark}[1]{\relax}
+    \newenvironment{tutor}{\comment}{\endcomment}
+    \newenvironment{longremark}{\comment}{\endcomment}
+    %
+    \newcommand{\ssonly}[1]{{\color{\@studentcolor}#1}}
+    \newenvironment{student}{\color{\@studentcolor}\@studentonlytitle}{}
+    %
+    \newcommand{\tnorss}[2]{{\color{\@studentcolor}#2}}
+  \else
+    \newcommand{\tnonly}[1]{{\color{\@tutorcolor}#1}}
+    \newenvironment{tutor}{\color{\@tutorcolor}\@tutoronlytitle}{}
+    \newcommand{\remark}[1]{{\color{\@tutorcolor}\emph{Remark:} #1}}
+    \newenvironment{longremark}{\vspace{0.25\baselineskip}\par\color{\@tutorcolor}\emph{Remarks}\\[3pt]}{\par}
+    %
+    \newcommand{\ssonly}[1]{\relax}
+    \newenvironment{student}{\comment}{\endcomment}
+    %
+    \newcommand{\tnorss}[2]{{\color{\@tutorcolor}#1}}
+  \fi
+  %
+  \newcommand*{\tutoronly}{\tnonly}
+  \newcommand*{\studentonly}{\ssonly}
+  \newcommand*{\tutororstudent}{\tnorss}
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Newpage commands
+\newcommand{\sspagebreak}{\if@specsolns\pagebreak\fi}
+\newcommand{\tnpagebreak}{\if@specsolns\else\pagebreak\fi}
+\newcommand{\ssnewpage}{\if@specsolns\newpage\fi}
+\newcommand{\tnnewpage}{\if@specsolns\else\newpage\fi}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question headers
 \newcounter{question}
