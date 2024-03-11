@@ -317,7 +317,7 @@
 		\@check@marks%
 		\setcounter{marktarget}{0}% 0 suppresses warnings later
 	\fi
-	\stepcounter{question}%
+	\refstepcounter{question}%
 	\par\addvspace{\bigskipamount}%
 	{\textbf{Question~\thequestion} #1}\nopagebreak\par}
 %
@@ -328,7 +328,7 @@
 		\setcounter{marksum}{0}
 		\setcounter{marktarget}{#2}
 	\fi
-	\stepcounter{question}%
+	\refstepcounter{question}%
 	\par\addvspace{\bigskipamount}% 
 	\def\@marktext{\ifnum#2=1 mark \else marks\fi}
 	{\textbf{Question~\thequestion} #1}\hspace{12pt}--\hspace{12pt}#2 \@marktext\nopagebreak\par}
