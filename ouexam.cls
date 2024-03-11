@@ -635,7 +635,7 @@
         % #2: width
         % #3: color
         % #4: height
-    \par\bigskip\nobreak % don't break a page here
+    \par\nobreak % don't break a page here
     \moveleft#1\vbox{% we want the rule to protrude on the left
     \hsize=#2% correct the length
     \kern\the\prevdepth % don't take into account the depth of the preceding line
@@ -702,7 +702,7 @@
 \def\subtotal{\@ifstar\@subtotal\@@subtotal}
 % \total*
 \newcommand{\@total}[1][\unskip]{%
-    \marginnote{\sf\bfseries %
+    \strut\marginnote{\sf\bfseries %
 		\if@switchmarks%
 			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{\thetotal\hspace{0.5cm}}%
      	\else%
@@ -713,7 +713,7 @@
 }%
 % \total[]{}
 \newcommand{\@@total}[2][\unskip]{%
-    \marginnote{\sf\bfseries %
+    \strut\marginnote{\sf\bfseries %
 		\if@switchmarks%
 			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
      	\else%
@@ -724,7 +724,7 @@
 }
 % \subtotal*
 \newcommand{\@subtotal}[1][\unskip]{%
-    \marginnote{\small\sf\bfseries %
+    \strut\marginnote{\small\sf\bfseries %
 		\if@switchmarks%
 			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{\thesubtotal\hspace{0.5cm}}%
      	\else%
@@ -735,7 +735,7 @@
 }
 % \subtotal[]{}
 \newcommand{\@@subtotal}[2][\unskip]{%
-   	\marginnote{\small\sf\bfseries %
+   	\strut\marginnote{\small\sf\bfseries %
 		\if@switchmarks%
 			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
     	\else%
@@ -754,7 +754,7 @@
 %  \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{#2}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
-\ifdraw@total@line
+\ifdraw@total@line%
         \outn@draw@rule{\@outn@total@hline@move@left}%
                        {\@outn@total@hline@width}%
                        {\@outn@total@hline@color}%
@@ -764,7 +764,7 @@
 %
 % subtotal horizontal rule
 \newcommand{\outn@draw@subtotal@rule}{%
-\ifdraw@subtotal@line
+\ifdraw@subtotal@line%
         \outn@draw@rule{\@outn@subtotal@hline@move@left}%
                        {\@outn@subtotal@hline@width}%
                        {\@outn@subtotal@hline@color}%

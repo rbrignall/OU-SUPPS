@@ -370,7 +370,7 @@
         % #2: width
         % #3: color
         % #4: height
-  \par\bigskip\nobreak % don't break a page here
+  \par\nobreak % don't break a page here
   \moveleft#1\vbox{% we want the rule to protrude on the left
     \hsize=#2% correct the length
     \kern\the\prevdepth % don't take into account the depth of the preceding line
@@ -522,7 +522,7 @@
 	}
     % \total*
     \newcommand{\@total}[1][\unskip]{%
-    	\marginnote{\sf\bfseries %
+    	\strut\marginnote{\sf\bfseries %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{\thetotal}%
      		\else%
@@ -533,7 +533,7 @@
 	}%
     % \total[]{}
     \newcommand{\@@total}[2][\unskip]{%
-    	\marginnote{\sf\bfseries %
+    	\strut\marginnote{\sf\bfseries %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{#2}%
      		\else%
@@ -544,7 +544,7 @@
 	}
     % \subtotal*
     \newcommand{\@subtotal}[1][\unskip]{%
-    	\marginnote{\small\sf\bfseries %
+    	\strut\marginnote{\small\sf\bfseries %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{\thesubtotal}%
      		\else%
@@ -555,7 +555,7 @@
 	}
     % \subtotal[]{}
     \newcommand{\@@subtotal}[2][\unskip]{%
-    	\marginnote{\small\sf\bfseries %
+    	\strut\marginnote{\small\sf\bfseries %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{#2}%
      		\else%
@@ -568,7 +568,7 @@
 
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
-\ifdraw@total@line
+\ifdraw@total@line%
         \outn@draw@rule{\@outn@total@hline@move@left}%
                        {\@outn@total@hline@width}%
                        {\@outn@total@hline@color}%
@@ -578,7 +578,7 @@
 
 % subtotal horizontal rule
 \newcommand{\outn@draw@subtotal@rule}{%
-\ifdraw@subtotal@line
+\ifdraw@subtotal@line%
         \outn@draw@rule{\@outn@subtotal@hline@move@left}%
                        {\@outn@subtotal@hline@width}%
                        {\@outn@subtotal@hline@color}%
