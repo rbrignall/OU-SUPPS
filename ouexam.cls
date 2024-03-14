@@ -741,10 +741,10 @@
 		\fi%
 	}%
 }	
-%	
-\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
+%
+\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}\ClassWarning{ouexam}{\protect\solnmarksplus\space is deprecated. Please use \protect\mk\space}}
+\newcommand{\mkplus}[2]{\solnmarks[#2]{#1}\ClassWarning{ouexam}{\protect\mkplus\space is deprecated. Please use \protect\mk\space}}
 \def\mk{\bracketedmarks}
-\def\mkplus{\solnmarksplus}
 %
 %% Definition of \total and \subtotal
 \def\total{\@ifstar\@total\@@total}
