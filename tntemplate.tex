@@ -159,11 +159,23 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
 
 \subtotal*
 \item Marks that you don't want added to the subtotal/total counter can be inserted using \verb!\mk*! \mk* 2
-\end{enumerate}
+
+\subtotal*
+\item You can use decimals in marks. \verb!\mk{1.5}! gets rendered as \mk{1.5}
+
+Another fractional mark \mk{.5}
+
 \subtotal*
 
-\bigskip
-\total*
+\item If you really want, other decimals can also be used.\mk{.2}
+
+Another example, so the part-marks add up to 0.5.\mk{0.3}
+
+\subtotal*[shows halves too]
+\end{enumerate}
+
+\total*[can too!]
+
 
 \question{3}
 \begin{enumerate}
