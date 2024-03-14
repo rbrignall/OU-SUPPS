@@ -614,7 +614,7 @@ The optional final parameter |[<voffset>]| allows you to move the entire margin 
 
 The starred variant |\mk*| performs the same function, but does not add the value of |<n>| to the |total| and |subtotal| counters, so can be used, e.g., if several solutions are possible with separate mark schemes.
 
-\emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
+\emph{Note:} |<n>| can be non-numeric, but if anything other than a number is entered, then nothing will be added to the |\subtotal*| and |\total*| commands. If |<n>| is a floating-point decimal then this will be added correctly to the subtotal and total. Furthermore, half marks get rendered as fractions: for example if |<n>|${}=1.5$, then |\mk| will render this as `$1\frac12$'.
 
 \begin{desc}
 |\solnmarksplus{<n>}{<description>}|\\
@@ -640,12 +640,11 @@ See under the description of |\mk| above for information on usage of the optiona
 
 Calculates the subtotal or total for a part-question or question, placing 
 the calculated value in the margin, and the word `Subtotal' or `Total' in large, 
-bold to its right; the calculated value accounts for all marks given in 
-any of the following commands: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
-|marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
+bold to its right; the calculated value accounts for all fully numeric parameters (including decimals) given in 
+any of the following commands: |\mk|, |\solnmarksplus|, and |\mkplus|. The optional argument |<description>| is the same 
 as with the |\subtotal| and |\total| commands. 
 
-\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters.
+\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters, nor will anything entered into |\mk| other than floating point decimals.
 
 \begin{desc}
 |\setSubtotalHline[<options>]|
@@ -1298,7 +1297,7 @@ The optional final parameter |[<voffset>]| allows you to move the entire margin 
 
 The starred variant |\mk*| performs the same function, but does not add the value of |<n>| to the |total| and |subtotal| counters, so can be used, e.g., if several solutions are possible with separate mark schemes.
 
-\emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
+\emph{Note:} |<n>| can be non-numeric, but if anything other than a number is entered, then nothing will be added to the |\subtotal*| and |\total*| commands. If |<n>| is a floating-point decimal then this will be added correctly to the subtotal and total. Furthermore, half marks get rendered as fractions: for example if |<n>|${}=1.5$, then |\mk| will render this as `$1\frac12$'.
 
 \begin{desc}
 |\solnmarksplus{<n>}{<description>}|\\
@@ -1325,12 +1324,11 @@ See under the description of |\mk| above for information on usage of the optiona
 
 Calculates the subtotal or total for a part-question or question, placing 
 the calculated value in the margin, and the word `Subtotal' or `Total' in large, 
-bold to its right; the calculated value accounts for all marks given in 
-any of the following commands, but only \emph{within} a |solution| environment: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
-|marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
+bold to its right; the calculated value accounts for all fully numeric parameters (including decimals) given in 
+any of the following commands: |\mk|, |\solnmarksplus|, and |\mkplus|. The optional argument |<description>| is the same 
 as with the |\subtotal| and |\total| commands. 
 
-\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters.
+\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters, nor will anything entered into |\mk| other than floating point decimals.
 
 \subsubsection{Rules}
 
