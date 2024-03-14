@@ -463,12 +463,12 @@
 % \@question is the version with star: it displays no marks
 \newcommand{\@question}[1][\unskip]{%
 	\refstepcounter{question}
-    \if@specsolns\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\fi
+    %A%\if@specsolns\else\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\fi
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1}\nopagebreak\par}
 % \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display.
 \newcommand{\@@question}[2][\unskip]{%
 	\refstepcounter{question}
-    \if@specsolns\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\fi
+    %A%\if@specsolns\else\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\fi
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1} -- #2 marks\nopagebreak\par}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
@@ -489,7 +489,7 @@
   	% suppress everything in specimen solutions
   	\newcommand*{\bracketedmarks}{\@ifstar\@relaxcmdA\@relaxcmdA}
   	\newcommand*{\solnmarks}{\@ifstar\@relaxcmdA\@relaxcmdA}
-  	\newcommand*{\solnmarksplus}{\@ifstar\@relaxcmdB\@relaxcmdB}
+  	\newcommand*{\solnmarksplus}{\ClassWarning{outn}{\protect\solnmarksplus\space is deprecated. Please use \protect\mk\space}\@ifstar\@relaxcmdB\@relaxcmdB}
     % Two flavours of \@relaxcmd depending on parameters
     % \@relaxopt handles final optional spacing parameter if supplied 
     \newcommand{\@relaxcmdA}[2][]{\@relaxopt}
@@ -526,18 +526,86 @@
 		}%
 	}	
 	%	
-  	\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
+    \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}\ClassWarning{outn}{\protect\solnmarksplus\space is deprecated. Please use \protect\mk\space}}
 \fi
 % The standard \mk command is defined in terms of solnmarks.
 % \bracketedmarks is available mainly for compatibility with ouab and ouexam.
 \def\mk{\solnmarks}
-\def\mkplus{\solnmarksplus} % Note: doesn't support * mode.
+\newcommand{\mkplus}[2]{\solnmarks[#2]{#1}\ClassWarning{outn}{\protect\mkplus\space is deprecated. Please use \protect\mk\space}}
 %
 %
 % definition of \total and \subtotal
 \def\total{\@ifstar\@total\@@total}
 \def\subtotal{\@ifstar\@subtotal\@@subtotal}
 %
+% Routines for the adding up of marks and part marks
+% First, render the "lengths" nicely:
+\begingroup
+\catcode`P=12
+\catcode`T=12
+\lowercase{%
+  \def\x{%
+    \def\@render@mk##1.##2PT{%
+      \ifnum##2=5
+        \ifnum##1=0\else##1\fi% integer part
+        \(\frac12\)% if x.5, print 1/2
+      \else % Could capture more fractions here
+        ##1%
+        \ifnum##2=0% if no decimal part do nothing more
+        \else.##2% otherwise print the decimal
+        \fi
+      \fi
+    }%
+  }%
+}\expandafter\endgroup\x
+% Now, set lengths globally from inside enumerate
+% See https://tex.stackexchange.com/a/406025/96966
+\gdef\gsetlength#1#2{%
+  \begingroup
+    \setlength\skip@{#2}% Local assignment to a scratch register.
+    \global#1=\skip@    % Global assignement to #1;
+  \endgroup             % \skip@ is restored by end of group.
+}%
+\newlength{\tot@l}
+\newlength{\subtot@l}
+\newlength{\@mk}
+\newcommand{\thetotal}{\expandafter\@render@mk\the\tot@l}
+\newcommand{\thesubtotal}{\expandafter\@render@mk\the\subtot@l}
+
+% For some reason this can't be defined inside \if@specsolns
+% This updates the totals and renders mark to screen
+\def\@update@totals#1{%
+  \begingroup
+    \newif\if@nan\@nanfalse%
+    \newif\if@fndpt\@fndptfalse%
+    \edef\tmp{\testleadneg{\detokenize{#1}}\relax}%
+    \expandafter\testreal\tmp\relax%
+    % Add to counter if a number
+    \if@nan%
+      #1% Render content as-is
+    \else%
+      \global\advance\subtot@l#1\p@%
+      \global\advance\tot@l#1\p@%
+      \setlength{\@mk}{#1pt}%
+      \expandafter\@render@mk\the\@mk% Render using mark filter
+    \fi
+  \endgroup
+}
+% Tests for numerical content
+\def\testreal#1#2\relax{%
+  % First decimal place or not?
+  \if.#1\if@fndpt\@nantrue\else\@fndpttrue\fi\else%
+    % Check for digits, otherwise not a number
+    \if1#1\else\if2#1\else\if3#1\else\if4#1\else%
+    \if5#1\else\if6#1\else\if7#1\else\if8#1\else%
+    \if9#1\else\if0#1\else\@nantrue%
+    \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi%
+  \if@nan\else\if\relax#2\else\testreal#2\relax\fi\fi%
+}
+
+\def\testleadneg#1#2\relax{\if-#1#2\else#1#2\fi}
+
+% Now define the internal total commands
 \if@specsolns%
     % specimen solutions mode is active
     \newcommand{\@total}[1][]{\relax}
@@ -545,69 +613,7 @@
     \newcommand{\@subtotal}[1][]{\relax}
     \newcommand{\@@subtotal}[2][]{\relax}
 \else%
-    \begingroup
-    \catcode`P=12
-    \catcode`T=12
-    \lowercase{%
-      \def\x{%
-        \def\@render@mk##1.##2PT{%
-          \ifnum##2=5
-            \ifnum##1=0\else##1\fi% integer part
-            \(\frac12\)% if x.5, print 1/2
-          \else % Could capture more fractions here
-            ##1%
-            \ifnum##2=0% if no decimal part do nothing more
-            \else.##2% otherwise print the decimal
-            \fi
-          \fi
-        }%
-      }%
-    }\expandafter\endgroup\x
-
-    \newlength{\tot@l}
-    \newlength{\subtot@l}
-    \newlength{\@mk}
-    \newcommand{\thetotal}{\expandafter\@render@mk\the\tot@l}
-    \newcommand{\thesubtotal}{\expandafter\@render@mk\the\subtot@l}
-    % Required to set lengths globally from inside enumerate
-    % See https://tex.stackexchange.com/a/406025/96966
-    \gdef\gsetlength#1#2{%
-      \begingroup
-        \setlength\skip@{#2}% Local assignment to a scratch register.
-        \global#1=\skip@    % Global assignement to #1;
-      \endgroup             % \skip@ is restored by end of group.
-    }
-    \def\@update@totals#1{%
-      \begingroup
-        \newif\if@nan\@nanfalse%
-        \newif\if@fndpt\@fndptfalse%
-        \edef\tmp{\testleadneg{\detokenize{#1}}\relax}%
-        \expandafter\testreal\tmp\relax%
-        % Add to counter if a number
-        \if@nan%
-          #1% Render content as-is
-        \else%
-          \global\advance\subtot@l#1\p@%
-          \global\advance\tot@l#1\p@%
-          \setlength{\@mk}{#1pt}%
-          \expandafter\@render@mk\the\@mk% Render using mark filter
-        \fi
-      \endgroup
-     }
-     % Tests for numerical content
-     \def\testreal#1#2\relax{%
-       % First decimal place or not?
-       \if.#1\if@fndpt\@nantrue\else\@fndpttrue\fi\else%
-       % Check for digits, otherwise not a number
-       \if1#1\else\if2#1\else\if3#1\else\if4#1\else%
-       \if5#1\else\if6#1\else\if7#1\else\if8#1\else%
-       \if9#1\else\if0#1\else\@nantrue%
-       \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi%
-       \if@nan\else\if\relax#2\else\testreal#2\relax\fi\fi}
-
-       \def\testleadneg#1#2\relax{\if-#1#2\else#1#2\fi%
-     }
-    % \total*
+    % \total*[]
     \newcommand{\@total}[1][\unskip]{%
     	\strut\marginnote{\sf\bfseries %
 			\if@switchmarks%
@@ -629,7 +635,7 @@
 		}%
 		\nopagebreak\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\outn@draw@total@rule%
 	}
-    % \subtotal*
+    % \subtotal*[]
     \newcommand{\@subtotal}[1][\unskip]{%
     	\strut\marginnote{\small\sf\bfseries %
 			\if@switchmarks%
