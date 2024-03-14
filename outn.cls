@@ -463,10 +463,12 @@
 % \@question is the version with star: it displays no marks
 \newcommand{\@question}[1][\unskip]{%
 	\refstepcounter{question}
+    \if@specsolns\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\fi
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1}\nopagebreak\par}
 % \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display.
 \newcommand{\@@question}[2][\unskip]{%
 	\refstepcounter{question}
+    \if@specsolns\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\fi
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1} -- #2 marks\nopagebreak\par}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
