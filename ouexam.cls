@@ -496,7 +496,10 @@
 %% Question headers
 \newcounter{question}
 \def\questiontext{Question}
-\newcommand{\@question}[1][]{\refstepcounter{question}\par\bigskip{\bfseries \questiontext~\thequestion}\ #1\nopagebreak\par\nobreak\@afterheading}
+\newcommand{\@question}[1][]{%
+    \refstepcounter{question}
+    \gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}
+    \par\bigskip{\bfseries \questiontext~\thequestion}\ #1\nopagebreak\par\nobreak\@afterheading}
 \newcommand{\question}[1]{\@question #1}
 
 %% Question wrapper environment
@@ -649,23 +652,70 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks, totals, subtotals
-% @update@totals as per outn.cls
-\newcounter{total}[question]
-\newcounter{subtotal}[question]
-\def\@update@totals#1{%
-  \afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
-\def\get@args#1\hfuzz#2\hfuzz{%
-  \if\relax\detokenize{#1}\relax
-     \if\relax\detokenize{#2}\relax
-     \else
-        \addtocounter{subtotal}{#2}%
-        \addtocounter{total}{#2}%
-     \fi
-  \else
-    \relax
-  \fi
+% @update@totals and auxiliary functions as per outn.cls
+\begingroup
+\catcode`P=12
+\catcode`T=12
+\lowercase{%
+  \def\x{%
+    \def\@render@mk##1.##2PT{%
+      \ifnum##2=5
+        \ifnum##1=0\else##1\fi% integer part
+        \(\frac12\)% if x.5, print 1/2
+      \else % Could capture more fractions here
+        ##1%
+        \ifnum##2=0% if no decimal part do nothing more
+        \else.##2% otherwise print the decimal
+        \fi
+      \fi
+    }%
+  }%
+}\expandafter\endgroup\x
+
+\newlength{\tot@l}
+\newlength{\subtot@l}
+\newlength{\@mk}
+\newcommand{\thetotal}{\expandafter\@render@mk\the\tot@l}
+\newcommand{\thesubtotal}{\expandafter\@render@mk\the\subtot@l}
+% Required to set lengths globally from inside enumerate
+% See https://tex.stackexchange.com/a/406025/96966
+\gdef\gsetlength#1#2{%
+  \begingroup
+    \setlength\skip@{#2}% Local assignment to a scratch register.
+    \global#1=\skip@    % Global assignement to #1;
+  \endgroup             % \skip@ is restored by end of group.
 }
-%
+\def\@update@totals#1{%
+  \begingroup
+    \newif\if@nan\@nanfalse%
+    \newif\if@fndpt\@fndptfalse%
+    \edef\tmp{\testleadneg{\detokenize{#1}}\relax}%
+    \expandafter\testreal\tmp\relax%
+    % Add to counter if a number
+    \if@nan%
+      #1% Render content as-is
+    \else%
+      \global\advance\subtot@l#1\p@%
+      \global\advance\tot@l#1\p@%
+      \setlength{\@mk}{#1pt}%
+      \expandafter\@render@mk\the\@mk% Render using mark filter
+    \fi
+  \endgroup
+}
+% Tests for numerical content
+\def\testreal#1#2\relax{%
+   % First decimal place or not?
+   \if.#1\if@fndpt\@nantrue\else\@fndpttrue\fi\else%
+   % Check for digits, otherwise not a number
+   \if1#1\else\if2#1\else\if3#1\else\if4#1\else%
+   \if5#1\else\if6#1\else\if7#1\else\if8#1\else%
+   \if9#1\else\if0#1\else\@nantrue%
+   \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi%
+   \if@nan\else\if\relax#2\else\testreal#2\relax\fi\fi}
+
+   \def\testleadneg#1#2\relax{\if-#1#2\else#1#2\fi%
+}
+% Now define mark commands
 \newcommand{\bracketedmarks}[1]{%
 	\marginnote{%
 		\if@switchmarks\if@showsolutions\makebox[3cm][r]{\relax}\fi\fi%
@@ -680,8 +730,7 @@
 	\@solnmarksbox{#1}{#2}%
 }	
 \newcommand{\@@solnmarks}[2][\unskip]{%
-	\@update@totals{#2}%
-	\@solnmarksbox{#1}{#2}%
+	\@solnmarksbox{#1}{\@update@totals{#2}}%
 }
 \newcommand{\@solnmarksbox}[2]{%
 	\marginnote{\hfill\footnotesize\sf %
@@ -709,7 +758,7 @@
 			\makebox[2cm][r]{\thetotal}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}%
 		\fi%
 	}%
-	\nopagebreak\outn@draw@total@rule%
+	\nopagebreak\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\outn@draw@total@rule%
 }%
 % \total[]{}
 \newcommand{\@@total}[2][\unskip]{%
@@ -720,7 +769,7 @@
 			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}%
 		\fi%
 	}%
-	\nopagebreak\outn@draw@total@rule%
+	\nopagebreak\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\outn@draw@total@rule%
 }
 % \subtotal*
 \newcommand{\@subtotal}[1][\unskip]{%
@@ -731,7 +780,7 @@
 			\makebox[2cm][r]{\thesubtotal}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}%
 		\fi%
 	}%
-	\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+	\nopagebreak\gsetlength{\subtot@l}{0pt}\outn@draw@subtotal@rule%
 }
 % \subtotal[]{}
 \newcommand{\@@subtotal}[2][\unskip]{%
@@ -742,7 +791,7 @@
 			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}%
 		\fi%
 	}%
-	\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+	\nopagebreak\gsetlength{\subtot@l}{0pt}\outn@draw@subtotal@rule%
 }
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
