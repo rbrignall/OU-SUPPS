@@ -226,6 +226,7 @@
 \firstassignmenttrue
 
 \def\assignment#1{%
+    \if@oneassignment\iffirstassignment\else\ClassWarning{ouab}{Option firstassignment specified but multiple assignments found}\fi\fi
 	\if@draft%
 		\@check@marks%
 		\setcounter{marktarget}{0}%
@@ -233,11 +234,12 @@
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	\setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
-  	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
+  	\iffirstassignment\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 % Version that doesn't add a new page
 \def\samepageassignment#1{%
+    \if@oneassignment\iffirstassignment\else\ClassWarning{ouab}{Option firstassignment specified but multiple assignments found}\fi\fi
 	\if@draft% Do checks on marks from previous assignment (if it exists)
 		\@check@marks%
 		\setcounter{marktarget}{0}%
@@ -245,7 +247,7 @@
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	\setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
-  	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\par\bigskip\fi
+  	\iffirstassignment\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\par\bigskip\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 %
@@ -258,8 +260,9 @@
 	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}%
 	\fi%
 	\@ifnextchar[{\@assignmentsubtitle}{
-		\if@oneassignment%
-        \addtocontents{tma}{\hfill\textbf{\@cutoff}}
+		\if@oneassignment\iffirstassignment\firstassignmentfalse%
+            \addtocontents{tma}{\hfill\textbf{\@cutoff}}
+            \fi
 		\else%
         \addtocontents{tma}{\par\medskip}
         \fi%
@@ -281,8 +284,9 @@
 
 
 \def\@assignmentsubtitle[#1]{%
-	\if@oneassignment
+	\if@oneassignment\iffirstassignment\firstassignmentfalse
 		\addtocontents{tma}{\parbox[t]{\dimexpr\textwidth-0.45\textwidth}{\raggedright\textbf{#1}}\hfill\parbox[t]{\dimexpr0.45\textwidth}{\hfill\textbf{\@cutoff}} \par\medskip}
+        \fi
 	\else
 		\addtocontents{tma}{\newline\protect\makebox[1cm][l]{}#1\par\medskip}
 	\fi
