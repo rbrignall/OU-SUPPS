@@ -220,7 +220,7 @@
 \if@specimensolutions
   \def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
   \def\@logow{4.0cm}
-  \def\@logoh{1.29cm}
+  \def\@logoh{1.24cm}
 \else
   \def\@oulogofilebase{OU_Compact_LOGO_BLACK_40mm}
   \def\@logow{2.37cm}

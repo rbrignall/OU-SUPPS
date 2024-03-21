@@ -151,7 +151,7 @@ Personal identifier (PI): \\[20pt]
   \IfFileExists{\@oulogofile}{%
     \includegraphics[]{\@oulogofile}%
   }{%
-    \fbox{\parbox[t][17.5mm][c]{53.7mm}{\centering OU Logo}}%
+    \fbox{\parbox[t][17.5mm][c]{54.3mm}{\centering OU Logo}}%
   }%
 &
 \vspace{1.5cm}\textbf{\@faculty\newline

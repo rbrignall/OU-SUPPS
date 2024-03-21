@@ -155,8 +155,8 @@
   \vspace{0.2cm}%
   \IfFileExists{\@oulogofile}{%
     \includegraphics[]{\@oulogofile}%
-  }{%
-    \fbox{\parbox[t][17.5mm][c]{53.7mm}{\centering OU Logo}}%
+  }{
+    \fbox{\parbox[t][17.5mm][c]{54.3mm}{\centering OU Logo}}%
   }%
 &
 \vspace{0.2cm}\textbf{\@faculty\newline

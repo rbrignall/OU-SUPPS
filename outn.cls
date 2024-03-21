@@ -67,7 +67,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\@faculty{Faculty of Science, Technology, Engineering and Mathematics}
+\def\@faculty{Faculty of Science, Technology,\\ Engineering and Mathematics}
 \newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
 %
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
@@ -205,7 +205,7 @@
   \IfFileExists{\@oulogofile}{%
     \includegraphics[]{\@oulogofile}%
   }{%
-    \fbox{\parbox[t][2cm][c]{3.5cm}{\centering OU Logo}}%
+    \fbox{\parbox[t][17.5mm][c]{54.3mm}{\centering OU Logo}}%
   }%
 &
 \vspace{0.2cm}\relax
