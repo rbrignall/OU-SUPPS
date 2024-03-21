@@ -2,21 +2,23 @@
 % Options:
 %   specsolns    - mode that produces output with marks, solnmarksplus,
 %                  and remarks suppressed, and text in green.
+%   tn-and-ss    - mode that produces both tutornotes and specimen
+%                  solutions in separate PDFs files.
 % e.g. use \documentclass[specsolns]{outn}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MODULE/DATE/TIME INFORMATION
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\faculty{Faculty of Science, Technology, Engineering and Mathematics}
+%\faculty{Faculty of Science, Technology,\\ Engineering and Mathematics}
 \modulecode{MXXX}
 \moduletitle{Title of Module}
-\tntitle{Title of TN}
-\tnyear{2015B}
-\copyrightyear{2012} % If different from \abyear
+\tntitle[Title of SS]{Title of TN}
+\tnyear{2024J}
+\copyrightyear{2024} % If different from \tnyear
 %\tutoronlytitle{ {\bfseries Title for tutor-only environment\par}}      % specifies title for 'Tutor-only' environment
 %\studentonlytitle{Title for student-only environment\par}  % specifies title for 'Student-only' environment
 %\specsolnscolor{blue} % can be used to change text colour in specsolns mode
 %\optiontext{} %Can be used to change text appearing at top of multi-choice options.
-\oulogofilebase{ou_greyscale_masterlogo_29mm}% Overrides internal OU logo specification
+%\oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}% Overrides internal OU logo specification
 %\switchmarks % Can be used to place marks to right of comments
 %% alternative way of updating the above information
 %\metadataset{faculty=STEM, 
@@ -76,7 +78,7 @@
 % The syntax for defining assignments and questions 
 % is identical to that used in the ouab class.
 % Starred versions don't add a new page.
-\tma[12 November 2014]{01}[Covers units A and B]
+\tma[12 November 2024]{01}[Covers units A and B]
 
 \question[(essay question)]{25}\label{myqnnum}
 \remark{For making short comments for tutors.}
@@ -157,17 +159,28 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
 
 \subtotal*
 \item Marks that you don't want added to the subtotal/total counter can be inserted using \verb!\mk*! \mk* 2
-\end{enumerate}
+
+\subtotal*
+\item You can use decimals in marks. \verb!\mk{1.5}! gets rendered as \mk{1.5}
+
+Another fractional mark \mk{.5}
+
 \subtotal*
 
-\bigskip
-\total*
+\item If you really want, other decimals can also be used.\mk{.2}
+
+Another example, so the part-marks add up to 0.5.\mk{0.3}
+
+\subtotal*[shows halves too]
+\end{enumerate}
+
+\total*[can too!]
 
 \question{3}
 \begin{enumerate}
   \item The lines after a \verb!subtotal! command can be customized using
     the \verb!\setSubtotalHline[<options>]! command, the \verb!<options>! 
-    are \verb!moveleft!, \verb!width!, \verb!height!, \verb!color!, 
+    are \verb!moveleft!, \verb!movedown!, \verb!width!, \verb!height!, \verb!color!, 
     and \verb!draw line!. 
     These options can be used in any combination (and should probably be set once in the preamble); for example, 
     \begin{itemize}
@@ -182,8 +195,8 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
         \setSubtotalHline[moveleft=-2cm,width=.5\textwidth]
 
         \subtotal*
-      \item \verb!\setSubtotalHline[color=green]!
-        \setSubtotalHline[color=green] \mk{2}
+      \item \verb!\setSubtotalHline[color=green,movedown=20pt]!
+        \setSubtotalHline[color=green,movedown=20pt] \mk{2}
 
         \subtotal{3}
       \item \verb!\setSubtotalHline[moveleft=0pt,height=5pt,color=orange]!
@@ -202,7 +215,7 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
     For example,
     \begin{itemize}
       \item default behaviour
-        
+       
         \total{1}
       \item \verb!\setTotalHline[moveleft=10pt]!
         \setTotalHline[moveleft=10pt]
@@ -212,8 +225,8 @@ Emulate the OUTeX intertext command using the (built-in) enumitem command.
         \setTotalHline[moveleft=2cm,width=.75\textwidth]
 
         \total*
-      \item \verb!\setTotalHline[color=purple]!
-        \setTotalHline[color=purple] 
+      \item \verb!\setTotalHline[color=purple,movedown=1cm]!
+        \setTotalHline[color=purple,movedown=1cm] 
 
         \total{3}
       \item \verb!\setTotalHline[moveleft=0pt,height=.5pt,color=yellow]!
@@ -243,31 +256,29 @@ Now, when using simply \verb!\ourule!, the output is:
 
 \ourule
 
-And then you can overwrite certain aspects as you see fit, for example \verb!\ourule[color=blue]!
+And then you can overwrite certain aspects as you see fit, for example \verb!\ourule[color=blue,movedown=-1cm]!
 
-\ourule[color=blue]
+\ourule[color=blue,movedown=0.5cm]
 
     \end{itemize}
 \end{enumerate}
 
 \question{4}
 \begin{enumerate}
-  \item The \verb|\tutoronly| command \emph{only} produces output in the tutor version of the tutor notes, 
-    and is ignored when the \verb|specsolns| option is used. For example
-    \tutoronly{ {\color{blue} students will not see this!}}.
+  \item The \verb|\tnonly| command \emph{only} produces output in the tutor version of the tutor notes, 
+    and is ignored when the \verb|specsolns| option is used. For example%
+    \tnonly{ {\color{blue} students will not see this!}}.
   \item The \verb|tutor| environment is only visible in tutor notes, 
-    and is ignored when the \verb|specsolns| option is used. For example
+    and is ignored when the \verb|specsolns| option is used. For example:
 
     \begin{tutor}
       This environment will only be seen in the tutor notes.
 
       It will not be seen in the student version.
     \end{tutor}
-    \tutoronly{\pagebreak}
-  \item The \verb|\studentonly| command \emph{only} produces output in the 
-    special solutions version of tutor notes (so \verb|specsolns| must be active); for example \studentonly{this is only output in student solutions}
+    \tnpagebreak
+  \item The \verb|\ssonly| command \emph{only} produces output when \verb|specsolns| is active; for example \ssonly{this is only output in student solutions}
   \item The \verb|student| environment is only visible in student solutions, 
-    \studentonly{\pagebreak}
     when the \verb|specsolns| option is used. For example
 
     \begin{student}
@@ -275,9 +286,10 @@ And then you can overwrite certain aspects as you see fit, for example \verb!\ou
 
       It will not be seen in the tutor notes.
     \end{student}
-  \item The \verb|\tutororstudent| takes two parameters, the first will only be seen in the tutor version (when \verb|specsolns|
+    \sspagebreak
+  \item The \verb|\tnorss| takes two parameters, the first will only be seen in the tutor version (when \verb|specsolns|
     is not active), the second will only be seen by students in the student version (when \verb|specsolns| is active).
-    For example: \tutororstudent{for tutors!}{for students!}
+    For example: \tnorss{for tutors!}{for students!}
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -337,8 +349,8 @@ Choose an option.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\assignment{QUIZ}[1 April 2015]{01}[Custom assessment type]
-\samepageassignment{QUIZB}[1 April 2015]{01}[Custom assessment type]
+\assignment{QUIZ}[1 April 2025]{01}[Custom assessment type]
+\samepageassignment{QUIZB}[1 April 2025]{01}[Custom assessment type]
 
 \question[(changing subquestion labels)]{8}
 \begin{enumerate}[(i)]

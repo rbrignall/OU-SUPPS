@@ -1,7 +1,25 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2021/11/09 v2.4.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2024/03/21 v3.0 (Robert Brignall, all rights reserved)]
 
-%% Handles options 
+%% Handles options
+
+\newif\if@showsolutions
+\@showsolutionsfalse
+\DeclareOption{qp-and-ss}{%
+    \ifx\buildmode\undefined
+      \immediate\write18{%
+        pdflatex --jobname="\jobname"
+        "\gdef\string\buildmode{1}\string\input\space\jobname"
+      }%
+      \immediate\write18{%
+        pdflatex --jobname="\jobname-ss"
+        "\gdef\string\buildmode{2}\string\input\space\jobname"
+      }%
+      \expandafter\stop
+    \fi
+    \ifnum\buildmode=1\relax\fi %Question paper
+    \ifnum\buildmode=2\@showsolutionstrue\fi %Solutions
+}
 \newif\if@specimen
 \@specimenfalse
 \DeclareOption{specimen}{%
@@ -10,25 +28,32 @@
 \newif\if@secondspecimen
 \@secondspecimenfalse
 \DeclareOption{secondspecimen}{%
+  \ExecuteOptions{specimen}
   \@secondspecimentrue
 }
-\newif\if@showsolutions
 \newif\if@specimensolutions
-\@showsolutionsfalse
 \@specimensolutionsfalse
+\newif\if@hidequestions
+\@hidequestionsfalse
+\DeclareOption{solutionsonly}{%
+%
+ \ifnum\ifx\buildmode\undefined 1\else\ifnum\buildmode=1 0\else1\fi\fi=1
+   \@hidequestionstrue
+ \fi
+ \ExecuteOptions{@showsolutions}
+}
 \DeclareOption{showsolutions}{%
- \@showsolutionstrue
- \if@specimen
-   \@specimensolutionstrue
- \fi
- \if@secondspecimen
-   \@specimensolutionstrue
- \fi
+ % true unless \buildmode not defined or \buildmode=1
+ \ExecuteOptions{@showsolutions}
 }
 \DeclareOption{specimensolutions}{%
  \@specimentrue
- \@specimensolutionstrue
- \@showsolutionstrue
+ \ExecuteOptions{@showsolutions}
+}
+\DeclareOption{@showsolutions}{%
+  \ifnum\ifx\buildmode\undefined 1\else\ifnum\buildmode=1 0\else1\fi\fi=1
+    \@showsolutionstrue
+  \fi
 }
 %
 \newif\if@bigfontneeded
@@ -58,8 +83,25 @@
 \@remoteexamfalse
 \DeclareOption{remote}{%
 	\@remoteexamtrue
+	\@nobarcodetrue
 }
 \ProcessOptions\relax
+%%
+%% Some option postprocessing:
+\if@specimen
+  \if@showsolutions
+    \@specimensolutionstrue
+    \@hidequestionstrue
+  \fi
+\fi
+\if@showsolutions
+  \def\ssonly#1{#1}
+  \def\qponly#1{\relax}
+\else
+  \def\ssonly#1{\relax}
+  \def\qponly#1{#1}
+\fi
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Load packages/class file
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -83,15 +125,15 @@
 \RequirePackage{ifthen}
 \RequirePackage[inline]{enumitem}
 \RequirePackage{marginnote}
+\RequirePackage{caption} % Fixes figure captions to OU style
+\captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25}}
 \if@showsolutions%
 	\if@specimensolutions%
 		\RequirePackage{xcolor}
 	\else%
 	% Suppressed if not displaying solutions
-	% mdframed uses expl3 which has installation
-	% issues.
-		\RequirePackage[xcolor]{mdframed}
-	\fi%
+        \RequirePackage{tcolorbox}
+    \fi%
 \else
 	\RequirePackage{xcolor}
 \fi%
@@ -105,9 +147,6 @@
 \fi
 
 %%
-
-
-%\renewcommand{\baselinestretch}{1.3}
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
@@ -125,24 +164,16 @@
 \newcommand\examday[1]{\renewcommand\@examday{#1}}
 \newcommand\exammonth[1]{\renewcommand\@exammonth{#1}}
 \newcommand\examyear[1]{\renewcommand\@examyear{#1}}
-\if@specimen 
+\if@specimen
 	\def\@examtime{\relax}
 	\def\@examday{\relax}
 	\def\@exammonth{\relax}
 	\def\@examyear{\relax}
 \else
-	\if@secondspecimen
-		\def\@examtime{\relax}
-		\def\@examday{\relax}
-		\def\@exammonth{\relax}
-		\def\@examyear{\relax}
-		
-	\else
-		\newcommand\@examtime{\@latex@error{No \noexpand\examtime specified}\@ehc}
-		\newcommand\@examday{\@latex@error{No \noexpand\examday specified}\@ehc}
-		\newcommand\@exammonth{\@latex@error{No \noexpand\exammonth specified}\@ehc}
-		\newcommand\@examyear{\@latex@error{No \noexpand\examyear specified}\@ehc}
-	\fi
+    \newcommand\@examtime{\@latex@error{No \noexpand\examtime specified}\@ehc}
+    \newcommand\@examday{\@latex@error{No \noexpand\examday specified}\@ehc}
+    \newcommand\@exammonth{\@latex@error{No \noexpand\exammonth specified}\@ehc}
+    \newcommand\@examyear{\@latex@error{No \noexpand\examyear specified}\@ehc}
 \fi
 %
 \newcommand\timeallowed[1]{\renewcommand\@timeallowed{#1}}
@@ -154,28 +185,47 @@
 \def\@examinstructions{No special instructions specified.}
 \newcommand\examinstructions[1]{\renewcommand\@examinstructions{#1}}
 %
-\def\@session{C}
-\if@secondspecimen
-	\def\@session{Second specimen}
-\else
-	\if@specimen
-		\def\@session{Specimen}
-	\fi
+\def\@foottext{%
+  \if@specimen
+    \if@secondspecimen{Second specimen}%
+    \else{Specimen}%
+    \fi
+  \else{\@exammonth\ \@examyear}%
+  \fi
+}
+\def\@session{\relax}
+\if@specimen
+	\def\@session{/\@foottext}
 \fi
 %
-\def\@specimensolutionstitle{Solutions to the \@session\ Examination Paper}
+\def\@specimensolutionstitle{Solutions to the \@foottext\ Examination Paper}
 \newcommand\specimensolutionstitle[1]{\def\@specimensolutionstitle{#1}}
 %
 \newcommand\conflation[1]{\renewcommand\@session{#1}\ClassWarning{ouexam}{\protect\conflation\space is deprecated. Please use \protect\session\space(same syntax)}} % backwards compatibility
-\newcommand\session[1]{\renewcommand\@session{#1}}
+\newcommand\session[1]{\renewcommand\@session{/#1}}
 \def\@submitby{\relax}
 \newcommand\submitby[1][23:59 BST]{\DeclareRobustCommand\@submitby{Submit by:\ #1}}
 \def\@suppno{\relax} % default
-\newcommand\suppno[1]{\DeclareRobustCommand\@suppno{#1}}
+\newcommand{\suppno}{\@dblarg\@setsuppno}
+\def\@setsuppno[#1]#2{
+  \if@specimensolutions
+    \DeclareRobustCommand\@suppno{#1}
+  \else
+    \DeclareRobustCommand\@suppno{#2}
+  \fi
+}
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %
-\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\if@specimensolutions
+  \def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
+  \def\@logow{4.0cm}
+  \def\@logoh{1.24cm}
+\else
+  \def\@oulogofilebase{OU_Compact_LOGO_BLACK_40mm}
+  \def\@logow{2.37cm}
+  \def\@logoh{4.0cm}
+\fi
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
 \newif\if@switchmarks
@@ -191,7 +241,13 @@
 %
 \def\@examcode{\relax} % default blank
 \if@nobarcode % Set by nobarcode option to class as override
-	\newcommand\examcode[1]{\relax}
+	\if@remoteexam
+	  \newcommand\examcode[1]{%
+	    \DeclareRobustCommand\@examcode{#1}
+	  }
+ 	\else
+	  \newcommand\examcode[1]{\relax}
+	\fi
 \else
 	\newlength\barcodewidth
 	\newcommand\examcode[1]{%
@@ -212,6 +268,17 @@
 \par
     \textsf{\@examcode}%
   }%
+  \fi
+}
+ \def\setqpid
+{%
+  \if@remoteexam
+    \if@specimen\relax%
+    \else%
+      \footnotesize \hfill QP ID: \@examcode
+    \fi
+  \else
+    \relax
   \fi
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -235,7 +302,7 @@
    faculty/.store in=\@faculty,
    multiple choice option text/.store in=\@optiontext,
    instructions/.store in=\@examinstructions,
-   top padding/.code=\setlength\toppadding{#1}, 
+   top padding/.code=\setlength\toppadding{#1},
    ou logo file base/.store in=\@oulogofilebase,
    switch marks/.is if=@switchmarks,
 }
@@ -253,7 +320,7 @@
 	\setlength\@titlefooterleftindent{0cm}
 	\setlength\@titlefooterrightindent{-2.5cm}
 \else%
-	\setlength\@titlefooterleftindent{1cm}
+	\setlength\@titlefooterleftindent{0cm}
 	\setlength\@titlefooterrightindent{-1cm}
 \fi%
 \fancypagestyle{frontpage}{%
@@ -262,8 +329,12 @@
   \renewcommand{\footrulewidth}{0pt}%
     \fancyfoot[L]{%
     \begin{adjustwidth}{\@titlefooterleftindent}{\@titlefooterrightindent}%
-    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
-		\textbf{\@versionno}%
+    	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}
+		\if@specimensolutions\relax \else\\
+        	{\footnotesize You have been provided with this question paper for your personal use, either for end-of-module assessment or (if you downloaded this paper from the OUSA website) to help you prepare for a future exam. You are not permitted to pass on this question paper, or any of its contents, to any website, online service, social media platform or any individual or organisation, as this is an infringement of the University's copyright and a disciplinary offence under Section SD 1.2 of the University's Code of Practice for Student Discipline.}\\
+	        \setqpid
+		\fi
+		\textbf{\@versionno}\hfill \textbf{\@suppno}%
 	\end{adjustwidth}%
 	}%
 }
@@ -287,8 +358,11 @@
   \def\@oulogofile{\@oulogofilebase.eps}
 \fi%
 %%
+  \if@specimensolutions\relax\else
+    \newgeometry{left=2cm,right=6cm,top=1cm,bottom=5.5cm,footskip=4.94mm,marginparwidth=5cm,nohead,asymmetric}
+  \fi
   \thispagestyle{frontpage}%
-  \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted 
+  \vspace*{\dimexpr\toppadding-\topskip}% Subtract \topskip which gets inserted
   \begin{adjustwidth}{0pt}{-3.5cm} % N.B. positive measurements increase margins!
      \if@specimensolutions%
   	\@makespecimensolutionstitle
@@ -296,9 +370,12 @@
   	\@makestandardtitle
      \fi
   \end{adjustwidth}
-    \if@smallmargins% Adjust geometry for future pages
-      \newgeometry{a4paper,left=1cm,right=4cm,top=1cm,bottom=3cm,marginparwidth=5cm,nohead,asymmetric}%
-    \fi%
+  \if@specimensolutions\relax\else
+    \restoregeometry
+  \fi
+  \if@smallmargins% Adjust geometry for future pages
+    \newgeometry{a4paper,left=1cm,right=4cm,top=1cm,bottom=3cm,marginparwidth=5cm,nohead,asymmetric}%
+  \fi%
 }
 %%
 \def\@makestandardtitle{%
@@ -306,16 +383,16 @@
     	\fontsize{14.4}{18}\selectfont % Equates to \large in 12pt for most of the title page
      \fi
      \hfill\ \setbarcode\par\bigskip % New location for longer barcodes
-     \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+     \begin{tabular}{@{}p{4cm}@{}p{\titletablewidth}@{}}%
         \vspace{-0.7cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[width=3.6cm]{\@oulogofile}%
+              \includegraphics[scale=1.0]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
+              \fbox{\parbox[t][\@logoh][c]{\@logow}{\centering OU Logo}}%
             }%
      &
-    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\//\@session}}}\\ %Equates to \Huge in 12pt
-     &
+    	{\textbf{{\fontsize{24.88}{30}\selectfont \@modulecode\/\@session}}}\newline
+
     	\raggedright\bfseries Module Examination \@examyear \newline
     	
     	\vspace*{-10pt}
@@ -326,7 +403,6 @@
 	\else
 	  {\@examday\ \@exammonth\ \@examyear\hfill \@examtime\newline}
 	\fi}
-    	\rule{\titletablewidth}{1pt}
     	
     	\nointerlineskip\vspace{12pt}
      	{\if@showsolutions
@@ -345,19 +421,17 @@
     \end{tabular}
     \vspace{20pt}
 	
-    \begin{adjustwidth}{1cm}{1cm}
 	\raggedright
 	\@examinstructions
-    \end{adjustwidth}
     \clearpage}
 %%
 \def\@makespecimensolutionstitle{%
-    \begin{tabular}{@{}p{4.5cm}@{}p{\titletablewidth}@{}}%
+    \begin{tabular}{@{}p{4.6cm}@{}p{\titletablewidth}@{}}%
         \vspace{-0.3cm}%
     	  \IfFileExists{\@oulogofile}{%
-              \includegraphics[width=3.6cm]{\@oulogofile}%
+              \includegraphics[width=4.0cm]{\@oulogofile}%
             }{%
-              \fbox{\parbox[t][2.3cm][c]{3.6cm}{\centering OU Logo}}%
+              \fbox{\parbox[t][\@logoh][c]{\@logow}{\centering OU Logo}}%
             }%
     &
 	\if@bigfontneeded
@@ -385,32 +459,31 @@
   \if@specimensolutions %only show page numbers for specimen solutions
 	\fancyfoot[C]{page~\thepage~of~\zpageref{LastPage}}
   \else %not specimen solutions
-     \if@remoteexam
-	\fancyfoot[R]{\bfseries\thepage~of~\zpageref{LastPage}}
-	\fancyfoot[C]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries CONTINUED}}
-	\if@bigfontneeded %display only module code on L to avoid text clashes
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\fi\fi}  
-	\else
-	    \fancyfoot[L]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
-	\fi
-    \else
- 	\fancyfoot[LE,RO]{\bfseries\thepage}
-	\fancyfoot[CO]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries TURN OVER}}% internal right hand pages only
-	\if@bigfontneeded %suppress module code on LO to avoid text clashes
-	    \fancyfoot[RE]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}  
-	\else
-	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \if@specimen{\@session}\else\if@secondspecimen{\@session}\else{\@exammonth\ \@examyear}\fi\fi}
-	\fi
-     \fi
+    \if@remoteexam
+	  \fancyfoot[R]{\bfseries\thepage~of~\zpageref{LastPage}}
+	  \fancyfoot[C]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries CONTINUED}}
+	  \if@bigfontneeded %display only module code on L to avoid text clashes
+	    \fancyfoot[L]{\bfseries\@modulecode\if@specimen{\ \@foottext}\fi}
+	  \else
+	    \fancyfoot[L]{\bfseries\@modulecode\ \@foottext}
+	  \fi
+    \else % not remote exam
+ 	  \fancyfoot[LE,RO]{\bfseries\thepage}
+	  \fancyfoot[CO]{\ifthenelse{\zref@extractdefault{LastPage}{page}{0}=\value{page}}{\relax}{\bfseries TURN OVER}}% internal right hand pages only
+	  \if@bigfontneeded %suppress module code on LO to avoid text clashes
+	    \fancyfoot[RE]{\bfseries\@modulecode\ \@foottext}
+	  \else
+	    \fancyfoot[RE,LO]{\bfseries\@modulecode\ \@foottext}
+	  \fi
+    \fi
   \fi
 }
 \pagestyle{internalpages}
 %
 \setcounter{secnumdepth}{3}
 
-%\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
-\raggedbottom                
+\raggedbottom
 \parindent 0pt
 \parskip 6pt
 \setlength{\mathindent}{20pt}\relax
@@ -423,9 +496,18 @@
 %% Question headers
 \newcounter{question}
 \def\questiontext{Question}
-\newcommand{\@question}[1][]{\refstepcounter{question}\par\bigskip{\bfseries \questiontext~\thequestion}\ #1\nopagebreak\par\nobreak\@afterheading}
+\newcommand{\@question}[1][]{%
+    \refstepcounter{question}
+    \gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}
+    \par\bigskip{\bfseries \questiontext~\thequestion}\ #1\nopagebreak\par\nobreak\@afterheading}
 \newcommand{\question}[1]{\@question #1}
 
+%% Question wrapper environment
+\if@hidequestions%
+    \newenvironment{questionblock}{\comment}{\endcomment}
+\else
+    \newenvironment{questionblock}{}{}
+\fi
 %% Subquestion settings -- all controlled by enumerate with enumitem
 \setlist{itemsep=2pt,topsep=0pt,partopsep=0pt}
 \setlist[enumerate]{align=left,leftmargin=!,labelwidth=4ex,labelsep*=1.0ex}
@@ -453,7 +535,7 @@
 \newenvironment{inlineoptions}[2][1]{%
 % #1 is the optional line spacing stretch. Default is 1
 % #2 is the number of columns
-  \par\medskip\@optiontext
+  \par\medskip\@optiontext\vspace{\dimexpr\baselineskip-#1\baselineskip}
     \setcounter{enumi}{0}%
   \dimen0 \linewidth%
   \divide\dimen0 by #2\relax%
@@ -466,7 +548,7 @@
   \def\noitem{\hfil\egroup\penalty50 \hfill%
     \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
-}{\hfil\egroup\par}  
+}{\hfil\egroup\par}
 
 % Normal options: this is just using enumitem features with enumerate.
 \newenvironment{options}%
@@ -483,10 +565,12 @@
  /totalhline/.is family, /totalhline,
  default/.style =
   {moveleft=0pt,
+   movedown=0pt,
    width=\dimexpr\textwidth+5cm,
    height=2pt,
    color=black},
    moveleft/.estore in=\@outn@total@hline@move@left,
+   movedown/.estore in=\@outn@total@hline@move@down,
    width/.estore in=\@outn@total@hline@width,
    height/.estore in=\@outn@total@hline@height,
    color/.estore in=\@outn@total@hline@color,
@@ -494,10 +578,12 @@
  /subtotalhline/.is family, /subtotalhline,
  default/.style =
   {moveleft=0pt,
+   movedown=0pt,
    width=\dimexpr\textwidth+5cm,
    height=1pt,
    color=black},
    moveleft/.estore in=\@outn@subtotal@hline@move@left,
+   movedown/.estore in=\@outn@subtotal@hline@move@down,
    width/.estore in=\@outn@subtotal@hline@width,
    height/.estore in=\@outn@subtotal@hline@height,
    color/.estore in=\@outn@subtotal@hline@color,
@@ -505,6 +591,7 @@
  /ourule/.is family, /ourule,
  default/.style = /totalhline/default,
    moveleft/.estore in=\@outn@rule@move@left,
+   movedown/.estore in=\@outn@rule@move@down,
    width/.estore in=\@outn@rule@width,
    height/.estore in=\@outn@rule@height,
    color/.estore in=\@outn@rule@color,
@@ -540,21 +627,24 @@
                    {\@outn@rule@width}%
                    {\@outn@rule@color}%
                    {\@outn@rule@height}%
+                   {\@outn@rule@move@down}%
   \fi
 }
- 
+
 % reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
-\newcommand{\outn@draw@rule}[4]{%
+\newcommand{\outn@draw@rule}[5]{%
         % #1: moveleft
         % #2: width
         % #3: color
         % #4: height
-    \par\bigskip\nobreak % don't break a page here
+        % #5: movedown
+    \par\nobreak % don't break a page here
+    \vspace{#5}%
     \moveleft#1\vbox{% we want the rule to protrude on the left
     \hsize=#2% correct the length
     \kern\the\prevdepth % don't take into account the depth of the preceding line
     \kern\baselineskip % space before the rule
-    % DIFFERENT FROM OUTN: use \rlap{\hrule...} because of mdframed solutions environment.
+    % DIFFERENT FROM OUTN: use \rlap{\hrule...} because of solutions environment.
     \color{#3}\rlap{\rule{\hsize}{#4}}% height #4 width\hsize % the rule
     \kern3pt % space after the rule
   }\nointerlineskip % no additional space after the rule
@@ -562,23 +652,70 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Marks, totals, subtotals
-% @update@totals as per outn.cls
-\newcounter{total}[question]
-\newcounter{subtotal}[question]
-\def\@update@totals#1{%
-  \afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
-\def\get@args#1\hfuzz#2\hfuzz{%
-  \if\relax\detokenize{#1}\relax
-     \if\relax\detokenize{#2}\relax
-     \else
-        \addtocounter{subtotal}{#2}%
-        \addtocounter{total}{#2}%
-     \fi
-  \else
-    \relax
-  \fi
+% @update@totals and auxiliary functions as per outn.cls
+\begingroup
+\catcode`P=12
+\catcode`T=12
+\lowercase{%
+  \def\x{%
+    \def\@render@mk##1.##2PT{%
+      \ifnum##2=5
+        \ifnum##1=0\else##1\fi% integer part
+        \(\frac12\)% if x.5, print 1/2
+      \else % Could capture more fractions here
+        ##1%
+        \ifnum##2=0% if no decimal part do nothing more
+        \else.##2% otherwise print the decimal
+        \fi
+      \fi
+    }%
+  }%
+}\expandafter\endgroup\x
+
+\newlength{\tot@l}
+\newlength{\subtot@l}
+\newlength{\@mk}
+\newcommand{\thetotal}{\expandafter\@render@mk\the\tot@l}
+\newcommand{\thesubtotal}{\expandafter\@render@mk\the\subtot@l}
+% Required to set lengths globally from inside enumerate
+% See https://tex.stackexchange.com/a/406025/96966
+\gdef\gsetlength#1#2{%
+  \begingroup
+    \setlength\skip@{#2}% Local assignment to a scratch register.
+    \global#1=\skip@    % Global assignement to #1;
+  \endgroup             % \skip@ is restored by end of group.
 }
-%
+\def\@update@totals#1{%
+  \begingroup
+    \newif\if@nan\@nanfalse%
+    \newif\if@fndpt\@fndptfalse%
+    \edef\tmp{\testleadneg{\detokenize{#1}}\relax}%
+    \expandafter\testreal\tmp\relax%
+    % Add to counter if a number
+    \if@nan%
+      #1% Render content as-is
+    \else%
+      \global\advance\subtot@l#1\p@%
+      \global\advance\tot@l#1\p@%
+      \setlength{\@mk}{#1pt}%
+      \expandafter\@render@mk\the\@mk% Render using mark filter
+    \fi
+  \endgroup
+}
+% Tests for numerical content
+\def\testreal#1#2\relax{%
+   % First decimal place or not?
+   \if.#1\if@fndpt\@nantrue\else\@fndpttrue\fi\else%
+   % Check for digits, otherwise not a number
+   \if1#1\else\if2#1\else\if3#1\else\if4#1\else%
+   \if5#1\else\if6#1\else\if7#1\else\if8#1\else%
+   \if9#1\else\if0#1\else\@nantrue%
+   \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi%
+   \if@nan\else\if\relax#2\else\testreal#2\relax\fi\fi}
+
+   \def\testleadneg#1#2\relax{\if-#1#2\else#1#2\fi%
+}
+% Now define mark commands
 \newcommand{\bracketedmarks}[1]{%
 	\marginnote{%
 		\if@switchmarks\if@showsolutions\makebox[3cm][r]{\relax}\fi\fi%
@@ -593,8 +730,7 @@
 	\@solnmarksbox{#1}{#2}%
 }	
 \newcommand{\@@solnmarks}[2][\unskip]{%
-	\@update@totals{#2}%
-	\@solnmarksbox{#1}{#2}%
+	\@solnmarksbox{#1}{\@update@totals{#2}}%
 }
 \newcommand{\@solnmarksbox}[2]{%
 	\marginnote{\hfill\footnotesize\sf %
@@ -605,90 +741,87 @@
 		\fi%
 	}%
 }	
-%	
-\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
+%
+\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}\ClassWarning{ouexam}{\protect\solnmarksplus\space is deprecated. Please use \protect\mk\space}}
+\newcommand{\mkplus}[2]{\solnmarks[#2]{#1}\ClassWarning{ouexam}{\protect\mkplus\space is deprecated. Please use \protect\mk\space}}
 \def\mk{\bracketedmarks}
-%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
-\def\mkplus{\solnmarksplus}
 %
 %% Definition of \total and \subtotal
 \def\total{\@ifstar\@total\@@total}
 \def\subtotal{\@ifstar\@subtotal\@@subtotal}
 % \total*
 \newcommand{\@total}[1][\unskip]{%
-    \marginnote{\sf\bfseries %
+    \strut\marginnote{\sf\bfseries %
 		\if@switchmarks%
 			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{\thetotal\hspace{0.5cm}}%
      	\else%
 			\makebox[2cm][r]{\thetotal}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}%
 		\fi%
 	}%
-	\nopagebreak\outn@draw@total@rule%
+	\nopagebreak\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\outn@draw@total@rule%
 }%
 % \total[]{}
 \newcommand{\@@total}[2][\unskip]{%
-    \marginnote{\sf\bfseries %
+    \strut\marginnote{\sf\bfseries %
 		\if@switchmarks%
 			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
      	\else%
 			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Total\ #1}}%
 		\fi%
 	}%
-	\nopagebreak\outn@draw@total@rule%
+	\nopagebreak\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\outn@draw@total@rule%
 }
 % \subtotal*
 \newcommand{\@subtotal}[1][\unskip]{%
-    \marginnote{\small\sf\bfseries %
+    \strut\marginnote{\small\sf\bfseries %
 		\if@switchmarks%
 			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{\thesubtotal\hspace{0.5cm}}%
      	\else%
 			\makebox[2cm][r]{\thesubtotal}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}%
 		\fi%
 	}%
-	\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+	\nopagebreak\gsetlength{\subtot@l}{0pt}\outn@draw@subtotal@rule%
 }
 % \subtotal[]{}
 \newcommand{\@@subtotal}[2][\unskip]{%
-   	\marginnote{\small\sf\bfseries %
+   	\strut\marginnote{\small\sf\bfseries %
 		\if@switchmarks%
 			\hfill\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{#2\hspace{0.5cm}}%
     	\else%
 			\makebox[2cm][r]{#2}\makebox[3cm][r]{\parbox[t]{2.75cm}{\raggedright Subtotal\ #1}}%
 		\fi%
 	}%
-	\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+	\nopagebreak\gsetlength{\subtot@l}{0pt}\outn@draw@subtotal@rule%
 }
-  % \total*[]
-%  \newcommand{\@total}[1][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{\thetotal}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
-  % \total[]{}
-%  \newcommand{\@@total}[2][\unskip]{\marginnote{\sf\bfseries \makebox[2cm][r]{#2}\ Total\ #1}\nopagebreak\outn@draw@total@rule}
-  % \subtotal*[]
-%  \newcommand{\@subtotal}[1][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{\thesubtotal}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
-  % \subtotal[]{}
-%  \newcommand{\@@subtotal}[2][\unskip]{\marginnote{\small\sf\bfseries \makebox[2cm][r]{#2}\ Subtotal\ #1 }\setcounter{subtotal}{0}\nopagebreak\outn@draw@subtotal@rule}
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
-\ifdraw@total@line
+\ifdraw@total@line%
         \outn@draw@rule{\@outn@total@hline@move@left}%
                        {\@outn@total@hline@width}%
                        {\@outn@total@hline@color}%
                        {\@outn@total@hline@height}%
+                       {\@outn@total@hline@move@down}%
 \fi%
 }
 %
 % subtotal horizontal rule
 \newcommand{\outn@draw@subtotal@rule}{%
-\ifdraw@subtotal@line
+\ifdraw@subtotal@line%
         \outn@draw@rule{\@outn@subtotal@hline@move@left}%
                        {\@outn@subtotal@hline@width}%
                        {\@outn@subtotal@hline@color}%
                        {\@outn@subtotal@hline@height}%
+                       {\@outn@subtotal@hline@move@down}%
 \fi%
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Newpage commands
-\newcommand{\solutionbreak}{\if@showsolutions\newpage\fi}
-\newcommand{\questionbreak}{\if@showsolutions\else\newpage\fi}
+\newcommand{\sspagebreak}{\if@showsolutions\pagebreak\fi}
+\newcommand{\solutionbreak}{\sspagebreak}
+\newcommand{\qppagebreak}{\if@showsolutions\else\pagebreak\fi}
+\newcommand{\questionbreak}{\qppagebreak}
+\newcommand{\ssnewpage}{\if@showsolutions\newpage\fi}
+\newcommand{\qpnewpage}{\if@showsolutions\else\newpage\fi}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Make marks always appear on RHS:
 %% Needed for marginnote package
@@ -747,7 +880,7 @@
           }%
         }%
       \endgroup
-    }  
+    }
   }
   {% Older versions of marginnote
     \long\def\@mn@@@marginnote[#1]#2[#3]{%
@@ -885,31 +1018,26 @@
 %
 \if@showsolutions%
 	\if@specimensolutions%
-		% Don't want to use mdframed here
+		% Don't want to use tcolorbox here
 		\newenvironment{solution}{%
-			%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
 			\def\mk{\solnmarks}%
   		}{}
 	\else
-		% Regular solutions: use mdframed environment to define box
-		\newmdenv[linewidth=3pt,topline=false,bottomline=false,rightline=false,
-	          innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,
-	          backgroundcolor=yellow!10,frametitle=Solution]{solutionbox}
+		% Regular solutions: use tcolorbox environment to define box
+        \newtcolorbox{solutionbox}{%
+            colframe=black,arc=0pt,toprule=-.2pt,rightrule=-.2pt,bottomrule=-.2pt,leftrule=3pt,
+            width=\textwidth,left=10pt,grow to left by=13pt,right=5.5cm,add to width=5.5cm,
+            fonttitle=\bfseries,title=Solution,coltitle=black,attach title to upper,after title={\par\medskip},
+            colback=yellow!10,parbox=false}
 	    % Now define the wrapper
-	        \newenvironment{solution}{%
-					%\def\marks{\ClassWarning{ouexam}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-					\def\mk{\solnmarks}%
-					\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small}%
-  				{\end{solutionbox}\end{adjustwidth}}
-	\fi
+	    \newenvironment{solution}{%
+            \def\mk{\solnmarks}%
+            \begin{solutionbox}\raggedright\small}%
+            {\end{solutionbox}}
+    \fi
 \else
 	% Suppress anything in the solution environment.
     \newenvironment{solution}
-    {\comment}
-    {\endcomment}
+        {\comment}
+        {\endcomment}
 \fi
-
-
-
-
-

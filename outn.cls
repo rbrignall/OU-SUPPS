@@ -1,10 +1,34 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2021/11/09 v2.3.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2024/03/21 v3.0 (Robert Brignall, all rights reserved)]
 
+\newif\if@tnandss
+\@tnandssfalse
 \newif\if@specsolns
 \@specsolnsfalse
+
+\DeclareOption{tn-and-ss}{%
+    \@tnandsstrue
+    \ifx\buildmode\undefined
+      \immediate\write18{%
+        pdflatex --jobname="\jobname"
+        "\gdef\string\buildmode{1}\string\input\space\jobname"
+      }%
+      \immediate\write18{%
+        pdflatex --jobname="\jobname-ss"
+        "\gdef\string\buildmode{2}\string\input\space\jobname"
+      }%
+      \expandafter\stop
+    \fi
+    \ifnum\buildmode=1\relax\fi
+    \ifnum\buildmode=2 \@specsolnstrue\fi
+}
+
 \DeclareOption{specsolns}{%
-  \@specsolnstrue
+  \if@tnandss
+    \relax
+  \else
+    \@specsolnstrue
+  \fi
 }
 
 \ProcessOptions\relax
@@ -30,8 +54,11 @@
 \RequirePackage{iftex}
 \RequirePackage{environ}
 \RequirePackage{verbatim}
+\RequirePackage{caption}
+  \captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25}}
 \if@specsolns
   \RequirePackage{caption}
+  \captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25,color=\@specsolnscolor}}
 \fi
 
 
@@ -40,7 +67,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\@faculty{Mathematics, Computing and Technology}
+\def\@faculty{Faculty of Science, Technology,\\ Engineering and Mathematics}
 \newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
 %
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
@@ -56,8 +83,32 @@
 \def\@copyrightyear{\@tnyear}
 \newcommand\copyrightyear[1]{\def\@copyrightyear{#1}}
 %
-\newcommand\tntitle[1]{\renewcommand\@tntitle{#1}}
+% Title of document:
+% Can be handled by \tntitle[A]{B}
+% Or \tntitle{B}\sstitle{A}
+% \sstitle overrules optional \tntitle parameter
+\newif\if@sstitle
+\@sstitlefalse
+\newcommand{\sstitle}[1]{%
+  \@sstitletrue
+  \if@specsolns%
+    \renewcommand\@tntitle{#1}
+  \else%
+    \relax
+  \fi%
+}%
+%
 \newcommand\@tntitle{\@latex@error{No \noexpand\tntitle specified}\@ehc}
+\newcommand{\tntitle}{\@dblarg\@settntitle}
+\def\@settntitle[#1]#2{
+  \if@specsolns%
+    \if@sstitle\relax%
+    \else\renewcommand\@tntitle{#1}\fi
+  \else%
+    \renewcommand\@tntitle{#2}
+  \fi%
+}
+%
 % title for tutor only environment
 \newcommand\tutoronlytitle[1]{\renewcommand\@tutoronlytitle{#1}}
 \newcommand\@tutoronlytitle{{\bfseries For tutors only:}\par}
@@ -70,10 +121,10 @@
 \newcommand\specsolnscolor[1]{\def\@specsolnscolor{#1}}
 \if@specsolns
   \AtBeginDocument{\color{\@specsolnscolor}}
-  \captionsetup{font={color=\@specsolnscolor}}
+  \captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25,color=\@specsolnscolor}}
 \fi
 %
-\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
 %
 \newif\if@switchmarks
@@ -149,12 +200,12 @@
 %
   %\vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
-  \begin{tabular}{@{}p{4.5cm}@{}p{12.5cm}@{}}
+  \begin{tabular}{@{}p{6.5cm}@{}p{11.5cm}@{}}
   \vspace{0.2cm}
   \IfFileExists{\@oulogofile}{%
-    \includegraphics[width=3.5cm]{\@oulogofile}%
+    \includegraphics[]{\@oulogofile}%
   }{%
-    \fbox{\parbox[t][2cm][c]{3.5cm}{\centering OU Logo}}%
+    \fbox{\parbox[t][17.5mm][c]{54.3mm}{\centering OU Logo}}%
   }%
 &
 \vspace{0.2cm}\relax
@@ -197,7 +248,7 @@
 
 %\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
-\raggedbottom                
+\raggedbottom
 \parindent 0pt
 \parskip 6pt
 \setlength{\mathindent}{20pt}\relax
@@ -231,8 +282,10 @@
 }
 
 \def\@assignmentwithcutoff[#1]#2{%
+\begin{adjustwidth}{0cm}{-5cm}
 	\def\@cutoff{\@cutofftext\ #1}
 	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}#1}
+\end{adjustwidth}
 	\@ifnextchar[{\@assignmentsubtitle}{
 		\par\addvspace{\bigskipamount}
 	}
@@ -244,7 +297,7 @@
 	\@ifnextchar[{\@assignmentsubtitle}{\par\addvspace{\bigskipamount}}
 }
 
-% This does nothing except add some space, 
+% This does nothing except add some space,
 % but means structure is identical to ouab.cls.
 \def\@assignmentsubtitle[#1]{%
 	\par\addvspace{\bigskipamount}
@@ -275,10 +328,12 @@
  /totalhline/.is family, /totalhline,
  default/.style =
   {moveleft=.1\textwidth,
+   movedown=0pt,
    width=1.5\textwidth,
    height=2pt,
    color=black},
    moveleft/.estore in=\@outn@total@hline@move@left,
+   movedown/.estore in=\@outn@total@hline@move@down,
    width/.estore in=\@outn@total@hline@width,
    height/.estore in=\@outn@total@hline@height,
    color/.estore in=\@outn@total@hline@color,
@@ -286,10 +341,12 @@
  /subtotalhline/.is family, /subtotalhline,
  default/.style =
   {moveleft=.1\textwidth,
+   movedown=0pt,
    width=1.5\textwidth,
    height=1pt,
    color=black},
    moveleft/.estore in=\@outn@subtotal@hline@move@left,
+   movedown/.estore in=\@outn@subtotal@hline@move@down,
    width/.estore in=\@outn@subtotal@hline@width,
    height/.estore in=\@outn@subtotal@hline@height,
    color/.estore in=\@outn@subtotal@hline@color,
@@ -297,6 +354,7 @@
  /ourule/.is family, /ourule,
  default/.style = /totalhline/default,
    moveleft/.estore in=\@outn@rule@move@left,
+   movedown/.estore in=\@outn@rule@move@down,
    width/.estore in=\@outn@rule@width,
    height/.estore in=\@outn@rule@height,
    color/.estore in=\@outn@rule@color,
@@ -332,17 +390,20 @@
                    {\@outn@rule@width}%
                    {\@outn@rule@color}%
                    {\@outn@rule@height}%
+                   {\@outn@rule@move@down}%
   \fi
 }
- 
+
 % reference: http://tex.stackexchange.com/questions/29574/shift-horizontal-line-to-the-left
-\newcommand{\outn@draw@rule}[4]{%
+\newcommand{\outn@draw@rule}[5]{%
         % #1: moveleft
         % #2: width
         % #3: color
         % #4: height
-    \par\bigskip\nobreak % don't break a page here
-    \moveleft#1\vbox{% we want the rule to protrude on the left
+        % #5: movedown
+  \par\nobreak % don't break a page here
+  \vspace{#5}%
+  \moveleft#1\vbox{% we want the rule to protrude on the left
     \hsize=#2% correct the length
     \kern\the\prevdepth % don't take into account the depth of the preceding line
     \kern\baselineskip % space before the rule
@@ -359,37 +420,41 @@
 \def\@studentcolor{\@specsolnscolor}
 \newcommand\tutoronlycolor[1]{\def\@tutorcolor{#1}}
 \newcommand\studentonlycolor[1]{\def\@studentcolor{#1}}
-\newcommand{\tutoronly}[1]{{\color{\@tutorcolor}#1}}
-\newenvironment{tutor}{\color{\@tutorcolor}\@tutoronlytitle}{}
-\newcommand{\remark}[1]{{\color{\@tutorcolor}\emph{Remark:} #1}}
-\newenvironment{longremark}{\color{\@tutorcolor}\emph{Remarks:}\par}{}
-\newcommand{\studentonly}[1]{}
-\newenvironment{student}{\comment}{\endcomment}
-\if@specsolns
-    \AtBeginDocument{
-        \renewcommand{\tutoronly}[1]{}
-        \renewcommand{\remark}[1]{}
-        \renewcommand{\studentonly}[1]{{\color{\@studentcolor}#1}}
-        \renewenvironment{tutor}{\comment}{\endcomment}
-        \renewenvironment{longremark}{\comment}{\endcomment}
-        \renewenvironment{student}{\color{\@studentcolor}\@studentonlytitle}{}
-    }
-\else
-    \AtBeginDocument{
-        \renewcommand{\studentonly}[1]{}
-        \renewenvironment{student}{\comment}{\endcomment}
-    }
-\fi
-\newcommand{\tutororstudent}[2]{%
-    % #1: for tutors only
-    % #2: for students only
-    \if@specsolns
-        {\color{\@studentcolor}#2}
-    \else
-        {\color{\@tutorcolor}#1}
-    \fi
+%
+\AtBeginDocument{
+  \if@specsolns
+    \newcommand{\tnonly}[1]{\relax}
+    \newcommand{\remark}[1]{\relax}
+    \newenvironment{tutor}{\comment}{\endcomment}
+    \newenvironment{longremark}{\comment}{\endcomment}
+    %
+    \newcommand{\ssonly}[1]{{\color{\@studentcolor}#1}}
+    \newenvironment{student}{\color{\@studentcolor}\@studentonlytitle}{}
+    %
+    \newcommand{\tnorss}[2]{{\color{\@studentcolor}#2}}
+  \else
+    \newcommand{\tnonly}[1]{{\color{\@tutorcolor}#1}}
+    \newenvironment{tutor}{\color{\@tutorcolor}\@tutoronlytitle}{}
+    \newcommand{\remark}[1]{{\color{\@tutorcolor}\emph{Remark:} #1}}
+    \newenvironment{longremark}{\vspace{0.25\baselineskip}\par\color{\@tutorcolor}\emph{Remarks}\\[3pt]}{\par}
+    %
+    \newcommand{\ssonly}[1]{\relax}
+    \newenvironment{student}{\comment}{\endcomment}
+    %
+    \newcommand{\tnorss}[2]{{\color{\@tutorcolor}#1}}
+  \fi
+  %
+  \newcommand*{\tutoronly}{\tnonly}
+  \newcommand*{\studentonly}{\ssonly}
+  \newcommand*{\tutororstudent}{\tnorss}
 }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Newpage commands
+\newcommand{\sspagebreak}{\if@specsolns\pagebreak\fi}
+\newcommand{\tnpagebreak}{\if@specsolns\else\pagebreak\fi}
+\newcommand{\ssnewpage}{\if@specsolns\newpage\fi}
+\newcommand{\tnnewpage}{\if@specsolns\else\newpage\fi}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Question headers
 \newcounter{question}
@@ -398,10 +463,12 @@
 % \@question is the version with star: it displays no marks
 \newcommand{\@question}[1][\unskip]{%
 	\refstepcounter{question}
+    %A%\if@specsolns\else\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\fi
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1}\nopagebreak\par}
-% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
+% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display.
 \newcommand{\@@question}[2][\unskip]{%
 	\refstepcounter{question}
+    %A%\if@specsolns\else\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\fi
 	\par\bigskip{\textbf{Solution to Question~\thequestion} #1} -- #2 marks\nopagebreak\par}
 
 %% Subquestion settings -- all controlled by enumerate with enumitem
@@ -420,14 +487,18 @@
 %
 \if@specsolns%
   	% suppress everything in specimen solutions
-  	\newcommand{\bracketedmarks}[2][]{\relax}
-  	\newcommand{\solnmarks}[2][]{\relax}
-  	\newcommand{\solnmarksplus}[2]{\relax}
+  	\newcommand*{\bracketedmarks}{\@ifstar\@relaxcmdA\@relaxcmdA}
+  	\newcommand*{\solnmarks}{\@ifstar\@relaxcmdA\@relaxcmdA}
+  	\newcommand*{\solnmarksplus}{\ClassWarning{outn}{\protect\solnmarksplus\space is deprecated. Please use \protect\mk\space}\@ifstar\@relaxcmdB\@relaxcmdB}
+    % Two flavours of \@relaxcmd depending on parameters
+    % \@relaxopt handles final optional spacing parameter if supplied 
+    \newcommand{\@relaxcmdA}[2][]{\@relaxopt}
+    \newcommand{\@relaxcmdB}[2]{\@relaxopt}
+    \newcommand{\@relaxopt}[1][]{\relax}
 \else%
 	% Not specimen solutions
 	% Bracketed marks - not really used in outn
 	\newcommand{\bracketedmarks}[2][\unskip]{%
-		%\@update@totals{#2}% RB commented out 08/04/20: see if anyone notices...
 		\marginnote{\hfill %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\small\raggedright #1}}\makebox[1cm][r]{[\textsl{#2}]}%
@@ -443,8 +514,7 @@
 		\@solnmarksbox{#1}{#2}%
 	}	
 	\newcommand{\@@solnmarks}[2][\unskip]{%
-		\@update@totals{#2}%
-		\@solnmarksbox{#1}{#2}%
+		\@solnmarksbox{#1}{\@update@totals{#2}}%
 	}
 	\newcommand{\@solnmarksbox}[2]{%
 		\marginnote{\hfill\small\sf %
@@ -456,19 +526,86 @@
 		}%
 	}	
 	%	
-  	\newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}}
+    \newcommand{\solnmarksplus}[2]{\solnmarks[#2]{#1}\ClassWarning{outn}{\protect\solnmarksplus\space is deprecated. Please use \protect\mk\space}}
 \fi
 % The standard \mk command is defined in terms of solnmarks.
 % \bracketedmarks is available mainly for compatibility with ouab and ouexam.
-%\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}
 \def\mk{\solnmarks}
-\def\mkplus{\solnmarksplus} % Note: doesn't support * mode.
+\newcommand{\mkplus}[2]{\solnmarks[#2]{#1}\ClassWarning{outn}{\protect\mkplus\space is deprecated. Please use \protect\mk\space}}
 %
 %
 % definition of \total and \subtotal
 \def\total{\@ifstar\@total\@@total}
 \def\subtotal{\@ifstar\@subtotal\@@subtotal}
 %
+% Routines for the adding up of marks and part marks
+% First, render the "lengths" nicely:
+\begingroup
+\catcode`P=12
+\catcode`T=12
+\lowercase{%
+  \def\x{%
+    \def\@render@mk##1.##2PT{%
+      \ifnum##2=5
+        \ifnum##1=0\else##1\fi% integer part
+        \(\frac12\)% if x.5, print 1/2
+      \else % Could capture more fractions here
+        ##1%
+        \ifnum##2=0% if no decimal part do nothing more
+        \else.##2% otherwise print the decimal
+        \fi
+      \fi
+    }%
+  }%
+}\expandafter\endgroup\x
+% Now, set lengths globally from inside enumerate
+% See https://tex.stackexchange.com/a/406025/96966
+\gdef\gsetlength#1#2{%
+  \begingroup
+    \setlength\skip@{#2}% Local assignment to a scratch register.
+    \global#1=\skip@    % Global assignement to #1;
+  \endgroup             % \skip@ is restored by end of group.
+}%
+\newlength{\tot@l}
+\newlength{\subtot@l}
+\newlength{\@mk}
+\newcommand{\thetotal}{\expandafter\@render@mk\the\tot@l}
+\newcommand{\thesubtotal}{\expandafter\@render@mk\the\subtot@l}
+
+% For some reason this can't be defined inside \if@specsolns
+% This updates the totals and renders mark to screen
+\def\@update@totals#1{%
+  \begingroup
+    \newif\if@nan\@nanfalse%
+    \newif\if@fndpt\@fndptfalse%
+    \edef\tmp{\testleadneg{\detokenize{#1}}\relax}%
+    \expandafter\testreal\tmp\relax%
+    % Add to counter if a number
+    \if@nan%
+      #1% Render content as-is
+    \else%
+      \global\advance\subtot@l#1\p@%
+      \global\advance\tot@l#1\p@%
+      \setlength{\@mk}{#1pt}%
+      \expandafter\@render@mk\the\@mk% Render using mark filter
+    \fi
+  \endgroup
+}
+% Tests for numerical content
+\def\testreal#1#2\relax{%
+  % First decimal place or not?
+  \if.#1\if@fndpt\@nantrue\else\@fndpttrue\fi\else%
+    % Check for digits, otherwise not a number
+    \if1#1\else\if2#1\else\if3#1\else\if4#1\else%
+    \if5#1\else\if6#1\else\if7#1\else\if8#1\else%
+    \if9#1\else\if0#1\else\@nantrue%
+    \fi\fi\fi\fi\fi\fi\fi\fi\fi\fi\fi%
+  \if@nan\else\if\relax#2\else\testreal#2\relax\fi\fi%
+}
+
+\def\testleadneg#1#2\relax{\if-#1#2\else#1#2\fi}
+
+% Now define the internal total commands
 \if@specsolns%
     % specimen solutions mode is active
     \newcommand{\@total}[1][]{\relax}
@@ -476,84 +613,71 @@
     \newcommand{\@subtotal}[1][]{\relax}
     \newcommand{\@@subtotal}[2][]{\relax}
 \else%
-    \newcounter{total}[question]
-    \newcounter{subtotal}[question]
-    \def\@update@totals#1{%
-      	\afterassignment\get@args\count@=0#1\hfuzz#1\hfuzz}
-	\def\get@args#1\hfuzz#2\hfuzz{%
-  		\if\relax\detokenize{#1}\relax
-     		\if\relax\detokenize{#2}\relax
-     		\else%
-        		\addtocounter{subtotal}{#2}%
-        		\addtocounter{total}{#2}%
-     		\fi%
-  		\else%
-    		\relax
-  		\fi%
-	}
-    % \total*
+    % \total*[]
     \newcommand{\@total}[1][\unskip]{%
-    	\marginnote{\sf\bfseries %
+    	\strut\marginnote{\sf\bfseries %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{\thetotal}%
      		\else%
 				\makebox[1cm][r]{\thetotal}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}%
 			\fi%
 		}%
-		\nopagebreak\outn@draw@total@rule%
+		\nopagebreak\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\outn@draw@total@rule%
 	}%
     % \total[]{}
     \newcommand{\@@total}[2][\unskip]{%
-    	\marginnote{\sf\bfseries %
+    	\strut\marginnote{\sf\bfseries %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}\makebox[1cm][r]{#2}%
      		\else%
 				\makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Total\ #1}}%
 			\fi%
 		}%
-		\nopagebreak\outn@draw@total@rule%
+		\nopagebreak\gsetlength{\subtot@l}{0pt}\gsetlength{\tot@l}{0pt}\outn@draw@total@rule%
 	}
-    % \subtotal*
+    % \subtotal*[]
     \newcommand{\@subtotal}[1][\unskip]{%
-    	\marginnote{\small\sf\bfseries %
+    	\strut\marginnote{\small\sf\bfseries %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{\thesubtotal}%
      		\else%
 				\makebox[1cm][r]{\thesubtotal}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}%
 			\fi%
 		}%
-		\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+		\nopagebreak\gsetlength{\subtot@l}{0pt}\outn@draw@subtotal@rule%
 	}
     % \subtotal[]{}
     \newcommand{\@@subtotal}[2][\unskip]{%
-    	\marginnote{\small\sf\bfseries %
+    	\strut\marginnote{\small\sf\bfseries %
 			\if@switchmarks%
 				\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}\makebox[1cm][r]{#2}%
      		\else%
 				\makebox[1cm][r]{#2}\makebox[4cm][r]{\parbox[t]{3.75cm}{\raggedright Subtotal\ #1}}%
 			\fi%
 		}%
-		\nopagebreak\setcounter{subtotal}{0}\outn@draw@subtotal@rule%
+		\nopagebreak\gsetlength{\subtot@l}{0pt}\outn@draw@subtotal@rule%
 	}
 \fi
 
 % total horizontal rule
 \newcommand{\outn@draw@total@rule}{%
-\ifdraw@total@line
+\ifdraw@total@line%
         \outn@draw@rule{\@outn@total@hline@move@left}%
                        {\@outn@total@hline@width}%
                        {\@outn@total@hline@color}%
                        {\@outn@total@hline@height}%
+                       {\@outn@total@hline@move@down}%
 \fi%
 }
 
 % subtotal horizontal rule
 \newcommand{\outn@draw@subtotal@rule}{%
-\ifdraw@subtotal@line
+\ifdraw@subtotal@line%
         \outn@draw@rule{\@outn@subtotal@hline@move@left}%
                        {\@outn@subtotal@hline@width}%
                        {\@outn@subtotal@hline@color}%
                        {\@outn@subtotal@hline@height}%
+                       {\@outn@subtotal@hline@move@down}%
 \fi%
 }
 
@@ -561,17 +685,7 @@
 %
 \newcommand{\textref}[1]{\hfill\fbox{\emph{\textbf{#1}}}}
 \newcommand{\longtextref}[1]{\hfill\fbox{\parbox{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}{\emph{\textbf{#1}}}}}
-\newenvironment{references}{\par{\itshape References}\par}
-%\newcommand{\textref}[1]{\hfill\begin{framed}\emph{\textbf{#1}}\end{framed}}
-%\newcommand{\textref}[1]{%
- % \setlength{\@tempdima}{\dimexpr\textwidth-2\fboxsep-0.8pt\relax}%
- % \sbox{\@tempboxa}{#1}%
- % \ifdim\wd\@tempboxa>\@tempdima
- %   \hfill\fbox{\parbox{\@tempdima}{\raggedleft{\em\bfseries#1}}}%
- % \else
- %   \hfill\fbox{\em\bfseries#1}%
-%\fi
-%}
+\newenvironment{references}{\vspace{0.25\baselineskip}\par{\itshape References}\\[3pt]}{\par}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
@@ -588,7 +702,7 @@
 \newenvironment{inlineoptions}[2][1]{%
 % #1 is the optional line spacing stretch. Default is 1
 % #2 is the number of columns
-  \par\medskip\@optiontext
+  \par\medskip\@optiontext\vspace{\dimexpr\baselineskip-#1\baselineskip}
     \setcounter{enumi}{0}%
   \dimen0 \linewidth%
   \divide\dimen0 by #2\relax%
@@ -601,7 +715,7 @@
   \def\noitem{\hfil\egroup\penalty50 \hfill%
     \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
-}{\hfil\egroup\par}  
+}{\hfil\egroup\par}
 
 % Normal options: this is just using enumitem features with enumerate.
 \newenvironment{options}%
@@ -665,7 +779,7 @@
           }%
         }%
       \endgroup
-    }  
+    }
   }
   {% Older versions of marginnote
     \long\def\@mn@@@marginnote[#1]#2[#3]{%
@@ -740,14 +854,6 @@
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Solutions
-
-%\newmdenv[linewidth=0pt,topline=false,bottomline=false,rightline=false,innerrightmargin=5.5cm,innerleftmargin=10pt,linecolor=black,frametitle=Solution to \thequestion]{solutionbox}
-%
-%\newenvironment{solution}{%
-%	\def\marks{\ClassWarning{outn}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\solnmarks}%
-%	\begin{adjustwidth}{-13pt}{-5.5cm}\begin{solutionbox}\small
-% }
-% {\end{solutionbox}\end{adjustwidth}}
 % Dummy environment:
 \newenvironment{solution}{}{}
 %

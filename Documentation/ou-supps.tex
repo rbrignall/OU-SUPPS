@@ -47,7 +47,7 @@
 suggestions go to \href{https://github.com/rbrignall/OU-SUPPS}%
 {\texttt{https://github.com/rbrignall/OU-SUPPS}}.}}
 
-\date{Version 2.4\\2021-11-09}
+\date{Version 2.4.1\\2021-12-02}
 
 \IfFileExists{enumitem.sty}{\usepackage{enumitem}}{}
 
@@ -130,12 +130,17 @@ Draft mode. In this mode, the system will check that the stated total marks for 
 \emph{Note:} Questions that are created with |\question*| that have no mark specified will not be checked by this system, nor will a question with a specified total of 0 marks.
 
 \begin{desc}
+|\documentclass[accessibility-warnings]{ouab}|\\
+|\documentclass[a-w]{ouab}|
+\end{desc}
+
+This will output \emph{accessibility warnings} to the pdf and to the log file. Full details of the warnings are given in Section~\ref{sec:accessibility-warnings}.
+
+\begin{desc}
 |\documentclass[oneassignment,draft]{ouab}|
 \end{desc}
 
 As always, you can combine options and the effects of each option will be seen.
-
-
 
 \subsubsection{Commands to be used in the preamble}
 \begin{desc}
@@ -207,6 +212,11 @@ Overrides the internally-specified for the name of the OU logo, currently |OU_Ma
 
 
 \begin{desc}
+|\uniqueID{...}|
+\end{desc}
+Command that specifies the unique ID of the document; this information will not be used in the pdf version, but is essential for uploading to the VLE. The ID of the document must always begin with an upper case X. An example ID is Xmst125tma01.
+
+\begin{desc}
 |\metadataset{key=value}|  
 \end{desc}
 As an alternative to specifying the above commands individually, they can 
@@ -225,6 +235,7 @@ command; for example:
             multiple choice option text=choices,
             no cut off date,
             instructions=some specific instructions,
+            unique ID=Xidofdocument,
             }
 \end{verbatim}
 \subsection{Creating assignments}
@@ -408,8 +419,19 @@ This is the default operation for using |outn.cls|. It produces a Tutor Notes bo
 |\documentclass[specsolns]{outn}|
 \end{desc}
 
-This version is designed to create a specimen solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\mk| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
+This version is designed to create a Specimen Solutions PDF. In this mode, a number of commands have no effect, e.g. those for specifying marks (|\mk| and |\subtotal|, etc), the title is changed to reflect the different type of document, and (by default) the font colour is changed to green.
 
+\begin{desc}
+|\documentclass[tn-and-ss]{outn}|
+\end{desc}
+
+This version will \emph{attempt to} generate both Tutor Notes, and Specimen Solutions, as separate PDFs. If your document is called |file.tex|, then the Tutor Notes will be created in |file.pdf|, and the Specimen Solutions will be created in |file-ss.pdf|.
+
+When you compile the document with this option, the class file will instigate two further compilations of your document, one with the |specsolns| option and a different |jobname|. In order for this functionality to succeed, you will typically have to invoke |pdflatex| with the additional option |--shell-escape|, for example:
+
+\qquad|pdflatex --shell-escape file.tex|
+
+Note: most text editors can be configured to include |--shell-escape| in the compilation instructions: check the documentation of your editor for details.
 
 \subsubsection{Commands to be used in the preamble}\label{outn-preamble}
 \begin{desc}
@@ -426,9 +448,15 @@ Sets the code of the module (required).
 Sets the title (i.e./ name) of the module (required).
 
 \begin{desc}
-|\tntitle{...}|
+|\tntitle[<ss title>]{<tn title>}|
 \end{desc}
-Sets the title for the Tutor Notes/Specimen Solutions (required).
+Sets the title for the Tutor Notes/Specimen Solutions (required). If the optional parameter |<ss title>| is specified, this is used in |specsolns| mode (so the tutornotes and specimen solutions can have separate titles).
+
+\begin{desc}
+|\sstitle{<ss title>}|	
+\end{desc}
+ In |specsolns| mode, this will set the title for the specimen solutions. \emph{Note:} If present, the title specified in this command will always override the optional parameter set in |\tntitle|.
+ 
 
 \begin{desc}
 |\tnyear{...}|
@@ -586,7 +614,7 @@ The optional final parameter |[<voffset>]| allows you to move the entire margin 
 
 The starred variant |\mk*| performs the same function, but does not add the value of |<n>| to the |total| and |subtotal| counters, so can be used, e.g., if several solutions are possible with separate mark schemes.
 
-\emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
+\emph{Note:} |<n>| can be non-numeric, but if anything other than a number is entered, then nothing will be added to the |\subtotal*| and |\total*| commands. If |<n>| is a floating-point decimal then this will be added correctly to the subtotal and total. Furthermore, half marks get rendered as fractions: for example if |<n>|${}=1.5$, then |\mk| will render this as `$1\frac12$'.
 
 \begin{desc}
 |\solnmarksplus{<n>}{<description>}|\\
@@ -612,12 +640,11 @@ See under the description of |\mk| above for information on usage of the optiona
 
 Calculates the subtotal or total for a part-question or question, placing 
 the calculated value in the margin, and the word `Subtotal' or `Total' in large, 
-bold to its right; the calculated value accounts for all marks given in 
-any of the following commands: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
-|marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
+bold to its right; the calculated value accounts for all fully numeric parameters (including decimals) given in 
+any of the following commands: |\mk|, |\solnmarksplus|, and |\mkplus|. The optional argument |<description>| is the same 
 as with the |\subtotal| and |\total| commands. 
 
-\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters.
+\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters, nor will anything entered into |\mk| other than floating point decimals.
 
 \begin{desc}
 |\setSubtotalHline[<options>]|
@@ -627,6 +654,7 @@ Sets options (including turning off) for horizontal lines after |\subtotal| and
 |\subtotal*| command. Supported options, in any order, are:
 \begin{itemize}
   \item |moveleft=<length>|, default is |.1\textwidth|: specifies the horizontal offset of the line;
+  \item |movedown=<length>|, default is |0pt|: allows you to adjust the vertical space between the `subtotal' text and the line;
   \item |width=<length>|, default is |1.5\textwidth|: specifies the horizontal width of the line;
   \item |height=<length>|, default is |2pt|: specifies the height of the line;
   \item |color=<color>|, default is |black|: specifies the colour of the line;
@@ -642,7 +670,7 @@ Sample uses include, for example:
 
 |\setSubtotalHline[moveleft=0pt,height=5pt,color=orange]|
 
-This command is just a short cut to the |\pgfkeys| command, and 
+This command is just a shortcut to the |\pgfkeys| command, and 
 users familiar with the syntax of |\pgfkeys| might prefer to use, 
 for example:
 
@@ -708,47 +736,27 @@ The optional parameter |<line spacing>| can be used to increase the spacing betw
 \end{desc}
 This command can be used within  |inlineoptions| to leave a `blank' in the list of options. This is particularly useful on the final line if you have fewer |\item|s left than the specified number of |<columns>|.
 
-\subsection{Comments for tutors or students}
+\subsection{Producing tutor notes and specimen solutions from one file}
 
-Since the same |latex| source is expected to produce both tutor notes and (using |specsolns| mode) specimen solutions, commands are provided for comments to appear to tutors and/or students.
-
-\emph{Warning: These commands are still under development and syntax/appearance is still liable to change in future.}
+|outn| is designed to be able to produce Tutor Notes and Specimen Solutions from a single tex file, using the class files options |specsolns| or |tn-and-ss| (see earlier). Various commands are available to apply comments, text or commands depending on which type of file is being produced.
 
 \begin{desc}
-|\textref{<description>}|
-\end{desc}
-
-Inserts |<description>| in bold and italics, in a right-aligned box. Primarily expected to be used for references to texts or handbooks.
-
-
-\begin{desc}
+|\tnonly{<commands/text>}|\\
+|\tutoronly{<commands/text>}|\\
 |\remark{<text>}|
+\end{desc}
+Commands, text, and anything else inside |\tnonly| command and related commands will only output when the |specsolns| option is \emph{not} active.
+
+\begin{desc}
+|\begin{tutor}|\\
+| <content>|\\
+|\end{tutor}|\\[5pt]
 |\begin{longremark}<text>\end{longremark}|
 \end{desc}
+Any content within the |tutor| or |longremark| environments will only
+output when the |specsolns| option is \emph{not} active.\label{outn:tnonly}
 
-Provides a command and environment in which to write text that is visible only in the tutornotes (i.e.\ it is suppressed in |specsolns| mode). The |longremark| environment is designed for longer paragraphs of explanation.
-
-\emph{Warning: Do not use the |longremark| environment inside the |solutions| environment! In certain modes this will cause errors relating to verbatim mode.}
-
-\begin{desc}
-|\begin{references}<text>\end{references}|  
-\end{desc}
-
-Provides an environment for references; it typesets the word `References' in italics on its own line, with the |<text>| in normal font.
-
-\begin{desc}
-|\tutoronly{<commands/text>}|
-\end{desc}
-Commands, text, and anything else (e.g |\pagebreak|) passed to the |\tutoronly| command will only
-output to tutor notes when the |specsolns| option is \emph{not} active.
-
-\begin{desc}
-|\begin{tutor}|
-| <content>|
-|\end{tutor}|
-\end{desc}
-Any content within the |\tutor| environment will only
-output to tutor notes when the |specsolns| option is \emph{not} active.\label{outn:tutoronly}
+\emph{Warning: Do not use the |tutor| or |longremark| environments inside the |solutions| environment! In certain modes this will cause errors relating to verbatim mode.}
 
 \begin{desc}
 |\tutoronlytitle{<title for tutor only environment>}|
@@ -757,14 +765,15 @@ Sets the title for the |tutor| environment; the title, by default, will output
 |{\bfseries For tutors only:}\par| but this can be changed using |\tutoronlytitle|. 
 
 \begin{desc}
+|\ssonly{<commands/text>}|\\
 |\studentonly{<commands/text>}|
 \end{desc}
-Commands, text, and anything else passed to the |\studentonly| command will only
-output to student notes when the |specsolns| option \emph{is} active.\label{outn:studentonly}
+Commands, text, and anything else inside |\ssonly| will only
+output when the |specsolns| option \emph{is} active.\label{outn:ssonly}
 
 \begin{desc}
-|\begin{student}|
-|<content>|
+|\begin{student}|\\
+|<content>|\\
 |\end{student}|
 \end{desc}
 Any content within the |\student| environment will only
@@ -777,9 +786,10 @@ Sets the title for the |student| environment; the title, by default, will output
 |{\bfseries For students only:}\par| but this can be changed using |\studentonlytitle|. 
 
 \begin{desc}
+|\tnorss{<to the tutor>}{<to the student>}|\\
 |\tutororstudent{<to the tutor>}{<to the student>}|  
 \end{desc}
-The |\tutororstudent| command takes two arguments; the first argument will only
+The |\tnorss| command takes two arguments; the first argument will only
 be output when the |specsolns| is \emph{not} active, and the second argument 
 will only be output when the |specsolns| \emph{is} active.
 
@@ -788,6 +798,44 @@ will only be output when the |specsolns| \emph{is} active.
 |\studentonlycolor{<color>}|
 \end{desc}
 These commands set the color of the text in tutor- and student-specific comments and environments. The default is |black| for |\tutoronlycolor|, and the same as |\specsolnscolor| for |\studentonlycolor| (by default, this is |ougreen|).
+
+
+\subsubsection{Pagination}
+As well as the usual commands such as |\pagebreak|, it is possible to specify different page breaks depending on whether |specsolns| is enabled or not.
+\begin{desc}
+|\tnpagebreak|
+\end{desc}
+Inserts a |\pagebreak| command when the |specsolns| option is not specified.
+
+\begin{desc}
+|\sspagebreak|
+\end{desc}
+Inserts a |\pagebreak| command when the |specsolns| option is specified.
+
+\begin{desc}
+|\tnnewpage|
+\end{desc}
+Inserts a |\newpage| command when the |specsolns| option is not specified.
+
+\begin{desc}
+|\ssnewpage|
+\end{desc}
+Inserts a |\newpage| command when the |specsolns| option is specified.
+
+
+\subsubsection{Referencing}
+\begin{desc}
+|\textref{<description>}|
+\end{desc}
+
+Inserts |<description>| in bold and italics, in a right-aligned box. Primarily expected to be used for references to texts or handbooks. Applies in both tn and ss modes.
+
+
+\begin{desc}
+|\begin{references}<text>\end{references}|  
+\end{desc}
+
+Provides an environment for references; it typesets the word `References' in italics on its own line, with the |<text>| in normal font. Applies in both tn and ss modes.
 
 \subsection{Technical info}
 This section can be omitted unless you need/want to know a bit more about the class file.
@@ -865,11 +913,20 @@ Version for second specimen exam papers. Formatting on the front page and requir
 This version creates a solution booklet. Formatting on the front page is changed, and the contents of |solution| environments gets displayed.
 
 \begin{desc}
+|\documentclass[solutionsonly]{ouexam}|
+\end{desc}
+
+This version works in the same way as |showsolutions|, but it also suppresses the contents of any |questionblock| environments.
+
+
+\begin{desc}
 |\documentclass[specimensolutions]{ouexam}|\\
 |\documentclass[specimen,showsolutions]{ouexam}|
 \end{desc}
 
-The |showsolutions| option can be used alongside the |specimen| option to provide model solutions for specimen exams formatted in a style expected by LTS. The major changes in this mode are the formatting of teh title, footer information, and text within the |solutions| environment will be displayed without additional formatting. The |specimensolutions| option is an alias for |specimen,showsolutions|.
+The |showsolutions| option can be used alongside the |specimen| option to provide model solutions for specimen exams formatted in a style expected by LTS. The major changes in this mode are the formatting of the title, footer information, and text within the |solutions| environment will be displayed without additional formatting. The |specimensolutions| option is an alias for |specimen,showsolutions|.
+
+By default, text inside |questionblock| environments will be suppressed when producing specimen solutions.
 
 \begin{desc}
 |\documentclass[14pt]{ouexam}|
@@ -902,6 +959,29 @@ This option changes the formatting of the exam to make it more suitable for remo
 	\item Modifies the footer on pages 2 onwards, to make it clearer to students at-a-glance whether they have printed all pages correctly.
 \end{itemize}
 
+\begin{desc}
+|\documentclass[qp-and-ss]{outn}|
+\end{desc}
+
+This version will \emph{attempt to} generate both the question paper and solutions as separate PDFs. If your document is called |file.tex|, then the question paper will be created in |file.pdf|, and the solutions will be created in |file-ss.pdf|.
+
+When you compile the document with this option, the class file will instigate two further compilations of your document, one with the |showsolutions| option and a different |jobname|. In order for this functionality to succeed, you will typically have to invoke |pdflatex| with the additional option |--shell-escape|, for example:
+
+\qquad|pdflatex --shell-escape file.tex|
+
+Note: most text editors can be configured to include |--shell-escape| in the compilation instructions: check the documentation of your editor for details.
+
+\begin{desc}
+|\documentclass[solutionsonly,qp-and-ss]{outn}|
+\end{desc}
+
+Using both the |solutionsonly| and |qp-and-ss| options will result in the generation of a question paper (without solutions displayed), and a solutions file (without the contents of |questionblock| environments displayed) from a single compilation.
+
+\begin{desc}
+|\documentclass[specimen,qp-and-ss]{outn}|
+\end{desc}
+
+Using both the |specimen| and |qp-and-ss| options will result in the generation of a SEP and SSEP from a single compilation.
 
 \subsubsection{Commands to be used in the preamble}\label{ouexam-preamble}
 \begin{desc}
@@ -912,9 +992,11 @@ Sets the code of the module (required).
 \begin{desc}
 |\session{...}|
 \end{desc}
-Sets the session code for the exam (required, except for |specimen| and |secondspecimen|). This replaces the deprecated |\conflation{...}| command (although this still works to ensure backwards compatibility).
+Optional. Sets the session code for the exam (required, except for |specimen| and |secondspecimen|). This replaces the deprecated |\conflation{...}| command (although this still works to ensure backwards compatibility).
 
 If |specimen| or |secondspecimen| options are used, |\session{...}| can be used to overwrite the text `Specimen' or `Second Specimen' as appears in the title and footer. For example, you could specify |\session{Third specimen}|.
+
+In a regular exam paper, if no |\session{...}| command is issued, then the slash is removed following the module code and no session information is given.
 
 \begin{desc}
 |\moduletitle{...}|
@@ -952,9 +1034,11 @@ Sets the date for copyright, used in the footer on the front page (optional, def
 
 
 \begin{desc}
-|\suppno{...}| %can be omitted for "DRAFT"
+|\suppno[<ssep supp no>]{...}| %can be omitted for "DRAFT"
 \end{desc}
-Sets the SUPP number for |specimen| and |secondspecimen| options, mainly used by DPU/LTS (optional, default is blank).
+Sets the SUPP code for |specimen|, |secondspecimen| and |specimensolutions| options, mainly used by DPU/LTS (optional, default is blank).
+
+The optional parameter |<ssep supp no>| allows you to specify a second SUPP code, and if present will be used for specimen solutions. The code in braces is applied to the specimen paper itself, and in any case where the optional parameter is omitted.
 
 \begin{desc}
 |\versionno{...}| %optional
@@ -1039,6 +1123,14 @@ The internal counter used for generating questions is |question|.
 \end{desc}
 Creates a question. The parameter |<description>| is optional, and can be used to provide additional information about the question in its header line. 
 
+\begin{desc}
+|\begin{questionblock}|\\
+|...|\\
+|\end{questionblock}|	
+\end{desc}
+This environment applies no formatting to its contents, but can be used as a wrapper to the question text. The contents of all such environments is hidden when the |solutionsonly| or |specimensolutions| options are specified.
+
+If you do not want to use |solutionsonly|, then you do not need to use the |questionblock| environment.
 
 \subsubsection{Subquestions}
 To create subquestions, use the standard \LaTeX\ |enumerate| environment.
@@ -1152,31 +1244,44 @@ Enter the contents of solutions inside the |solution| environment. This is simpl
 
 The text inside the |solution| environment is \emph{only} displayed when one of the |showsolutions| or the |specimensolutions| options is specified in the preamble. 
 
+Note, if you nest a |solution| environment inside a |questionblock| environment, then the contents of the |solution| environment will \emph{not be visible} if you specify the |solutionsonly| or |specimensolutions| options.
+
 When displayed, the solutions can be formatted in one of two ways:
 \begin{description}
 \item[{|[specimensolutions]| or |[specimen,showsolutions]|:}] The text is displayed without further formatting.
-\item[{|[showsolutions]|:}] The text of the solutions is set to |\small|, and placed on a beige background with a thick black line on the left, to indicate the scope of the solution.
+\item[{|[showsolutions]| or |[solutionsonly]|:}] The text of the solutions is set to |\small|, and placed on a beige background with a thick black line on the left, to indicate the scope of the solution.
 \end{description}
 
-\emph{Note:} The showing/hiding solutions features of |ouexam| are designed for use by authors when drafting exams, to help you check answers tally up to the corresponding questions. When creating the final version for handover, you will probably want to make two copies of your working file, one to create the exam (with solutions removed), the other to create the solutions (possibly with the questions removed, though this is option except for specimen solutions).
+\emph{Note:} The features of |ouexam| that enable showing/hiding of solutions and questions can be used to create an exam and its solutions from a single source file. However, it is not necessary to do this, and you may prefer instead to work with two separate documents from the outset.
 
 \subsubsection{Customising the \texttt{solution} environment appearance}
 
-The |solution| environment is defined by an environment called |solutionbox|, which is created using the |mdframed| package. It is specified as follows.
+The |solution| environment is defined by an environment called |solutionbox|, which is created using the |tcolorbox| package. It is specified as follows.
 
 \begin{desc}
-|\newmdenv[linewidth=3pt,|\\
-|      topline=false,|\\
-|      bottomline=false,|\\
-|      rightline=false,|\\
-|      innerrightmargin=5.5cm,|\\
-|      innerleftmargin=10pt,|\\
-|      linecolor=black,|\\
-|      backgroundcolor=yellow!10,|\\
-|      frametitle=Solution]{solutionbox}|
+|\newtcolorbox{solutionbox}{|\\
+|      colframe=black,|\\
+|      arc=0pt,|\\
+|      toprule=-.2pt,|\\
+|      rightrule=-.2pt,|\\
+|      bottomrule=-.2pt,|\\
+|      leftrule=3pt,|\\
+|      width=\textwidth,|\\
+|      left=10pt,|\\
+|      grow to left by=13pt,|\\
+|      right=5.5cm,|\\
+|  	   add to width=5.5cm,|\\
+|      fonttitle=\bfseries,|\\
+|      title=Solution,|\\
+|      coltitle=black,|\\
+|      attach title to upper,|\\
+|      after title={\par\medskip},|\\
+|      colback=yellow!10,|\\
+|      parbox=false|\\
+|}|
 \end{desc}
 
-You can replace this using |\renewmdenv[...]{solutionbox}|. See the |mdframed| package documentation for details.
+You can replace this using |\renewtcolorbox{solutionbox}{...}|. See the |tcolorbox| package documentation for details.
 
 \subsubsection{Specifying marks within the \texttt{solution} environment}
 
@@ -1192,7 +1297,7 @@ The optional final parameter |[<voffset>]| allows you to move the entire margin 
 
 The starred variant |\mk*| performs the same function, but does not add the value of |<n>| to the |total| and |subtotal| counters, so can be used, e.g., if several solutions are possible with separate mark schemes.
 
-\emph{Note:} |<n>| can be non-numeric, but if anything other than an integer is entered, then the |\subtotal*| and |\total*| commands will return the wrong sum.
+\emph{Note:} |<n>| can be non-numeric, but if anything other than a number is entered, then nothing will be added to the |\subtotal*| and |\total*| commands. If |<n>| is a floating-point decimal then this will be added correctly to the subtotal and total. Furthermore, half marks get rendered as fractions: for example if |<n>|${}=1.5$, then |\mk| will render this as `$1\frac12$'.
 
 \begin{desc}
 |\solnmarksplus{<n>}{<description>}|\\
@@ -1219,12 +1324,11 @@ See under the description of |\mk| above for information on usage of the optiona
 
 Calculates the subtotal or total for a part-question or question, placing 
 the calculated value in the margin, and the word `Subtotal' or `Total' in large, 
-bold to its right; the calculated value accounts for all marks given in 
-any of the following commands, but only \emph{within} a |solution| environment: |bracketedmarks|, |solnmarks|, |solnmarksplus|, 
-|marks|, |mk|, and |mkplus|. The optional argument |<description>| is the same 
+bold to its right; the calculated value accounts for all fully numeric parameters (including decimals) given in 
+any of the following commands: |\mk|, |\solnmarksplus|, and |\mkplus|. The optional argument |<description>| is the same 
 as with the |\subtotal| and |\total| commands. 
 
-\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters.
+\emph{Note:} Marks entered into the |\mk*| variant will not be added to the |subtotal| and |total| counters, nor will anything entered into |\mk| other than floating point decimals.
 
 \subsubsection{Rules}
 
@@ -1238,6 +1342,7 @@ Sets options (including turning off) for horizontal lines after |\subtotal| and
 |\subtotal*| command. Supported options, in any order, are:
 \begin{itemize}
   \item |moveleft=<length>|, default is |.1\textwidth|: specifies the horizontal offset of the line;
+  \item |movedown=<length>|, default is |0pt|: allows you to adjust the vertical space between the `subtotal' text and the line;
   \item |width=<length>|, default is |1.5\textwidth|: specifies the horizontal width of the line;
   \item |height=<length>|, default is |2pt|: specifies the height of the line;
   \item |color=<color>|, default is |black|: specifies the colour of the line;
@@ -1292,17 +1397,43 @@ Users who prefer to use |\pgfkeys| directly may use, for example,
 |\pgfkeys{/ourule,default,moveleft=-3cm,color=red!40!white}|
 
 
+\subsection{Specifying questions and solutions in the same file}
+
+In order to enable two PDF files to be produced from a single source (see earlier, including the class file options |showsolutions|, |specimensolutions|, |solutionsonly| and |qp-and-ss|, among others), various commands are available to apply text or commands depending on which build mode is being used. The two generic commands are as follows.
+
+\begin{desc}
+|\qponly{...}|\\
+|\ssonly{...}|\\
+\end{desc}
+
+The contents of |\qponly| will be applied and/or displayed only when |showsolutions|, |solutionsonly| or |specimensolutions| is \emph{not} specified.
+
+The contents of |\ssonly| will be applied and/or displayed only when |showsolutions|, |solutionsonly| or |specimensolutions| is specified.
+
+
 \subsubsection{Pagination}
 As well as the usual commands such as |\pagebreak|, it is possible to specify different page breaks depending on whether |showsolutions| is enabled or not.
 \begin{desc}
+|\qppagebreak|\\
 |\questionbreak|
 \end{desc}
 Inserts a |\pagebreak| command when the |showsolutions| option is not specified.
 
 \begin{desc}
+|\sspagebreak|\\
 |\solutionbreak|
 \end{desc}
 Inserts a |\pagebreak| command when the |showsolutions| option is specified.
+
+\begin{desc}
+|\qpnewpage|
+\end{desc}
+Inserts a |\newpage| command when the |showsolutions| option is not specified.
+
+\begin{desc}
+|\ssnewpage|
+\end{desc}
+Inserts a |\newpage| command when the |showsolutions| option is specified.
 
 %
 %
@@ -1426,7 +1557,7 @@ This section can be omitted unless you need/want to know a bit more about the cl
 \item |ifthen| for internal latex coding
 \item |enumitem|. This is a powerful tool that will help preparing subquestions.
 \item |marginnote| for handling marks, etc in the margin.
-\item |mdframed| with option |xcolor| to provide formatting for coloured boxes to display solutions. This is only loaded if |showsolutions| is specified, otherwise |xcolor| is loaded on its own.
+\item |tcolorbox| to provide formatting for coloured boxes to display solutions. This is only loaded if |showsolutions| is specified.
 \item |verbatim| to ensure the contents of the |solution| environment is hidden unless |showsolutions| is specified.
 \item |makebarcode| for creating the barcode on the front page. Not loaded if |nobarcode| option is specified.
 \item |extsizes| when options |14pt|, |17pt| or |20pt| are used, to handle larger font sizes. 
@@ -1685,7 +1816,6 @@ Places a 2.4cm $\times$ 1.2cm wide answer box in the right-hand margin. The opti
 \item |enumitem| with options |inline| and |shortlabels|. This is a powerful tool that will help preparing subquestions (see later).
 \item |marginnote| for handling marks, etc in the margin.
 \item |tikz| to draw boxes in the margin.
-\item |mdframed| to format the question headers.
 \end{itemize}
 
 
@@ -1727,6 +1857,7 @@ for the |metadataset| command in each of the |OU|-based class files.
 	\cmidrule{2-5}
 	|document subtitle|           & \metakeyavailable &                   & \metakeyavailable &                   \\
 	|no cut off date|             & \metakeyavailable &                   &                   &                   \\
+	|unique ID|                   & \metakeyavailable &                   &                   &                   \\
 	%\cmidrule{2-5}
 	|session|                     &                   & \metakeyavailable &                   &                   \\
 	|specimen solutions title|    &                   & \metakeyavailable &                   &                   \\
@@ -1746,6 +1877,50 @@ for the |metadataset| command in each of the |OU|-based class files.
 	|student only title|          &                   &                   &                   & \metakeyavailable \\
 	\bottomrule
 \end{longtable}
+\pagebreak
+
+\section{Accessibility warnings}\label{sec:accessibility-warnings}
+
+|ouab.cls| supports the option |accessibility-warnings| and the shorter, equivalent, version |a-w|.
+
+\begin{desc}
+ |\documentclass[accessibility-warnings]{ouab}|\\
+ |\documentclass[a-w]{ouab}|
+\end{desc}
+
+This will output accessibility-based warnings to the pdf and to the log file.
+Any warnings you receive will need to be addressed by someone before converting
+your document to VLE format. If you do not receive any warnings, it does not guarantee that
+your document will convert to VLE format without issue.
+
+\begin{desc}
+ |\ouabPrintAW|
+\end{desc}
+
+By default, a summary of the accessibility warnings are printed at the
+\emph{end} of the document. The command |ouabPrintAW| is available if you would
+like to specify the precise location of where the summary of accessibility
+warnings are printed.
+
+Details of the warnings are as follows.
+
+\begin{description}
+ \item[AW1] list depth is $>2$ which means that you have specified an |enumerate| or
+  an |itemize| environment at a depth of greater than $2$; the VLE supports a
+  maximum list depth of $2$.
+ \item[AW2] you have not specified a |uniqueID| for your document; the VLE needs this
+  in order to identify your document. The unique ID should begin with an upper
+  case X. An example ID specification is |\uniqueID{Xmst125tma01}|.
+ \item[AW3] |tabular| environments will not render in math mode in the VLE; use, for
+  example, |array| instead.
+ \item[AW4] |tabular| environment is not within either |table| nor |table*|
+  environment; this is fixed easily by wrapping your |tabular| environment in
+  either of these environments.
+ \item[AW5] figure description has \emph{not} been given for the |figure| or |figure*|
+  environment. Use the |\figuredescription{<description goes here>}| to specify
+  your figure description.
+\end{description}
+
 \pagebreak
 \section{Moving from OUTeX}
 

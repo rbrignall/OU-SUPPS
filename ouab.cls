@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouab}[2021/11/09 v2.3.2 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouab}[2024/03/21 v3.0 (Robert Brignall, all rights reserved)]
 % Experimental!
 \newif\if@draft
 \@draftfalse
@@ -10,6 +10,17 @@
 \@oneassignmentfalse
 \DeclareOption{oneassignment}{%
   \@oneassignmenttrue
+}
+%
+% accessibility warnings
+%
+\newif\if@ousupps@accessibility@warnings
+\@ousupps@accessibility@warningsfalse
+\DeclareOption{accessibility-warnings}{%
+   \@ousupps@accessibility@warningstrue
+}
+\DeclareOption{a-w}{%
+   \@ousupps@accessibility@warningstrue
 }
 \ProcessOptions\relax
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,7 +41,9 @@
 \RequirePackage{marginnote}
 \RequirePackage{pgfkeys}
 \RequirePackage{iftex}
-\RequirePackage[labelsep=quad]{caption} % Fixes figure captions to OU style
+\RequirePackage{caption} % Fixes figure captions to OU style
+\captionsetup{justification=raggedright,format=plain,labelsep=quad,labelfont={normalsize,bf},singlelinecheck=false,font={normalsize,stretch=1.25}}
+
 %%
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -68,8 +81,20 @@
 \def\@versionno{\relax} % default blank
 \newcommand\versionno[1]{\DeclareRobustCommand\@versionno{#1}}
 %
-\def\@oulogofilebase{OU_Master_Logo_Black_CMYK_29mm}
+\def\@oulogofilebase{OU_Master_LOGO_BLACK_17-5mmForA4width}
 \newcommand\oulogofilebase[1]{\renewcommand\@oulogofilebase{#1}}
+%
+\def\@uniqueID{}
+\newcommand\uniqueID[1]{\DeclareRobustCommand\@uniqueID{#1}}
+%
+\def\@figuredescription{}
+\newcommand\figuredescription[1]{\global\def\@figuredescription{#1}}
+\AtBeginEnvironment{figure}{%
+   \global\def\@figuredescription{}%
+}
+\AtBeginEnvironment{figure*}{%
+   \global\def\@figuredescription{}%
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Meta data can be set using \metadataset command, based on pgfkeys
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -88,6 +113,7 @@
    instructions/.store in=\@abinstructions,
    no cut off date/.code = \nocutoffdate,
    ou logo file base/.store in=\@oulogofilebase,
+   unique ID/.code=\uniqueID{#1},
 }
 \newcommand{\metadataset}[1]{%
     \pgfkeys{/meta data,#1}%
@@ -104,7 +130,12 @@
 \textbf{\@versionno} }%
 }
 \newlength{\logospace}
-\setlength{\logospace}{4.1cm}
+\setlength{\logospace}{6.5cm}
+\newlength\titletablewidth
+\setlength\titletablewidth{10.5cm} % width of RH column on front page
+\newlength\totalwidth
+\setlength\totalwidth{\dimexpr\logospace+\titletablewidth} % width of RH column on front page
+
 \renewcommand{\maketitle}{
 %% First, set up PDF metadata
  \pdfinfo{
@@ -120,26 +151,27 @@
 %%
   \thispagestyle{frontpage}
   %\vspace{2cm}
-\begin{adjustwidth}{0cm}{-\logospace}
-  \begin{tabular}{@{}p{\logospace}@{}p{\textwidth}@{}}
+  \begin{tabular}{@{}p{\logospace}@{}p{\titletablewidth}@{}}
   \vspace{0.2cm}%
   \IfFileExists{\@oulogofile}{%
-    \includegraphics[width=3.3cm]{\@oulogofile}%
-  }{%
-    \fbox{\parbox[t][2cm][c]{3.3cm}{\centering OU Logo}}%
+    \includegraphics[]{\@oulogofile}%
+  }{
+    \fbox{\parbox[t][17.5mm][c]{54.3mm}{\centering OU Logo}}%
   }%
 &
 \vspace{0.2cm}\textbf{\@faculty\newline
 \@modulecode\ \@moduletitle}
 
 \bigskip\bigskip\bigskip
+\end{tabular}
+
 \textbf{\Huge \@modulecode}\newline
-\rule{\textwidth}{1pt}
-
+\rule{\totalwidth}{1pt}
+\begin{adjustwidth}{0mm}{-40mm}
 \bigskip\bigskip\textbf{\Huge \@abtitle\hfill\@abyear}
-\if@subtitle\par\bigskip\textbf{\large \@absubtitle}\fi
 
-\medskip\rule{\textwidth}{1pt}
+\if@subtitle\par\bigskip\textbf{\large \@absubtitle}\fi
+\medskip\rule{\totalwidth}{1pt}
 
 \if@oneassignment
 \medskip
@@ -149,15 +181,12 @@
 %inserts list of TMA/CMA entries
 \@starttoc{tma}
 \nointerlineskip
-\end{tabular}
 \par\medskip
-  \rule{\dimexpr\textwidth+\logospace}{2pt}
+  \rule{\totalwidth}{2pt}
 \par\medskip
 \end{adjustwidth}
 %
-\begin{adjustwidth}{\logospace}{-\logospace} 
   \@abinstructions
-\end{adjustwidth}
 %
   \newpage
 }
@@ -180,9 +209,8 @@
 
 \setcounter{secnumdepth}{3}
 
-%\newcommand{\marginnote}[1]{{\renewcommand{\baselinestretch}{1.0}\marginpar{\footnotesize \raggedright #1}}}
 \raggedright
-\raggedbottom                
+\raggedbottom
 \parindent 0pt
 \parskip 6pt
 \setlength{\mathindent}{20pt}\relax
@@ -198,18 +226,20 @@
 \firstassignmenttrue
 
 \def\assignment#1{%
+    \if@oneassignment\iffirstassignment\else\ClassWarning{ouab}{Option firstassignment specified but multiple assignments found}\fi\fi
 	\if@draft%
 		\@check@marks%
 		\setcounter{marktarget}{0}%
-	\fi	  
+	\fi	
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	\setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
-  	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
+  	\iffirstassignment\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\newpage\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 % Version that doesn't add a new page
 \def\samepageassignment#1{%
+    \if@oneassignment\iffirstassignment\else\ClassWarning{ouab}{Option firstassignment specified but multiple assignments found}\fi\fi
 	\if@draft% Do checks on marks from previous assignment (if it exists)
 		\@check@marks%
 		\setcounter{marktarget}{0}%
@@ -217,12 +247,12 @@
 	\def\@assignmentname{#1} %store name of assignment (tma/cma, etc)
 	\setcounter{question}{0}
 	% Draw a rule under end of previous assignment (if not first assignment)
-  	\iffirstassignment\firstassignmentfalse\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\par\bigskip\fi
+  	\iffirstassignment\else\par\addvspace{\smallskipamount}\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}\par\bigskip\fi
 	\@ifnextchar[{\@assignmentwithcutoff}{\@assignmentnocutoff}
 }
 %
 \def\@assignmentwithcutoff[#1]#2{%
-	\def\@cutoff{\@cutofftext\ #1}
+	\def\@cutoff{\@cutofftext #1}
 	{\large \textbf{\@assignmentname\ #2} \hfill\textbf{\@cutofftext}#1}
 	\if@oneassignment%
 		\relax%
@@ -230,8 +260,12 @@
 	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #2 \hfill #1}%
 	\fi%
 	\@ifnextchar[{\@assignmentsubtitle}{
-		\if@oneassignment\addtocontents{tma}{\hfill\textbf{\@cutoff}}
-		\else\addtocontents{tma}{\par\medskip}\fi
+		\if@oneassignment\iffirstassignment\firstassignmentfalse%
+            \addtocontents{tma}{\hfill\textbf{\@cutoff}}
+            \fi
+		\else%
+        \addtocontents{tma}{\par\medskip}
+        \fi%
 		\par\addvspace{\bigskipamount}
 	}
 }
@@ -240,16 +274,19 @@
 	\def\@cutoff{\relax}
 	{\large \textbf{\@assignmentname\ #1}}%
 	\if@oneassignment
-		\relax 
+		\relax
 	\else
 	  	\addtocontents{tma}{\protect\makebox[1cm][l]{\thepage}\@assignmentname\ #1}
 	\fi
 	\@ifnextchar[{\@assignmentsubtitle}{\addtocontents{tma}{\par\medskip}\par\addvspace{\bigskipamount}}
 }
 
+
+
 \def\@assignmentsubtitle[#1]{%
-	\if@oneassignment
-		\addtocontents{tma}{\textbf{#1\hfill\@cutoff} \par\medskip}
+	\if@oneassignment\iffirstassignment\firstassignmentfalse
+		\addtocontents{tma}{\parbox[t]{\dimexpr\textwidth-0.45\textwidth}{\raggedright\textbf{#1}}\hfill\parbox[t]{\dimexpr0.45\textwidth}{\hfill\textbf{\@cutoff}} \par\medskip}
+        \fi
 	\else
 		\addtocontents{tma}{\newline\protect\makebox[1cm][l]{}#1\par\medskip}
 	\fi
@@ -257,7 +294,7 @@
 }
 %
 % Allows cut-off text to be suppressed
-\def\@cutofftext{Cut-off date\ \ }
+\def\@cutofftext{Cut-off~date~~}
 \def\@covercutofftext{Cut-off date}
 \def\nocutoffdate{\def\@cutofftext{See module website for the cut-off date.}\def\@covercutofftext{\relax}}
 
@@ -283,20 +320,21 @@
 		\@check@marks%
 		\setcounter{marktarget}{0}% 0 suppresses warnings later
 	\fi
-	\stepcounter{question}%
+	\refstepcounter{question}%
 	\par\addvspace{\bigskipamount}%
 	{\textbf{Question~\thequestion} #1}\nopagebreak\par}
 %
-%% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display. 
+%% \@@question is the version with no star: 2nd (compulsory) argument takes number of marks to display.
 \newcommand{\@@question}[2][\unskip]{%
 	\if@draft%
 		\@check@marks%
 		\setcounter{marksum}{0}
 		\setcounter{marktarget}{#2}
 	\fi
-	\stepcounter{question}%
+	\refstepcounter{question}%
 	\par\addvspace{\bigskipamount}% 
-	{\textbf{Question~\thequestion} #1}\hspace{12pt}--\hspace{12pt}#2 marks\nopagebreak\par}
+	\def\@marktext{\ifnum#2=1 mark \else marks\fi}
+	{\textbf{Question~\thequestion} #1}\hspace{12pt}--\hspace{12pt}#2 \@marktext\nopagebreak\par}
 %
 \newcommand\@check@marks{
 	\ifnum\c@marktarget=0\relax% Mark of 0 specified: do nothing
@@ -341,7 +379,6 @@
     	\relax
   	\fi%
 }
-%\def\marks{\ClassWarning{ouab}{\protect\marks\space is deprecated. Please use \protect\mk\space(same syntax)}\mk}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Options for CMAs
 
@@ -357,7 +394,7 @@
 \newenvironment{inlineoptions}[2][1]{%
 % #1 is the optional line spacing stretch. Default is 1
 % #2 is the number of columns
-  \par\medskip\@optiontext
+  \par\medskip\@optiontext\vspace{\dimexpr\baselineskip-#1\baselineskip}
     \setcounter{enumi}{0}%
   \dimen0 \linewidth%
   \divide\dimen0 by #2\relax%
@@ -370,7 +407,7 @@
   \def\noitem{\hfil\egroup\penalty50 \hfill%
     \leavevmode\hbox to \dimen0 \bgroup}%
   \leavevmode\bgroup\hskip 0pt plus -1fill %
-}{\hfil\egroup\par}  
+}{\hfil\egroup\par}
 
 % Normal options: this is just using enumitem features with enumerate.
 \newenvironment{options}%
@@ -434,7 +471,7 @@
           }%
         }%
       \endgroup
-    }  
+    }
   }
   {% Older versions of marginnote
     \long\def\@mn@@@marginnote[#1]#2[#3]{%
@@ -507,14 +544,114 @@
     }
   }%
 %
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Accessibility Warnings
+%
+\newcommand{\ouabPrintAW}{}
+\newif\if@ousupps@accessibility@warnings@printed
+\@ousupps@accessibility@warnings@printedfalse
+
+\if@ousupps@accessibility@warnings%
+ \typeout{ouab: accessibility warnings switch active}
+ \renewcommand{\ouabPrintAW}{%
+  \@ousupps@accessibility@warnings@printedtrue%
+  \subsection*{Accessibility warnings summary}\@starttoc{aws}}
+ %
+ % command to output accessibility warning message
+ %
+ \newcommand{\ousupps@accessibility@warning@message}[2]{%
+  %
+  % \ousupps@accessibility@warning@message{<warning NUMBER>}{<warning MESSAGE>}
+  %
+  \marginnote{\fbox{\fbox{\parbox{5cm}{\small\emph{AW#1: #2}}}}}%
+  \addcontentsline{aws}{subsubsection}{AW#1: #2}%
+  \typeout{ouab: accessibility warning, AW#1: #2}
+ }
+ %
+ % AW1: list levels need to be <=2 for the VLE
+ %
+ \AtBeginEnvironment{enumerate}{%
+  \ifnum\the\@enumdepth>1%
+   \ousupps@accessibility@warning@message{1}{list depth (enumerate) more than 2}%
+  \fi
+  \ifnum\the\@itemdepth>1%
+   \ousupps@accessibility@warning@message{1}{list depth (enumerate) more than 2}%
+  \fi
+ }
+ \AtBeginEnvironment{itemize}{%
+  \ifnum\the\@enumdepth>1%
+   \ousupps@accessibility@warning@message{1}{list depth (itemize) more than 2}%
+  \fi
+  \ifnum\the\@itemdepth>1%
+   \ousupps@accessibility@warning@message{1}{list depth (itemize) more than 2}%
+  \fi
+ }
+ %
+ % AW3, AW4: tabular environment checks
+ %
+ \BeforeBeginEnvironment{tabular}{%
+  %
+  % AW3: tabular in math environment
+  %
+  \ifmmode%
+   \ousupps@accessibility@warning@message{3}{tabular in math mode}%
+  \else
+   %
+   % AW4: tabular without table/table* wrapping body
+   %
+   \def\@tempa{table}%
+   \ifx\@tempa\@currenvir\relax
+   \else
+    \def\@tempa{table*}%
+    \ifx\@tempa\@currenvir\relax
+    \else
+     \ousupps@accessibility@warning@message{4}{tabular not in table nor in table*}%
+    \fi
+   \fi
+  \fi
+ }
+ %
+ % AW 5: figure description empty
+ %
+ \AfterEndEnvironment{figure}{%
+  \ifx\@figuredescription\@empty%
+   \ousupps@accessibility@warning@message{5}{no figure description given}%
+  \fi
+ }
+ \AfterEndEnvironment{figure*}{%
+  \ifx\@figuredescription\@empty%
+   \ousupps@accessibility@warning@message{5}{no figure description given}%
+  \fi
+ }
+\fi
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Line at end of AB
 \AtEndDocument{%
-	\if@draft%
-		\@check@marks%
-	\fi%
-	\par\addvspace{\smallskipamount}%
-	\makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}%
+ \if@draft%
+  \@check@marks%
+ \fi%
+ \par\addvspace{\smallskipamount}%
+ \makebox[\textwidth][l]{\rule{\dimexpr\textwidth+\marginparwidth+\marginparsep}{2pt}}%
+ %
+ % accessibility warnings
+ %
+ \if@ousupps@accessibility@warnings%
+  %
+  % AW2: unique ID not specified
+  %
+  \ifx\@uniqueID\@empty%
+   \ousupps@accessibility@warning@message{2}{unique ID not specified}%
+  \fi
+  %
+  % check if \ouabPrintAW has been called, and if not, then output summary
+  %
+  \if@ousupps@accessibility@warnings@printed\relax%
+  \else
+   \ouabPrintAW%
+  \fi
+ \fi
 }%
 %%
 %% EOF
