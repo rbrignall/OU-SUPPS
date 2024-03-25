@@ -285,7 +285,7 @@
 
 \def\@assignmentsubtitle[#1]{%
 	\if@oneassignment\iffirstassignment\firstassignmentfalse
-		\addtocontents{tma}{\parbox[t]{\dimexpr\textwidth-0.45\textwidth}{\raggedright\textbf{#1}}\hfill\parbox[t]{\dimexpr0.45\textwidth}{\hfill\textbf{\@cutoff}} \par\medskip}
+		\addtocontents{tma}{\parbox[t]{\dimexpr0.48\totalwidth}{\raggedright\textbf{#1}}\hfill\parbox[t]{\dimexpr0.48\totalwidth}{\hfill\textbf{\@cutoff}} \par\medskip}
         \fi
 	\else
 		\addtocontents{tma}{\newline\protect\makebox[1cm][l]{}#1\par\medskip}
@@ -295,7 +295,7 @@
 %
 % Allows cut-off text to be suppressed
 \def\@cutofftext{Cut-off~date~~}
-\def\@covercutofftext{Cut-off date}
+\def\@covercutofftext{Cut-off~date}
 \def\nocutoffdate{\def\@cutofftext{See module website for the cut-off date.}\def\@covercutofftext{\relax}}
 
 % Set up the two most common types of assignment, and starred versions (which add no new page)
