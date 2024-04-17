@@ -581,8 +581,12 @@
   \begingroup
     \newif\if@nan\@nanfalse%
     \newif\if@fndpt\@fndptfalse%
-    \edef\tmp{\testleadneg{\detokenize{#1}}\relax}%
-    \expandafter\testreal\tmp\relax%
+    % Check if empty, and if not deploy \testreal
+    \expandafter\ifx\expandafter\relax\detokenize{#1}\relax\@nantrue%
+    \else%
+        \edef\tmp{\testleadneg{\detokenize{#1}}\relax}%
+        \expandafter\testreal\tmp\relax%
+    \fi%
     % Add to counter if a number
     \if@nan%
       #1% Render content as-is
