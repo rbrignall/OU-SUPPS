@@ -132,7 +132,7 @@
 		\RequirePackage{xcolor}
 	\else%
 	% Suppressed if not displaying solutions
-        \RequirePackage{tcolorbox}
+        \RequirePackage[breakable]{tcolorbox}
     \fi%
 \else
 	\RequirePackage{xcolor}
@@ -1031,7 +1031,7 @@
             colframe=black,arc=0pt,toprule=-.2pt,rightrule=-.2pt,bottomrule=-.2pt,leftrule=3pt,
             width=\textwidth,left=10pt,grow to left by=13pt,right=5.5cm,add to width=5.5cm,
             fonttitle=\bfseries,title=Solution,coltitle=black,attach title to upper,after title={\par\medskip},
-            colback=yellow!10,parbox=false}
+            colback=yellow!10,parbox=false,breakable}
 	    % Now define the wrapper
 	    \newenvironment{solution}{%
             \def\mk{\solnmarks}%
