@@ -730,7 +730,10 @@
 	\@solnmarksbox{#1}{#2}%
 }	
 \newcommand{\@@solnmarks}[2][\unskip]{%
-	\@solnmarksbox{#1}{\@update@totals{#2}}%
+    \ifmeasuring@\relax
+    \else
+        \@solnmarksbox{#1}{\@update@totals{#2}}%
+    \fi
 }
 \newcommand{\@solnmarksbox}[2]{%
 	\marginnote{\hfill\footnotesize\sf %
