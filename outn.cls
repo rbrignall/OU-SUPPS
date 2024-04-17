@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2024/03/21 v3.0 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2024/04/17 v3.0.1 (Robert Brignall, all rights reserved)]
 
 \newif\if@tnandss
 \@tnandssfalse
@@ -514,7 +514,10 @@
 		\@solnmarksbox{#1}{#2}%
 	}	
 	\newcommand{\@@solnmarks}[2][\unskip]{%
-		\@solnmarksbox{#1}{\@update@totals{#2}}%
+          \ifmeasuring@\relax
+          \else
+           \@solnmarksbox{#1}{\@update@totals{#2}}%
+          \fi
 	}
 	\newcommand{\@solnmarksbox}[2]{%
 		\marginnote{\hfill\small\sf %
@@ -578,8 +581,12 @@
   \begingroup
     \newif\if@nan\@nanfalse%
     \newif\if@fndpt\@fndptfalse%
-    \edef\tmp{\testleadneg{\detokenize{#1}}\relax}%
-    \expandafter\testreal\tmp\relax%
+    % Check if empty, and if not deploy \testreal
+    \expandafter\ifx\expandafter\relax\detokenize{#1}\relax\@nantrue%
+    \else%
+        \edef\tmp{\testleadneg{\detokenize{#1}}\relax}%
+        \expandafter\testreal\tmp\relax%
+    \fi%
     % Add to counter if a number
     \if@nan%
       #1% Render content as-is
