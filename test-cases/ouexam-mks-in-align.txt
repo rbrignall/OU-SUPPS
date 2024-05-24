@@ -1,0 +1,53 @@
+Question 1 unit xxx Solution
+align test: y = x2 = x3
+align* test: y = x2 = x3
+gather test: y = x2 = x3
+gather* test: y = x2 = x3
+flalign test y = x2 = x3
+flalign* test y = x2 = x3
+Total:
+[END OF QUESTION PAPER]
+aaa bbb ccc
+
+(1)
+
+1
+
+(2)
+
+1
+
+2 Subtotal
+
+1 1
+2 Subtotal
+
+(3)
+
+1
+
+(4)
+
+1
+
+2 Subtotal
+
+1 1
+2 Subtotal
+
+(5)
+
+1
+
+(6)
+
+1
+
+2 Subtotal
+
+1 1 2 Subtotal
+12 Total
+
+1
+
+

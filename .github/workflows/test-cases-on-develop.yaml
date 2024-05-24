@@ -1,0 +1,124 @@
+name: ou-supps run test-cases/ou-supps-test-cases.sh on develop
+# PURPOSE:
+#
+# run 
+# 
+#   ./test-cases/ou-supps-test-cases.sh
+#
+# to produce the test-cases .pdf and .txt files
+# and list any differences from the previous commit
+#
+# Notes: 
+#
+#   (1) this action only runs on DEVELOP branch, there's 
+#       no need to run it on the main branch nor on 
+#       experimental feature branches
+#
+#   (2) this action aims to track, as much as possible, 
+#       if any pdf files within the test-cases directory
+#       are changed
+#
+# references
+#   https://github.com/tj-actions/changed-files
+on:
+  push:
+    branches:
+      - develop
+
+jobs:
+  check-ou-supps-class-files-changed:
+    name: ou-supps check if ouab.cls outn.cls ouexam.cls ouicma.cls
+    runs-on: ubuntu-latest
+    outputs:
+      anychanged: ${{ steps.changed-files.outputs.any_changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Get changed files, ou-supps
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            ouab.cls
+            outn.cls
+            ouexam.cls
+            ouicma.cls
+      - if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        name: List all relevant changed files
+        run: |
+          echo ""
+          echo "ou-supps: the following .cls files have changed"
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file has changed since last commit"
+          done
+          echo ""
+      - if: ${{ steps.changed-files.outputs.any_changed == 'false' }}
+        name: No ou-supps class files have changed
+        run: |
+            echo ""
+            echo "none of of the .cls files have changed since last commit"
+            echo "no need to run the rest of test-cases-on-develop.yaml :)"
+            echo ""
+  ou-supps-test-cases:
+    needs: check-ou-supps-class-files-changed
+    if: ${{fromJSON(needs.check-ou-supps-class-files-changed.outputs.anychanged)}}
+    runs-on: ubuntu-latest
+    name: ou-supps-test-cases.sh check as .cls related file(s) changed
+    steps:
+      - name: load the "base actions/checkout" so as to access ou-supps repository
+        uses: actions/checkout@v4
+      #
+      # pdflatex
+      #
+      - name: installing texlive full and producing test-cases/*.pdf files
+        uses: xu-cheng/texlive-action@v2
+        with:
+          scheme: full
+          run: |
+            cp *.cls ./test-cases/
+            cd test-cases/
+            chmod +x ou-supps-test-cases.sh
+            ./ou-supps-test-cases.sh -p
+            echo ""
+            echo "ou-supps: list test-cases/*.pdf"
+            echo ""
+            ls -l *.pdf
+      #
+      # pdftotext
+      #
+      - name: install pdftotext and producing test-cases/*.txt files from pdf
+        run: |
+          sudo apt-get update 
+          sudo apt-get install -y poppler-utils
+          cd test-cases/
+          chmod +x ou-supps-test-cases.sh
+          ./ou-supps-test-cases.sh -t
+          echo ""
+          echo "ou-supps: list test-cases/*.txt"
+          echo ""
+          ls -l *.txt
+      #
+      # check for changes in test-cases/*.txt
+      #
+      - name: Check for changed files in test-cases/*.txt
+        uses: tj-actions/changed-files@v44
+        id: changed-files
+        with:
+          files: |
+            test-cases/*.txt
+      - if: ${{ steps.changed-files.outputs.any_changed == 'true' }}
+        name: List all changed files from test-cases
+        run: |
+          echo ""
+          echo "ou-supps: the following test-cases/*.txt have changed"
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "$file has changed on this commit"
+          done
+          echo ""
+      - if: ${{ steps.changed-files.outputs.any_changed == 'false' }}
+        name: No test-cases/*.txt files have changed
+        run: |
+            echo ""
+            echo "ou-supps: NONE of test-cases/*.txt have changed on this commit"
+            echo ""

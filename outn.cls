@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2024/04/17 v3.0.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2024/05/24 v3.0.2 (Robert Brignall, all rights reserved)]
 
 \newif\if@tnandss
 \@tnandssfalse
@@ -200,7 +200,7 @@
 %
   %\vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
-  \begin{tabular}{@{}p{6.5cm}@{}p{11.5cm}@{}}
+  \begin{tabular}{@{}p{6.0cm}@{}p{12.0cm}@{}}
   \vspace{0.2cm}
   \IfFileExists{\@oulogofile}{%
     \includegraphics[]{\@oulogofile}%
@@ -514,10 +514,7 @@
 		\@solnmarksbox{#1}{#2}%
 	}	
 	\newcommand{\@@solnmarks}[2][\unskip]{%
-          \ifmeasuring@\relax
-          \else
-           \@solnmarksbox{#1}{\@update@totals{#2}}%
-          \fi
+        \@solnmarksbox{#1}{\@update@totals{#2}}%
 	}
 	\newcommand{\@solnmarksbox}[2]{%
 		\marginnote{\hfill\small\sf %
@@ -591,8 +588,10 @@
     \if@nan%
       #1% Render content as-is
     \else%
-      \global\advance\subtot@l#1\p@%
-      \global\advance\tot@l#1\p@%
+      \ifmeasuring@\relax\else%
+        \global\advance\subtot@l#1\p@%
+        \global\advance\tot@l#1\p@%
+      \fi
       \setlength{\@mk}{#1pt}%
       \expandafter\@render@mk\the\@mk% Render using mark filter
     \fi

@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ouexam}[2024/04/17 v3.0.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{ouexam}[2024/05/24 v3.0.2 (Robert Brignall, all rights reserved)]
 
 %% Handles options
 
@@ -331,7 +331,7 @@
     \begin{adjustwidth}{\@titlefooterleftindent}{\@titlefooterrightindent}%
     	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}
 		\if@specimensolutions\relax \else\\
-        	{\footnotesize You have been provided with this question paper for your personal use, either for end-of-module assessment or (if you downloaded this paper from the OUSA website) to help you prepare for a future exam. You are not permitted to pass on this question paper, or any of its contents, to any website, online service, social media platform or any individual or organisation, as this is an infringement of the University's copyright and a disciplinary offence under Section SD 1.2 of the University's Code of Practice for Student Discipline.}\\
+        	{\footnotesize You have been provided with this question paper for your personal use, either for end-of-module assessment or (if you downloaded this paper from the OUSA website) to help you prepare for a future exam. You are not permitted to pass on this question paper, or any of its contents, to any website, online service, social media platform or any individual or organisation, as this is an infringement of the University's copyright and a disciplinary offence under the University's Code of Practice for Student Discipline.}\\
 	        \setqpid
 		\fi
 		\textbf{\@versionno}\hfill \textbf{\@suppno}%
@@ -699,8 +699,10 @@
     \if@nan%
       #1% Render content as-is
     \else%
-      \global\advance\subtot@l#1\p@%
-      \global\advance\tot@l#1\p@%
+      \ifmeasuring@\relax\else
+        \global\advance\subtot@l#1\p@%
+        \global\advance\tot@l#1\p@%
+      \fi
       \setlength{\@mk}{#1pt}%
       \expandafter\@render@mk\the\@mk% Render using mark filter
     \fi
@@ -734,10 +736,7 @@
 	\@solnmarksbox{#1}{#2}%
 }	
 \newcommand{\@@solnmarks}[2][\unskip]{%
-    \ifmeasuring@\relax
-    \else
-        \@solnmarksbox{#1}{\@update@totals{#2}}%
-    \fi
+    \@solnmarksbox{#1}{\@update@totals{#2}}%
 }
 \newcommand{\@solnmarksbox}[2]{%
 	\marginnote{\hfill\footnotesize\sf %
