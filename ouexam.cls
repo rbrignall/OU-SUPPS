@@ -699,8 +699,10 @@
     \if@nan%
       #1% Render content as-is
     \else%
-      \global\advance\subtot@l#1\p@%
-      \global\advance\tot@l#1\p@%
+      \ifmeasuring@\relax\else
+        \global\advance\subtot@l#1\p@%
+        \global\advance\tot@l#1\p@%
+      \fi
       \setlength{\@mk}{#1pt}%
       \expandafter\@render@mk\the\@mk% Render using mark filter
     \fi
@@ -734,10 +736,7 @@
 	\@solnmarksbox{#1}{#2}%
 }	
 \newcommand{\@@solnmarks}[2][\unskip]{%
-    \ifmeasuring@\relax
-    \else
-        \@solnmarksbox{#1}{\@update@totals{#2}}%
-    \fi
+    \@solnmarksbox{#1}{\@update@totals{#2}}%
 }
 \newcommand{\@solnmarksbox}[2]{%
 	\marginnote{\hfill\footnotesize\sf %
