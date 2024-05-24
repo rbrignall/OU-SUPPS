@@ -30,7 +30,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\@faculty{Faculty of Science, Technology, Engineering and Mathematics}
+\def\@faculty{Faculty of Science, Technology, Engineering\newline and Mathematics}
 \newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
 %
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
@@ -135,6 +135,13 @@ Personal identifier (PI): \\[20pt]
  \fancyfoot[L]{\large\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}\hfill \textbf{\@suppno}\\
 \textbf{\@versionno} }%
 }
+\newlength{\logospace}
+\setlength{\logospace}{6.5cm}
+\newlength\titletablewidth
+\setlength\titletablewidth{10.5cm} % width of RH column on front page
+\newlength\totalwidth
+\setlength\totalwidth{\dimexpr\logospace+\titletablewidth} % width of RH column on front page
+%
 \renewcommand{\maketitle}{
 % Logo preamble:
 \ifpdf%
@@ -144,34 +151,33 @@ Personal identifier (PI): \\[20pt]
 \fi%
 %%
   \thispagestyle{frontpage}
-  \vspace{2cm}
-\begin{adjustwidth}{0cm}{-4cm}
-  \begin{tabular}{@{}p{6.5cm}@{}p{11.5cm}@{}}
-  \vspace{1.5cm}
+  %\vspace{2cm}
+  \begin{tabular}{@{}p{\logospace}@{}p{\titletablewidth}@{}}
+  \vspace{0.2cm}%
   \IfFileExists{\@oulogofile}{%
     \includegraphics[]{\@oulogofile}%
-  }{%
+  }{
     \fbox{\parbox[t][17.5mm][c]{54.3mm}{\centering OU Logo}}%
   }%
 &
-\vspace{1.5cm}\textbf{\@faculty\newline
-\@modulecode\ \@moduletitle}
+\vspace{0.2cm}\textbf{\@faculty}\par\smallskip
+\textbf{\@modulecode\ \@moduletitle}
+\end{tabular}
 
-\bigskip\bigskip\bigskip
-\textbf{\Huge \@modulecode}\newline
-\rule{10.5cm}{1pt}
+%\textbf{\Huge \@modulecode}\newline
+%\rule{\totalwidth}{1pt}
+\begin{adjustwidth}{0mm}{-40mm}
 
 \bigskip\bigskip\textbf{\Huge \@outitle}
 \par\bigskip\textbf{\large \@ousubtitle}
 
-\medskip\rule{10.5cm}{1pt}
+\medskip\rule{\totalwidth}{1pt}
 
 \medskip\textbf{Covers \@coversmaterialin}
 
 \medskip\textbf{Cut-off date: \@cutoffdate}
 
 \nointerlineskip\vspace{12pt}
-\end{tabular}
   \rule{17cm}{2pt}
 \end{adjustwidth}
 
