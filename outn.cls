@@ -200,7 +200,7 @@
 %
   %\vspace{2cm}
 \begin{adjustwidth}{0cm}{-4cm}
-  \begin{tabular}{@{}p{6.5cm}@{}p{11.5cm}@{}}
+  \begin{tabular}{@{}p{6.0cm}@{}p{12.0cm}@{}}
   \vspace{0.2cm}
   \IfFileExists{\@oulogofile}{%
     \includegraphics[]{\@oulogofile}%
