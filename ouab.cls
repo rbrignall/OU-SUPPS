@@ -49,7 +49,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Parameters to set up module codes, etc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\def\@faculty{Faculty of Science, Technology, Engineering and Mathematics}
+\def\@faculty{Faculty of Science, Technology, Engineering\newline and Mathematics}
 \newcommand\faculty[1]{\DeclareRobustCommand\@faculty{#1}}
 %
 \newcommand\modulecode[1]{\renewcommand\@modulecode{#1}}
@@ -159,8 +159,8 @@
     \fbox{\parbox[t][17.5mm][c]{54.3mm}{\centering OU Logo}}%
   }%
 &
-\vspace{0.2cm}\textbf{\@faculty\newline
-\@modulecode\ \@moduletitle}
+\vspace{0.2cm}\textbf{\@faculty}\par\smallskip
+\textbf{\@modulecode\ \@moduletitle}
 
 \bigskip\bigskip\bigskip
 \end{tabular}
