@@ -331,7 +331,7 @@
     \begin{adjustwidth}{\@titlefooterleftindent}{\@titlefooterrightindent}%
     	\textbf{Copyright \copyright\ \@copyrightyear\ The Open University}
 		\if@specimensolutions\relax \else\\
-        	{\footnotesize You have been provided with this question paper for your personal use, either for end-of-module assessment or (if you downloaded this paper from the OUSA website) to help you prepare for a future exam. You are not permitted to pass on this question paper, or any of its contents, to any website, online service, social media platform or any individual or organisation, as this is an infringement of the University's copyright and a disciplinary offence under Section SD 1.2 of the University's Code of Practice for Student Discipline.}\\
+        	{\footnotesize You have been provided with this question paper for your personal use, either for end-of-module assessment or (if you downloaded this paper from the OUSA website) to help you prepare for a future exam. You are not permitted to pass on this question paper, or any of its contents, to any website, online service, social media platform or any individual or organisation, as this is an infringement of the University's copyright and a disciplinary offence under the University's Code of Practice for Student Discipline.}\\
 	        \setqpid
 		\fi
 		\textbf{\@versionno}\hfill \textbf{\@suppno}%
