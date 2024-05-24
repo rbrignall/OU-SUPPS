@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{outn}[2024/04/17 v3.0.1 (Robert Brignall, all rights reserved)]
+\ProvidesClass{outn}[2024/05/24 v3.0.2 (Robert Brignall, all rights reserved)]
 
 \newif\if@tnandss
 \@tnandssfalse
